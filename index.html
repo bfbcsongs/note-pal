@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#172554">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>NOTE PAL</title>
@@ -13,11 +13,10 @@
 :root {
   --primary: #172554;
   --accent: #2563eb;
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --text: #172033;
-  --muted: #64748b;
-  --border: #dbe3ef;
+  --bg: #ffffff;
+  --text: #242424;
+  --muted: #777777;
+  --border: #e5e7eb;
   --yellow: #ffeb3b;
 }
 
@@ -26,45 +25,50 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
+html {
   min-height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #fff;
+  scroll-behavior: smooth;
 }
 
 body {
-  padding-bottom: 30px;
+  margin: 0;
+  min-height: 100vh;
+  background: #fff;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-size: 16px;
 }
 
-button, input, select, textarea {
+button, input, select {
   font: inherit;
 }
 
 button {
-  border: none;
   cursor: pointer;
   touch-action: manipulation;
 }
 
 button:active {
-  transform: scale(.98);
+  opacity: .8;
 }
 
 .hidden {
   display: none !important;
 }
 
+/* HEADER */
+
 header {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--primary);
-  color: white;
-  padding: 15px 16px;
-  box-shadow: 0 2px 8px #0002;
+  background: rgba(255,255,255,.96);
+  color: #202020;
+  border-bottom: 1px solid #eeeeee;
+  padding: 10px 14px;
+  backdrop-filter: blur(10px);
 }
 
 .header-row {
@@ -75,34 +79,87 @@ header {
 }
 
 .brand {
-  font-size: 23px;
-  font-weight: 900;
-  letter-spacing: .5px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.5px;
 }
 
 .brand span {
-  color: #93c5fd;
+  color: var(--accent);
 }
 
 .header-subtitle {
   font-size: 11px;
-  opacity: .8;
-  margin-top: 3px;
+  color: #777;
+  margin-top: 1px;
 }
 
 .header-button {
-  background: #ffffff20;
-  color: white;
-  border: 1px solid #ffffff35;
-  border-radius: 10px;
-  padding: 10px 13px;
-  font-weight: bold;
+  background: #f3f4f6;
+  color: #222;
+  border-radius: 22px;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
 }
 
+/* MAIN: FULL-WIDTH, MINIMAL FRAMES */
+
 main {
-  max-width: 850px;
-  margin: auto;
-  padding: 14px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 12px 14px 35px;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+  border: 0;
+  border-radius: 24px;
+  padding: 11px 16px;
+  font-weight: 650;
+}
+
+.secondary-btn {
+  background: #f3f4f6;
+  color: #303030;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.danger-btn {
+  background: #fff1f2;
+  color: #be123c;
+  border: 1px solid #ffe4e6;
+  border-radius: 22px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.search-input,
+.text-input,
+select {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  color: #222;
+  outline: none;
+}
+
+.search-input:focus,
+.text-input:focus,
+select:focus {
+  border-color: #93b4f8;
+  box-shadow: 0 0 0 2px #dbeafe;
 }
 
 .top-actions {
@@ -111,99 +168,62 @@ main {
   margin-bottom: 12px;
 }
 
-.primary-btn {
-  background: var(--accent);
-  color: white;
-  border-radius: 10px;
-  padding: 12px 15px;
-  font-weight: bold;
-}
-
-.secondary-btn {
-  background: #e2e8f0;
-  color: #1e293b;
-  border-radius: 10px;
-  padding: 11px 13px;
-  font-weight: bold;
-}
-
-.danger-btn {
-  background: #fee2e2;
-  color: #b91c1c;
-  border-radius: 10px;
-  padding: 11px 13px;
-  font-weight: bold;
-}
-
-.search-input,
-.text-input,
-select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: white;
-  color: var(--text);
-  outline: none;
-}
-
-.search-input:focus,
-.text-input:focus,
-select:focus {
-  border-color: var(--accent);
-}
-
 .category-bar {
   display: flex;
+  align-items: center;
   gap: 7px;
   overflow-x: auto;
   padding: 12px 0;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+}
+
+.category-bar::-webkit-scrollbar {
+  display: none;
 }
 
 .category-chip {
   flex-shrink: 0;
-  padding: 8px 12px;
-  border-radius: 30px;
-  background: #e2e8f0;
-  color: #334155;
-  font-size: 13px;
-  font-weight: bold;
+  border: 1px solid #e5e7eb;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: #fff;
+  color: #444;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .category-chip.active {
-  background: var(--primary);
+  background: #172554;
+  border-color: #172554;
   color: white;
 }
 
 .add-category-chip {
-  background: #dbeafe;
-  color: #1d4ed8;
+  color: #2563eb;
+  background: #eff6ff;
 }
 
 .section-heading {
-  font-size: 15px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 700;
   margin: 15px 0 10px;
-  color: #334155;
 }
 
 .note-list {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 0;
 }
 
 .note-card {
   background: white;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 14px;
-  box-shadow: 0 2px 5px #00000008;
+  padding: 15px 2px;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .note-card.pinned {
-  border-left: 5px solid #f59e0b;
+  border-left: 3px solid #f59e0b;
+  padding-left: 10px;
 }
 
 .note-card-top {
@@ -214,148 +234,196 @@ select:focus {
 }
 
 .note-card-title {
-  font-size: 17px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
 .note-preview {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
+  margin-top: 7px;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }
 
 .note-meta {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: center;
   gap: 7px;
-  margin-top: 12px;
-  color: #64748b;
+  margin-top: 9px;
   font-size: 11px;
+  color: #777;
 }
 
 .category-label {
-  background: #dbeafe;
+  background: #eff6ff;
   color: #1d4ed8;
   padding: 4px 8px;
-  border-radius: 20px;
-  font-weight: bold;
+  border-radius: 15px;
 }
 
 .card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 7px;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .card-actions button {
-  flex: 1;
-  padding: 9px 7px;
-  border-radius: 8px;
-  background: #f1f5f9;
-  color: #334155;
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  padding: 7px 11px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .card-actions .open-note {
-  background: #dbeafe;
+  background: #eff6ff;
   color: #1d4ed8;
 }
 
 .empty-state {
   text-align: center;
-  padding: 40px 15px;
-  color: var(--muted);
-  line-height: 1.7;
+  padding: 45px 10px;
+  color: #777;
+  line-height: 1.8;
 }
 
-/* EDITOR */
+/* EDIT MODE: NO OUTER CARD OR FRAME */
+
+#editorScreen {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 .editor-panel {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 13px;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  background: #fff;
 }
 
 .editor-heading {
-  font-size: 19px;
-  font-weight: 900;
-  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -.5px;
+  margin: 8px 0 18px;
 }
 
 .editor-label {
   display: block;
+  color: #666;
   font-size: 12px;
-  font-weight: bold;
-  color: #475569;
-  margin: 13px 0 6px;
+  font-weight: 650;
+  margin: 15px 0 6px;
+}
+
+#noteTitle {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -.4px;
+  border: none;
+  border-bottom: 1px solid #eeeeee;
+  border-radius: 0;
+  padding: 9px 0 12px;
+  box-shadow: none;
+}
+
+#noteTitle:focus {
+  border-bottom-color: #93b4f8;
+  box-shadow: none;
+}
+
+.category-select-row {
+  display: flex;
+  gap: 8px;
+}
+
+.category-select-row select {
+  border-radius: 10px;
 }
 
 .editor-toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 10px 0;
   align-items: center;
+  margin: 8px 0 12px;
 }
 
 .tool-btn {
-  min-width: 38px;
-  min-height: 37px;
-  border-radius: 8px;
-  background: #e2e8f0;
-  color: #1e293b;
-  font-weight: bold;
+  min-width: 37px;
+  min-height: 36px;
   padding: 7px 10px;
-}
-
-.tool-btn.active {
-  background: #bfdbfe;
-  outline: 2px solid #60a5fa;
+  background: #f5f5f5;
+  border: 1px solid #e9e9e9;
+  border-radius: 9px;
+  color: #333;
+  font-weight: 650;
 }
 
 .color-control {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: #f1f5f9;
-  padding: 5px 8px;
-  border-radius: 8px;
+  gap: 5px;
+  padding: 4px 7px;
+  background: #f5f5f5;
+  border: 1px solid #eee;
+  border-radius: 9px;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 650;
 }
 
 input[type="color"] {
-  width: 30px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   padding: 0;
-  border: none;
+  border: 0;
   background: transparent;
 }
 
-#noteContent {
-  min-height: 270px;
-  padding: 13px;
-  border: 1px solid var(--border);
+#fontFamily,
+#fontSize {
   border-radius: 10px;
-  background: white;
-  color: #111827;
+}
+
+#noteContent {
+  display: block;
+  width: 100%;
+  min-height: 48vh;
+  margin: 0;
+  padding: 10px 0 25px;
+  border: 0;
+  border-radius: 0;
   outline: none;
+  background: #fff;
+  color: #242424;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   font-size: 18px;
-  line-height: 1.65;
+  line-height: 1.75;
   overflow-wrap: anywhere;
-  white-space: pre-wrap;
+  white-space: normal;
+  box-shadow: none;
+}
+
+#noteContent:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 #noteContent:empty:before {
-  content: "Write your notes, sermon, devotion, or Bible study here...";
-  color: #94a3b8;
+  content: "Write your sermon, devotion, Bible study, or notes...";
+  color: #a0a0a0;
   pointer-events: none;
 }
 
@@ -364,88 +432,108 @@ input[type="color"] {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 6px;
-  color: #64748b;
+  color: #777;
   font-size: 11px;
-  margin-top: 8px;
+  padding: 7px 0;
 }
 
 .editor-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
+  padding: 12px 0 20px;
+  border-top: 1px solid #eeeeee;
 }
 
 .editor-actions button {
-  padding: 12px 8px;
-  border-radius: 10px;
-  font-weight: bold;
+  flex: 1 1 auto;
 }
 
-.full-width {
-  grid-column: 1 / -1;
+.editor-actions .full-width {
+  flex-basis: 100%;
 }
 
-/* READ MODE */
+/* READ MODE: CHATGPT-STYLE TEXT */
 
 #readScreen {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100dvh - 70px);
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .read-toolbar {
-  background: #eaf1ff;
-  padding: 10px;
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 7px 0 11px;
+  background: white;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .read-toolbar button {
-  padding: 10px 12px;
-  border-radius: 9px;
-  font-weight: bold;
-  background: white;
-  color: #1e3a8a;
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #e9e9e9;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .read-info {
-  padding: 12px 15px;
-  border-bottom: 1px solid var(--border);
+  padding: 17px 0 10px;
+  border: 0;
 }
 
 .read-title {
-  font-size: 23px;
+  color: #202020;
+  font-size: 25px;
   line-height: 1.3;
-  font-weight: 900;
+  font-weight: 750;
+  letter-spacing: -.5px;
   overflow-wrap: anywhere;
 }
 
 .read-meta {
-  margin-top: 6px;
+  margin-top: 7px;
+  color: #888;
   font-size: 12px;
-  color: #64748b;
 }
 
 .read-instruction {
-  font-size: 12px;
-  color: #475569;
-  background: #f8fafc;
-  padding: 10px 15px;
-  border-bottom: 1px solid var(--border);
+  color: #777;
+  background: white;
+  border: 0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 7px 0 11px;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 #readBody {
-  padding: 18px 16px 35px;
-  line-height: 1.8;
+  width: 100%;
+  min-height: 65vh;
+  margin: 0;
+  padding: 15px 0 35px;
+  background: #fff;
+  color: #242424;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
   font-size: 21px;
+  line-height: 1.8;
   overflow-wrap: anywhere;
   white-space: normal;
+  border: 0;
+  outline: none;
 
-  /* Disable selection and long-press popup */
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
@@ -455,10 +543,27 @@ input[type="color"] {
 }
 
 #readBody * {
+  max-width: 100%;
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+#readBody p {
+  margin: 0 0 1em;
+}
+
+#readBody h1,
+#readBody h2,
+#readBody h3 {
+  line-height: 1.35;
+  margin: 1em 0 .5em;
+}
+
+#readBody ul,
+#readBody ol {
+  padding-left: 1.4em;
 }
 
 .read-word {
@@ -473,13 +578,15 @@ input[type="color"] {
 }
 
 .read-footer {
-  background: #f8fafc;
-  border-top: 1px solid var(--border);
-  padding: 10px 15px;
-  font-size: 11px;
-  color: #64748b;
+  background: white;
+  border-top: 1px solid #eeeeee;
+  padding: 9px 0;
+  color: #888;
+  font-size: 10px;
   text-align: center;
 }
+
+/* TOAST */
 
 .toast {
   position: fixed;
@@ -487,27 +594,63 @@ input[type="color"] {
   bottom: 22px;
   transform: translateX(-50%);
   z-index: 100;
-  max-width: calc(100% - 30px);
-  background: #0f172a;
+  width: max-content;
+  max-width: calc(100% - 28px);
+  background: #202020;
   color: white;
-  border-radius: 25px;
+  border-radius: 24px;
   padding: 11px 16px;
   font-size: 13px;
-  box-shadow: 0 4px 15px #0003;
+  box-shadow: 0 4px 15px #0002;
   text-align: center;
 }
 
-@media (min-width: 650px) {
-  main {
-    padding: 20px;
+/* SMALL PHONES */
+
+@media (max-width: 480px) {
+  header {
+    padding: 9px 12px;
   }
 
-  .note-list {
-    grid-template-columns: 1fr 1fr;
+  main {
+    padding: 9px 12px 28px;
+  }
+
+  #editorScreen,
+  #readScreen {
+    width: 100%;
+  }
+
+  .editor-heading {
+    margin-top: 8px;
   }
 
   #noteContent {
-    min-height: 350px;
+    min-height: 50vh;
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  .read-title {
+    font-size: 23px;
+  }
+
+  #readBody {
+    font-size: 21px;
+    line-height: 1.8;
+    padding-top: 13px;
+  }
+}
+
+@media (min-width: 700px) {
+  main {
+    max-width: 850px;
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  #noteContent {
+    min-height: 420px;
   }
 }
 </style>
@@ -527,7 +670,7 @@ input[type="color"] {
 
 <main>
 
-  <!-- HOME SCREEN -->
+  <!-- HOME -->
   <section id="homeScreen">
     <div class="top-actions">
       <button class="primary-btn" id="newNoteButton" style="flex:1">＋ New Note</button>
@@ -537,7 +680,7 @@ input[type="color"] {
       class="search-input"
       id="searchInput"
       type="search"
-      placeholder="🔎 Search title or note content..."
+      placeholder="🔎 Search notes..."
       autocomplete="off"
     >
 
@@ -545,32 +688,33 @@ input[type="color"] {
 
     <div class="section-heading" id="notesHeading">My Notes</div>
     <div class="note-list" id="noteList"></div>
+
     <div class="empty-state hidden" id="emptyState">
-      <div style="font-size:38px">📝</div>
+      <div style="font-size:36px">📝</div>
       <strong>No notes found.</strong><br>
       Create a new note or try another search.
     </div>
   </section>
 
-  <!-- EDITOR SCREEN -->
+  <!-- EDIT -->
   <section id="editorScreen" class="hidden">
     <div class="editor-panel">
       <div class="editor-heading" id="editorHeading">Create Note</div>
 
-      <label class="editor-label" for="noteTitle">Note Title</label>
+      <label class="editor-label" for="noteTitle">TITLE</label>
       <input
         class="text-input"
         id="noteTitle"
         type="text"
         maxlength="180"
-        placeholder="Enter title..."
+        placeholder="Give your note a title..."
         autocomplete="off"
       >
 
-      <label class="editor-label" for="noteCategory">Category</label>
-      <div style="display:flex;gap:7px">
-        <select id="noteCategory" style="flex:1;min-width:0"></select>
-        <button class="secondary-btn" id="addCategoryButton" title="Add category">＋</button>
+      <label class="editor-label" for="noteCategory">CATEGORY</label>
+      <div class="category-select-row">
+        <select id="noteCategory" style="flex:1"></select>
+        <button class="secondary-btn" id="addCategoryButton">＋ Add</button>
       </div>
 
       <div class="editor-status">
@@ -578,7 +722,7 @@ input[type="color"] {
         <span id="saveStatus">Autosave ready</span>
       </div>
 
-      <label class="editor-label">Formatting</label>
+      <label class="editor-label">TEXT FORMATTING</label>
       <div class="editor-toolbar">
         <button class="tool-btn" type="button" data-command="bold" title="Bold"><b>B</b></button>
         <button class="tool-btn" type="button" data-command="italic" title="Italic"><i>I</i></button>
@@ -586,18 +730,17 @@ input[type="color"] {
         <button class="tool-btn" type="button" id="clearFormatButton" title="Clear formatting">Tx</button>
 
         <label class="color-control" title="Font color">
-          A
-          <input type="color" id="fontColor" value="#111827" aria-label="Font color">
+          A <input type="color" id="fontColor" value="#242424" aria-label="Font color">
         </label>
 
-        <label class="color-control" title="Highlight color">
-          🖍
-          <input type="color" id="highlightColor" value="#fff176" aria-label="Text highlight color">
+        <label class="color-control" title="Text highlight">
+          🖍 <input type="color" id="highlightColor" value="#fff176" aria-label="Text highlight">
         </label>
       </div>
 
-      <label class="editor-label" for="fontFamily">Font Style</label>
+      <label class="editor-label" for="fontFamily">FONT</label>
       <select id="fontFamily">
+        <option value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">System / ChatGPT Style</option>
         <option value="Arial, Helvetica, sans-serif">Arial</option>
         <option value="Georgia, serif">Georgia</option>
         <option value="'Times New Roman', serif">Times New Roman</option>
@@ -606,17 +749,18 @@ input[type="color"] {
         <option value="'Courier New', monospace">Courier New</option>
       </select>
 
-      <label class="editor-label" for="fontSize">Font Size</label>
+      <label class="editor-label" for="fontSize">FONT SIZE</label>
       <select id="fontSize">
         <option value="16">Small — 16px</option>
         <option value="18" selected>Normal — 18px</option>
         <option value="20">Large — 20px</option>
-        <option value="24">Extra Large — 24px</option>
-        <option value="28">Very Large — 28px</option>
-        <option value="32">Presentation — 32px</option>
+        <option value="22">Extra Large — 22px</option>
+        <option value="24">Very Large — 24px</option>
+        <option value="28">Presentation — 28px</option>
+        <option value="32">Maximum — 32px</option>
       </select>
 
-      <label class="editor-label" for="noteContent">Note Content</label>
+      <label class="editor-label" for="noteContent">YOUR NOTE</label>
       <div
         id="noteContent"
         contenteditable="true"
@@ -628,20 +772,20 @@ input[type="color"] {
 
       <div class="editor-status">
         <span id="wordCount">0 words</span>
-        <span>Saved automatically on this device</span>
+        <span>Autosaved on this device</span>
       </div>
 
       <div class="editor-actions">
-        <button class="primary-btn" id="saveNoteButton">✓ Save Note</button>
+        <button class="primary-btn" id="saveNoteButton">✓ Save</button>
         <button class="secondary-btn" id="readNoteButton">▶ Read Mode</button>
         <button class="secondary-btn" id="pinNoteButton">📌 Pin Note</button>
-        <button class="danger-btn" id="deleteNoteButton">🗑 Delete Note</button>
+        <button class="danger-btn" id="deleteNoteButton">🗑 Delete</button>
         <button class="secondary-btn full-width" id="backButton">← Back to Notes</button>
       </div>
     </div>
   </section>
 
-  <!-- READ MODE SCREEN -->
+  <!-- READ -->
   <section id="readScreen" class="hidden">
     <div class="read-toolbar">
       <button id="exitReadButton">← Back</button>
@@ -657,13 +801,13 @@ input[type="color"] {
 
     <div class="read-instruction">
       📖 Tap a word to mark where you stopped. Tap another word to move the marker.
-      The yellow marker is temporary and will not change your saved note.
+      The yellow marker is temporary.
     </div>
 
     <div id="readBody"></div>
 
     <div class="read-footer">
-      Reading marker is temporary. It disappears when you leave Read Mode.
+      Temporary reading marker • Removed when you leave Read Mode
     </div>
   </section>
 
@@ -692,33 +836,27 @@ input[type="color"] {
   const homeScreen = $("homeScreen");
   const editorScreen = $("editorScreen");
   const readScreen = $("readScreen");
-
   const searchInput = $("searchInput");
   const categoryBar = $("categoryBar");
   const noteList = $("noteList");
   const emptyState = $("emptyState");
-
   const noteTitle = $("noteTitle");
   const noteCategory = $("noteCategory");
   const noteContent = $("noteContent");
-
   const readTitle = $("readTitle");
   const readMeta = $("readMeta");
   const readBody = $("readBody");
 
   let notes = loadJSON(NOTES_KEY, []);
   let categories = loadJSON(CATEGORIES_KEY, DEFAULT_CATEGORIES);
-
   let currentNoteId = null;
   let activeCategory = "All";
   let readFontSize = 21;
   let saveTimer = null;
   let toastTimer = null;
-  let isCreating = false;
 
   if (!Array.isArray(notes)) notes = [];
-
-  if (!Array.isArray(categories) || categories.length === 0) {
+  if (!Array.isArray(categories) || !categories.length) {
     categories = DEFAULT_CATEGORIES.slice();
   }
 
@@ -768,16 +906,6 @@ input[type="color"] {
     });
   }
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
-  }
-
   function plainText(html) {
     const temp = document.createElement("div");
     temp.innerHTML = html || "";
@@ -788,20 +916,29 @@ input[type="color"] {
     const toast = $("toast");
     toast.textContent = message;
     toast.classList.remove("hidden");
-
     clearTimeout(toastTimer);
+
     toastTimer = setTimeout(() => {
       toast.classList.add("hidden");
-    }, 2200);
+    }, 2300);
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return todayString();
+
+    return new Date(timestamp).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
   }
 
   function showScreen(screen) {
     homeScreen.classList.add("hidden");
     editorScreen.classList.add("hidden");
     readScreen.classList.add("hidden");
-
     screen.classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: "auto" });
+    window.scrollTo(0, 0);
   }
 
   function getCurrentNote() {
@@ -811,21 +948,21 @@ input[type="color"] {
   function renderCategories() {
     categoryBar.innerHTML = "";
 
-    const allButton = document.createElement("button");
-    allButton.className =
-      "category-chip" + (activeCategory === "All" ? " active" : "");
-    allButton.textContent = "All Notes";
-    allButton.addEventListener("click", () => {
+    const all = document.createElement("button");
+    all.className = "category-chip" +
+      (activeCategory === "All" ? " active" : "");
+    all.textContent = "All Notes";
+    all.addEventListener("click", () => {
       activeCategory = "All";
       renderCategories();
       renderNotes();
     });
-    categoryBar.appendChild(allButton);
+    categoryBar.appendChild(all);
 
     categories.forEach(category => {
       const button = document.createElement("button");
-      button.className =
-        "category-chip" + (activeCategory === category ? " active" : "");
+      button.className = "category-chip" +
+        (activeCategory === category ? " active" : "");
       button.textContent = category;
 
       button.addEventListener("click", () => {
@@ -837,14 +974,14 @@ input[type="color"] {
       categoryBar.appendChild(button);
     });
 
-    const addButton = document.createElement("button");
-    addButton.className = "category-chip add-category-chip";
-    addButton.textContent = "＋ Category";
-    addButton.addEventListener("click", addCategory);
-    categoryBar.appendChild(addButton);
+    const add = document.createElement("button");
+    add.className = "category-chip add-category-chip";
+    add.textContent = "＋ Category";
+    add.addEventListener("click", addCategory);
+    categoryBar.appendChild(add);
   }
 
-  function renderCategorySelect(selectedValue) {
+  function renderCategorySelect(selected) {
     noteCategory.innerHTML = "";
 
     categories.forEach(category => {
@@ -854,30 +991,29 @@ input[type="color"] {
       noteCategory.appendChild(option);
     });
 
-    if (selectedValue && !categories.includes(selectedValue)) {
-      categories.push(selectedValue);
+    if (selected && !categories.includes(selected)) {
+      categories.push(selected);
       saveCategories();
-      renderCategorySelect(selectedValue);
+      renderCategorySelect(selected);
       return;
     }
 
-    noteCategory.value = selectedValue || categories[0] || "General";
+    noteCategory.value = selected || categories[0] || "General";
   }
 
   function addCategory() {
     const input = prompt("Enter the new category name:");
-
     if (input === null) return;
 
     const name = input.trim();
 
     if (!name) {
-      showToast("Category name cannot be empty.");
+      showToast("Enter a category name.");
       return;
     }
 
     const existing = categories.find(
-      category => category.toLowerCase() === name.toLowerCase()
+      item => item.toLowerCase() === name.toLowerCase()
     );
 
     if (existing) {
@@ -890,8 +1026,8 @@ input[type="color"] {
 
     categories.push(name);
     saveCategories();
-
     activeCategory = name;
+
     renderCategories();
     renderNotes();
 
@@ -906,12 +1042,12 @@ input[type="color"] {
   function renderNotes() {
     const query = searchInput.value.trim().toLowerCase();
 
-    let filtered = notes.filter(note => {
+    const filtered = notes.filter(note => {
       const title = String(note.title || "").toLowerCase();
       const content = plainText(note.content || "").toLowerCase();
       const category = String(note.category || "").toLowerCase();
 
-      const matchesSearch =
+      const matchesQuery =
         !query ||
         title.includes(query) ||
         content.includes(query) ||
@@ -921,22 +1057,18 @@ input[type="color"] {
         activeCategory === "All" ||
         note.category === activeCategory;
 
-      return matchesSearch && matchesCategory;
+      return matchesQuery && matchesCategory;
     });
 
     filtered.sort((a, b) => {
       if (Boolean(a.pinned) !== Boolean(b.pinned)) {
         return a.pinned ? -1 : 1;
       }
-
       return (b.updatedAt || 0) - (a.updatedAt || 0);
     });
 
     noteList.innerHTML = "";
-
-    $("notesHeading").textContent =
-      "My Notes (" + filtered.length + ")";
-
+    $("notesHeading").textContent = "My Notes (" + filtered.length + ")";
     emptyState.classList.toggle("hidden", filtered.length > 0);
 
     filtered.forEach(note => {
@@ -952,9 +1084,8 @@ input[type="color"] {
         (note.title || "Untitled Note");
 
       const date = document.createElement("div");
-      date.style.fontSize = "11px";
-      date.style.color = "#64748b";
-      date.style.whiteSpace = "nowrap";
+      date.style.fontSize = "10px";
+      date.style.color = "#777";
       date.textContent = formatDate(note.updatedAt);
 
       top.append(title, date);
@@ -962,76 +1093,61 @@ input[type="color"] {
       const preview = document.createElement("div");
       preview.className = "note-preview";
       preview.textContent =
-        plainText(note.content || "").trim().slice(0, 180) ||
+        plainText(note.content || "").trim().slice(0, 200) ||
         "No content yet.";
 
       const meta = document.createElement("div");
       meta.className = "note-meta";
 
-      const categoryLabel = document.createElement("span");
-      categoryLabel.className = "category-label";
-      categoryLabel.textContent = note.category || "General";
+      const category = document.createElement("span");
+      category.className = "category-label";
+      category.textContent = note.category || "General";
 
-      const created = document.createElement("span");
-      created.textContent = "Updated " + formatDate(note.updatedAt);
+      const updated = document.createElement("span");
+      updated.textContent = "Updated " + formatDate(note.updatedAt);
 
-      meta.append(categoryLabel, created);
+      meta.append(category, updated);
 
       const actions = document.createElement("div");
       actions.className = "card-actions";
 
-      const openButton = document.createElement("button");
-      openButton.className = "open-note";
-      openButton.textContent = "✎ Edit";
-      openButton.addEventListener("click", () => openNote(note.id));
+      const edit = document.createElement("button");
+      edit.className = "open-note";
+      edit.textContent = "✎ Edit";
+      edit.addEventListener("click", () => openNote(note.id));
 
-      const readButton = document.createElement("button");
-      readButton.textContent = "▶ Read";
-      readButton.addEventListener("click", () => {
+      const read = document.createElement("button");
+      read.textContent = "▶ Read";
+      read.addEventListener("click", () => {
         currentNoteId = note.id;
         openReadMode();
       });
 
-      const pinButton = document.createElement("button");
-      pinButton.textContent = note.pinned ? "Unpin" : "📌 Pin";
-      pinButton.addEventListener("click", () => togglePin(note.id));
+      const pin = document.createElement("button");
+      pin.textContent = note.pinned ? "Unpin" : "📌 Pin";
+      pin.addEventListener("click", () => togglePin(note.id));
 
-      actions.append(openButton, readButton, pinButton);
-
+      actions.append(edit, read, pin);
       card.append(top, preview, meta, actions);
       noteList.appendChild(card);
     });
   }
 
-  function formatDate(timestamp) {
-    if (!timestamp) return todayString();
-
-    return new Date(timestamp).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    });
-  }
-
   function updateDateLabel(note) {
-    if (note && note.createdAt) {
-      $("dateLabel").textContent =
-        "Created: " + formatDate(note.createdAt);
-    } else {
-      $("dateLabel").textContent = "Date: " + todayString();
-    }
+    $("dateLabel").textContent = note && note.createdAt
+      ? "Created: " + formatDate(note.createdAt)
+      : "Date: " + todayString();
   }
 
   function updateWordCount() {
     const text = plainText(noteContent.innerHTML).trim();
     const count = text ? text.split(/\s+/).filter(Boolean).length : 0;
-    $("wordCount").textContent = count + (count === 1 ? " word" : " words");
+    $("wordCount").textContent =
+      count + (count === 1 ? " word" : " words");
   }
 
   function newNote() {
     currentNoteId = null;
-    isCreating = true;
-
     $("editorHeading").textContent = "Create Note";
     noteTitle.value = "";
     noteContent.innerHTML = "";
@@ -1041,10 +1157,10 @@ input[type="color"] {
     );
 
     updateDateLabel(null);
-    $("saveStatus").textContent = "New note";
+    $("saveStatus").textContent = "Autosave ready";
     $("pinNoteButton").textContent = "📌 Pin Note";
     $("deleteNoteButton").disabled = true;
-    $("deleteNoteButton").style.opacity = ".5";
+    $("deleteNoteButton").style.opacity = ".45";
 
     updateWordCount();
     showScreen(editorScreen);
@@ -1056,8 +1172,6 @@ input[type="color"] {
     if (!note) return;
 
     currentNoteId = id;
-    isCreating = false;
-
     $("editorHeading").textContent = "Edit Note";
     noteTitle.value = note.title || "";
     noteContent.innerHTML = note.content || "";
@@ -1090,9 +1204,7 @@ input[type="color"] {
 
     if (!currentNoteId) {
       if (!data.title && !plainText(data.content).trim()) {
-        if (showMessage) {
-          showToast("Write a title or content first.");
-        }
+        if (showMessage) showToast("Write a title or content first.");
         return false;
       }
 
@@ -1108,7 +1220,6 @@ input[type="color"] {
 
       notes.push(note);
       currentNoteId = note.id;
-      isCreating = false;
 
       $("editorHeading").textContent = "Edit Note";
       $("deleteNoteButton").disabled = false;
@@ -1129,11 +1240,9 @@ input[type="color"] {
       note.updatedAt = now;
     }
 
-    const saved = saveNotes();
+    if (!saveNotes()) return false;
 
-    if (!saved) return false;
-
-    const current = getCurrentNote();
+    const note = getCurrentNote();
 
     $("saveStatus").textContent =
       "Saved at " + new Date().toLocaleTimeString([], {
@@ -1141,19 +1250,17 @@ input[type="color"] {
         minute: "2-digit"
       });
 
-    if (current) updateDateLabel(current);
+    if (note) updateDateLabel(note);
 
     updateWordCount();
     renderNotes();
 
     if (showMessage) showToast("Note saved successfully.");
-
     return true;
   }
 
   function scheduleAutosave() {
     $("saveStatus").textContent = "Saving...";
-
     clearTimeout(saveTimer);
 
     saveTimer = setTimeout(() => {
@@ -1180,16 +1287,15 @@ input[type="color"] {
       return;
     }
 
-    const confirmed = confirm(
-      'Delete "' + (note.title || "Untitled Note") + '"?\n\nThis cannot be undone.'
-    );
-
-    if (!confirmed) return;
+    if (!confirm(
+      'Delete "' + (note.title || "Untitled Note") +
+      '"?\n\nThis cannot be undone.'
+    )) return;
 
     notes = notes.filter(item => item.id !== currentNoteId);
     saveNotes();
-
     currentNoteId = null;
+
     renderNotes();
     showScreen(homeScreen);
     showToast("Note deleted.");
@@ -1220,9 +1326,7 @@ input[type="color"] {
 
     try {
       document.execCommand(command, false, value || null);
-    } catch (error) {
-      // Some browser versions may not support a formatting command.
-    }
+    } catch (error) {}
 
     updateWordCount();
     scheduleAutosave();
@@ -1251,12 +1355,12 @@ input[type="color"] {
   function applyFontSize() {
     noteContent.focus();
 
-    // Apply selected size to the current selection.
     const px = $("fontSize").value;
     const sizeMap = {
       "16": "3",
       "18": "3",
       "20": "4",
+      "22": "4",
       "24": "5",
       "28": "6",
       "32": "7"
@@ -1265,9 +1369,7 @@ input[type="color"] {
     try {
       document.execCommand("fontSize", false, sizeMap[px] || "3");
 
-      // Convert legacy font-size attributes to pixel values.
-      const fonts = noteContent.querySelectorAll('font[size]');
-      fonts.forEach(font => {
+      noteContent.querySelectorAll("font[size]").forEach(font => {
         font.style.fontSize = px + "px";
         font.removeAttribute("size");
       });
@@ -1286,12 +1388,7 @@ input[type="color"] {
     scheduleAutosave();
   }
 
-  /*
-   * READ MODE
-   * Every non-whitespace word is wrapped in a span.
-   * Tapping a word moves the temporary marker.
-   * The original saved note HTML is never modified here.
-   */
+  /* READ MODE WORD MARKER */
 
   function makeReadWords(root) {
     const walker = document.createTreeWalker(
@@ -1315,16 +1412,14 @@ input[type="color"] {
     );
 
     const textNodes = [];
+
     while (walker.nextNode()) {
       textNodes.push(walker.currentNode);
     }
 
     textNodes.forEach(textNode => {
-      const text = textNode.nodeValue;
       const fragment = document.createDocumentFragment();
-
-      // Keep whitespace and punctuation attached to their words.
-      const parts = text.match(/\s+|[^\s]+/g) || [];
+      const parts = textNode.nodeValue.match(/\s+|[^\s]+/g) || [];
 
       parts.forEach(part => {
         if (/^\s+$/.test(part)) {
@@ -1344,25 +1439,22 @@ input[type="color"] {
   }
 
   function openReadMode() {
-    let note = getCurrentNote();
-
-    // Save any current editor changes before entering Read Mode.
     if (!editorScreen.classList.contains("hidden")) {
-      if (currentNoteId || noteTitle.value.trim() ||
-          plainText(noteContent.innerHTML).trim()) {
+      const data = collectEditorData();
+
+      if (currentNoteId || data.title || plainText(data.content).trim()) {
         saveCurrentNote(false);
-        note = getCurrentNote();
       }
     }
+
+    const note = getCurrentNote();
 
     if (!note) {
       showToast("Save a note before reading.");
       return;
     }
 
-    // Clear any previous temporary marker.
     readBody.innerHTML = "";
-
     readTitle.textContent = note.title || "Untitled Note";
     readMeta.textContent =
       (note.category || "General") + " • " +
@@ -1380,7 +1472,7 @@ input[type="color"] {
   }
 
   function exitReadMode() {
-    // Remove the temporary marker completely.
+    // Temporary marker is removed when leaving Read Mode.
     readBody.innerHTML = "";
     showScreen(homeScreen);
     renderNotes();
@@ -1389,15 +1481,10 @@ input[type="color"] {
   function markReadWord(word) {
     const previous = readBody.querySelector(".read-word.marked");
     if (previous) previous.classList.remove("marked");
-
     word.classList.add("marked");
   }
 
-  /*
-   * Prevent Android long-press selection, drag selection,
-   * and context-menu / Google Search popup in Read Mode.
-   */
-
+  // Block Android long-press selection and context menus.
   ["contextmenu", "selectstart", "dragstart"].forEach(eventName => {
     readBody.addEventListener(eventName, event => {
       event.preventDefault();
@@ -1410,13 +1497,6 @@ input[type="color"] {
 
     event.preventDefault();
     markReadWord(word);
-  });
-
-  // Reduce the chance of accidental selection during a long press.
-  readBody.addEventListener("pointerdown", event => {
-    if (event.pointerType === "mouse" && event.button !== 0) {
-      event.preventDefault();
-    }
   });
 
   $("readSmallerButton").addEventListener("click", () => {
@@ -1433,7 +1513,7 @@ input[type="color"] {
     if (currentNoteId) togglePin(currentNoteId);
   });
 
-  // BUTTON EVENTS
+  /* BUTTONS */
 
   $("newNoteButton").addEventListener("click", newNote);
 
@@ -1472,19 +1552,16 @@ input[type="color"] {
   $("readNoteButton").addEventListener("click", openReadMode);
   $("exitReadButton").addEventListener("click", exitReadMode);
   $("deleteNoteButton").addEventListener("click", deleteCurrentNote);
+  $("addCategoryButton").addEventListener("click", addCategory);
 
   $("pinNoteButton").addEventListener("click", () => {
-    if (!currentNoteId) {
-      if (!saveCurrentNote(false)) {
-        showToast("Write something before pinning.");
-        return;
-      }
+    if (!currentNoteId && !saveCurrentNote(false)) {
+      showToast("Write something before pinning.");
+      return;
     }
 
     togglePin(currentNoteId);
   });
-
-  $("addCategoryButton").addEventListener("click", addCategory);
 
   searchInput.addEventListener("input", renderNotes);
 
@@ -1499,10 +1576,7 @@ input[type="color"] {
   noteContent.addEventListener("keyup", updateWordCount);
 
   document.querySelectorAll("[data-command]").forEach(button => {
-    button.addEventListener("mousedown", event => {
-      // Keep the text selection when tapping toolbar buttons.
-      event.preventDefault();
-    });
+    button.addEventListener("mousedown", event => event.preventDefault());
 
     button.addEventListener("click", () => {
       insertCommand(button.dataset.command);
@@ -1526,7 +1600,6 @@ input[type="color"] {
   $("fontFamily").addEventListener("change", applyFontFamily);
   $("fontSize").addEventListener("change", applyFontSize);
 
-  // If the app is backgrounded, attempt to save editor changes.
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden" &&
         !editorScreen.classList.contains("hidden")) {
@@ -1540,7 +1613,8 @@ input[type="color"] {
     }
   });
 
-  // INITIALIZE
+  /* INITIALIZE */
+
   renderCategories();
   renderNotes();
   renderCategorySelect("General");
