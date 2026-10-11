@@ -3,838 +3,1550 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#173b2b">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#172554">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>NOTE PAL</title>
 
 <style>
-:root{
-  --green:#173b2b;
-  --green2:#245b40;
-  --bg:#f1f5f2;
-  --paper:#fff;
-  --ink:#17221b;
-  --muted:#68766d;
-  --line:#dce5df;
-  --yellow:#ffe36e;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font-family:Arial,system-ui,sans-serif;
-}
-button,input,select{font:inherit}
-button{
-  border:0;border-radius:10px;padding:10px 12px;
-  background:#e7eee9;color:var(--green);
-  font-weight:650;cursor:pointer;
-}
-button:active{transform:scale(.98)}
-.hidden{display:none!important}
-
-.topbar{
-  position:sticky;top:0;z-index:10;
-  background:var(--green);color:white;
-  display:flex;align-items:center;gap:10px;
-  padding:13px 15px;
-  box-shadow:0 2px 8px #0002;
-}
-.brand{font-size:20px;font-weight:850;flex:1}
-.topbar button{background:#ffffff20;color:white}
-
-main{
-  max-width:850px;margin:auto;
-  padding:14px 13px 100px;
-}
-.search{
-  width:100%;padding:13px;
-  border:1px solid var(--line);border-radius:12px;
-  background:white;outline:none;margin-bottom:12px;
-}
-.categories{
-  display:flex;gap:8px;overflow-x:auto;
-  padding:2px 0 13px;
-}
-.chip{
-  white-space:nowrap;border-radius:30px;
-  padding:8px 13px;background:white;
-  border:1px solid var(--line);
-}
-.chip.active{background:var(--green);color:white}
-
-.note-list{display:grid;gap:10px}
-.note-card{
-  background:white;border:1px solid var(--line);
-  border-radius:14px;padding:14px;
-  box-shadow:0 2px 7px #10291b08;
-}
-.note-card.pinned{border-left:5px solid #e8b92f}
-.card-title{
-  font-size:17px;font-weight:750;
-  overflow-wrap:anywhere;
-}
-.meta{font-size:12px;color:var(--muted);margin:6px 0 9px}
-.preview{
-  font-size:14px;color:#536158;
-  line-height:1.5;white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-.card-actions{
-  display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;
-}
-.card-actions button{font-size:13px;padding:8px 10px}
-.primary{background:var(--green);color:white}
-.danger{background:#ffebeb;color:#a12424}
-.pin-active{background:#fff0bf;color:#745200}
-.empty{text-align:center;color:var(--muted);padding:35px 10px}
-
-.fab{
-  position:fixed;right:20px;bottom:20px;z-index:12;
-  width:58px;height:58px;border-radius:50%;
-  background:var(--green);color:white;
-  font-size:30px;padding:0;
-  box-shadow:0 5px 18px #0003;
+:root {
+  --primary: #172554;
+  --accent: #2563eb;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #172033;
+  --muted: #64748b;
+  --border: #dbe3ef;
+  --yellow: #ffeb3b;
 }
 
-.panel{
-  background:white;border:1px solid var(--line);
-  border-radius:15px;padding:14px;margin-bottom:12px;
-}
-.date-label{font-size:12px;color:var(--muted);margin-bottom:8px}
-.title-input{
-  width:100%;font-size:23px;font-weight:800;
-  padding:8px 2px;border:0;border-bottom:1px solid var(--line);
-  outline:none;background:transparent;color:var(--ink);
-}
-.select-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.select-row select{
-  flex:1;min-width:110px;padding:10px;
-  border:1px solid var(--line);border-radius:9px;background:white;
-}
-.toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.toolbar button{min-width:38px;padding:8px 10px}
-.toolbar select{
-  max-width:160px;min-width:85px;
-  border:1px solid var(--line);border-radius:9px;
-  padding:8px;background:white;
-}
-.color-input{
-  width:40px;height:37px;padding:2px;
-  border:1px solid var(--line);border-radius:9px;
-}
-.editor{
-  min-height:48vh;padding:15px;
-  border:1px solid var(--line);border-radius:12px;
-  background:white;outline:none;
-  font-size:18px;line-height:1.7;
-  overflow-wrap:anywhere;
-}
-.editor:empty:before{content:"Write your note here…";color:#9aa69e}
-.editor:focus{border-color:#7da58a}
-.bottom-actions{
-  display:flex;flex-wrap:wrap;gap:8px;
-  align-items:center;margin-top:12px;
-}
-.status{font-size:12px;color:var(--muted)}
-
-.read-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.read-title{flex:1;font-size:23px;font-weight:800;overflow-wrap:anywhere}
-.read-date{font-size:12px;color:var(--muted);margin-bottom:14px}
-.read-body{
-  min-height:70vh;background:white;
-  border:1px solid var(--line);border-radius:15px;
-  padding:20px 17px;font-size:22px;line-height:1.85;
-  overflow-wrap:anywhere;box-shadow:0 2px 8px #00000008;
-}
-.read-body:empty:after{content:"This note is empty.";color:var(--muted)}
-.read-word{
-  border-radius:4px;
-  -webkit-tap-highlight-color:transparent;
-}
-.read-word.marked{
-  background:var(--yellow);
-  box-shadow:0 0 0 2px var(--yellow);
-  color:#201d0c;
-}
-.read-hint{
-  text-align:center;color:var(--muted);
-  font-size:12px;padding:12px;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-dialog{
-  border:0;border-radius:16px;padding:20px;
-  width:min(390px,calc(100% - 28px));
-  box-shadow:0 20px 70px #0005;
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
 }
-dialog::backdrop{background:#0b1b11a6}
-dialog h3{margin-top:0}
-.dialog-input{
-  width:100%;padding:12px;
-  border:1px solid var(--line);border-radius:9px;
-  margin:6px 0 14px;
+
+body {
+  padding-bottom: 30px;
 }
-@media(min-width:650px){
-  .note-list{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .editor{min-height:420px}
-  .read-body{padding:28px;font-size:24px}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.hidden {
+  display: none !important;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--primary);
+  color: white;
+  padding: 15px 16px;
+  box-shadow: 0 2px 8px #0002;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.brand {
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: .5px;
+}
+
+.brand span {
+  color: #93c5fd;
+}
+
+.header-subtitle {
+  font-size: 11px;
+  opacity: .8;
+  margin-top: 3px;
+}
+
+.header-button {
+  background: #ffffff20;
+  color: white;
+  border: 1px solid #ffffff35;
+  border-radius: 10px;
+  padding: 10px 13px;
+  font-weight: bold;
+}
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 14px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-weight: bold;
+}
+
+.secondary-btn {
+  background: #e2e8f0;
+  color: #1e293b;
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-weight: bold;
+}
+
+.danger-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-weight: bold;
+}
+
+.search-input,
+.text-input,
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  color: var(--text);
+  outline: none;
+}
+
+.search-input:focus,
+.text-input:focus,
+select:focus {
+  border-color: var(--accent);
+}
+
+.category-bar {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 12px 0;
+  scrollbar-width: thin;
+}
+
+.category-chip {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 30px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.category-chip.active {
+  background: var(--primary);
+  color: white;
+}
+
+.add-category-chip {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.section-heading {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 15px 0 10px;
+  color: #334155;
+}
+
+.note-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.note-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 14px;
+  box-shadow: 0 2px 5px #00000008;
+}
+
+.note-card.pinned {
+  border-left: 5px solid #f59e0b;
+}
+
+.note-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.note-card-title {
+  font-size: 17px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.note-preview {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.category-label {
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.card-actions {
+  display: flex;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.card-actions button {
+  flex: 1;
+  padding: 9px 7px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.card-actions .open-note {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 15px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* EDITOR */
+
+.editor-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 13px;
+}
+
+.editor-heading {
+  font-size: 19px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.editor-label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #475569;
+  margin: 13px 0 6px;
+}
+
+.editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+  align-items: center;
+}
+
+.tool-btn {
+  min-width: 38px;
+  min-height: 37px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  color: #1e293b;
+  font-weight: bold;
+  padding: 7px 10px;
+}
+
+.tool-btn.active {
+  background: #bfdbfe;
+  outline: 2px solid #60a5fa;
+}
+
+.color-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 5px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+input[type="color"] {
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+#noteContent {
+  min-height: 270px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+  color: #111827;
+  outline: none;
+  font-size: 18px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+#noteContent:empty:before {
+  content: "Write your notes, sermon, devotion, or Bible study here...";
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.editor-status {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: #64748b;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.editor-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.editor-actions button {
+  padding: 12px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* READ MODE */
+
+#readScreen {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.read-toolbar {
+  background: #eaf1ff;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.read-toolbar button {
+  padding: 10px 12px;
+  border-radius: 9px;
+  font-weight: bold;
+  background: white;
+  color: #1e3a8a;
+}
+
+.read-info {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.read-title {
+  font-size: 23px;
+  line-height: 1.3;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.read-meta {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.read-instruction {
+  font-size: 12px;
+  color: #475569;
+  background: #f8fafc;
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+#readBody {
+  padding: 18px 16px 35px;
+  line-height: 1.8;
+  font-size: 21px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+
+  /* Disable selection and long-press popup */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+  cursor: default;
+}
+
+#readBody * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.read-word {
+  display: inline;
+  border-radius: 3px;
+}
+
+.read-word.marked {
+  background: var(--yellow) !important;
+  color: #111827 !important;
+  box-shadow: 0 0 0 2px var(--yellow);
+}
+
+.read-footer {
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  padding: 10px 15px;
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 100;
+  max-width: calc(100% - 30px);
+  background: #0f172a;
+  color: white;
+  border-radius: 25px;
+  padding: 11px 16px;
+  font-size: 13px;
+  box-shadow: 0 4px 15px #0003;
+  text-align: center;
+}
+
+@media (min-width: 650px) {
+  main {
+    padding: 20px;
+  }
+
+  .note-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #noteContent {
+    min-height: 350px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <button id="backBtn" class="hidden">←</button>
-  <div class="brand">📝 NOTE PAL</div>
-  <button id="searchBtn">⌕ Search</button>
+<header>
+  <div class="header-row">
+    <div>
+      <div class="brand">NOTE <span>PAL</span></div>
+      <div class="header-subtitle">Your notes. Your message. Your moment.</div>
+    </div>
+    <button class="header-button" id="homeButton">⌂ Home</button>
+  </div>
 </header>
 
 <main>
 
-  <!-- HOME -->
-  <section id="homeView">
-    <input id="searchInput" class="search" type="search"
-      placeholder="Search title, content, or category…">
+  <!-- HOME SCREEN -->
+  <section id="homeScreen">
+    <div class="top-actions">
+      <button class="primary-btn" id="newNoteButton" style="flex:1">＋ New Note</button>
+    </div>
 
-    <div id="categoryBar" class="categories"></div>
-    <div id="noteList" class="note-list"></div>
-    <div id="emptyState" class="empty hidden">
-      No notes found.<br>Tap ＋ to create a note.
+    <input
+      class="search-input"
+      id="searchInput"
+      type="search"
+      placeholder="🔎 Search title or note content..."
+      autocomplete="off"
+    >
+
+    <div class="category-bar" id="categoryBar"></div>
+
+    <div class="section-heading" id="notesHeading">My Notes</div>
+    <div class="note-list" id="noteList"></div>
+    <div class="empty-state hidden" id="emptyState">
+      <div style="font-size:38px">📝</div>
+      <strong>No notes found.</strong><br>
+      Create a new note or try another search.
     </div>
   </section>
 
-  <!-- EDITOR -->
-  <section id="editView" class="hidden">
-    <div class="panel">
-      <div id="editDate" class="date-label"></div>
+  <!-- EDITOR SCREEN -->
+  <section id="editorScreen" class="hidden">
+    <div class="editor-panel">
+      <div class="editor-heading" id="editorHeading">Create Note</div>
 
-      <input id="titleInput" class="title-input"
-        placeholder="Note title" autocomplete="off">
+      <label class="editor-label" for="noteTitle">Note Title</label>
+      <input
+        class="text-input"
+        id="noteTitle"
+        type="text"
+        maxlength="180"
+        placeholder="Enter title..."
+        autocomplete="off"
+      >
 
-      <div class="select-row">
-        <select id="noteCategory" aria-label="Category"></select>
-        <button id="addCategoryBtn">＋ Category</button>
-        <button id="pinBtn">📌 Pin</button>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="toolbar">
-        <select id="fontFamily" aria-label="Font">
-          <option value="Arial">Arial</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Verdana">Verdana</option>
-          <option value="Trebuchet MS">Trebuchet MS</option>
-          <option value="monospace">Monospace</option>
-        </select>
-
-        <select id="fontSize" aria-label="Font size">
-          <option value="3">Normal</option>
-          <option value="4">Large</option>
-          <option value="5">Larger</option>
-          <option value="6">Very large</option>
-          <option value="7">Huge</option>
-        </select>
-
-        <input id="fontColor" class="color-input"
-          type="color" value="#17221b" aria-label="Font color">
-
-        <button data-cmd="bold" title="Bold"><b>B</b></button>
-        <button data-cmd="italic" title="Italic"><i>I</i></button>
-        <button data-cmd="underline" title="Underline"><u>U</u></button>
-        <button id="clearFormatBtn" title="Remove formatting">Tx</button>
+      <label class="editor-label" for="noteCategory">Category</label>
+      <div style="display:flex;gap:7px">
+        <select id="noteCategory" style="flex:1;min-width:0"></select>
+        <button class="secondary-btn" id="addCategoryButton" title="Add category">＋</button>
       </div>
 
-      <div id="editor" class="editor" contenteditable="true"
-        spellcheck="true" aria-label="Note content"></div>
+      <div class="editor-status">
+        <span id="dateLabel"></span>
+        <span id="saveStatus">Autosave ready</span>
+      </div>
 
-      <div class="bottom-actions">
-        <button id="saveBtn" class="primary">💾 Save</button>
-        <button id="readBtn">📖 Read Mode</button>
-        <button id="deleteBtn" class="danger">🗑 Delete</button>
-        <span id="saveStatus" class="status">Autosave ready</span>
+      <label class="editor-label">Formatting</label>
+      <div class="editor-toolbar">
+        <button class="tool-btn" type="button" data-command="bold" title="Bold"><b>B</b></button>
+        <button class="tool-btn" type="button" data-command="italic" title="Italic"><i>I</i></button>
+        <button class="tool-btn" type="button" data-command="underline" title="Underline"><u>U</u></button>
+        <button class="tool-btn" type="button" id="clearFormatButton" title="Clear formatting">Tx</button>
+
+        <label class="color-control" title="Font color">
+          A
+          <input type="color" id="fontColor" value="#111827" aria-label="Font color">
+        </label>
+
+        <label class="color-control" title="Highlight color">
+          🖍
+          <input type="color" id="highlightColor" value="#fff176" aria-label="Text highlight color">
+        </label>
+      </div>
+
+      <label class="editor-label" for="fontFamily">Font Style</label>
+      <select id="fontFamily">
+        <option value="Arial, Helvetica, sans-serif">Arial</option>
+        <option value="Georgia, serif">Georgia</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="Verdana, sans-serif">Verdana</option>
+        <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+        <option value="'Courier New', monospace">Courier New</option>
+      </select>
+
+      <label class="editor-label" for="fontSize">Font Size</label>
+      <select id="fontSize">
+        <option value="16">Small — 16px</option>
+        <option value="18" selected>Normal — 18px</option>
+        <option value="20">Large — 20px</option>
+        <option value="24">Extra Large — 24px</option>
+        <option value="28">Very Large — 28px</option>
+        <option value="32">Presentation — 32px</option>
+      </select>
+
+      <label class="editor-label" for="noteContent">Note Content</label>
+      <div
+        id="noteContent"
+        contenteditable="true"
+        role="textbox"
+        aria-label="Note content"
+        aria-multiline="true"
+        spellcheck="true"
+      ></div>
+
+      <div class="editor-status">
+        <span id="wordCount">0 words</span>
+        <span>Saved automatically on this device</span>
+      </div>
+
+      <div class="editor-actions">
+        <button class="primary-btn" id="saveNoteButton">✓ Save Note</button>
+        <button class="secondary-btn" id="readNoteButton">▶ Read Mode</button>
+        <button class="secondary-btn" id="pinNoteButton">📌 Pin Note</button>
+        <button class="danger-btn" id="deleteNoteButton">🗑 Delete Note</button>
+        <button class="secondary-btn full-width" id="backButton">← Back to Notes</button>
       </div>
     </div>
   </section>
 
-  <!-- READ MODE -->
-  <section id="readView" class="hidden">
-    <div class="read-head">
-      <div id="readTitle" class="read-title"></div>
-      <button id="readEditBtn">✎ Edit</button>
-      <button id="readPinBtn" title="Pin note">📌</button>
+  <!-- READ MODE SCREEN -->
+  <section id="readScreen" class="hidden">
+    <div class="read-toolbar">
+      <button id="exitReadButton">← Back</button>
+      <button id="readSmallerButton">A−</button>
+      <button id="readLargerButton">A＋</button>
+      <button id="readPinButton">📌 Pin</button>
     </div>
 
-    <div id="readDate" class="read-date"></div>
-    <article id="readBody" class="read-body"></article>
+    <div class="read-info">
+      <div class="read-title" id="readTitle"></div>
+      <div class="read-meta" id="readMeta"></div>
+    </div>
 
-    <div class="read-hint">
-      Tap a word to mark where you stopped reading.
-      The marker is temporary and is never saved.
+    <div class="read-instruction">
+      📖 Tap a word to mark where you stopped. Tap another word to move the marker.
+      The yellow marker is temporary and will not change your saved note.
+    </div>
+
+    <div id="readBody"></div>
+
+    <div class="read-footer">
+      Reading marker is temporary. It disappears when you leave Read Mode.
     </div>
   </section>
 
 </main>
 
-<button id="newNoteBtn" class="fab" aria-label="New note">＋</button>
-
-<dialog id="categoryDialog">
-  <h3>Add category</h3>
-  <input id="newCategoryInput" class="dialog-input"
-    placeholder="Category name" maxlength="40">
-  <div class="bottom-actions">
-    <button id="categoryCancel">Cancel</button>
-    <button id="categorySave" class="primary">Add</button>
-  </div>
-</dialog>
-
-<dialog id="deleteDialog">
-  <h3>Delete this note?</h3>
-  <p>This note will be permanently removed from this device.</p>
-  <div class="bottom-actions">
-    <button id="deleteCancel">Cancel</button>
-    <button id="deleteConfirm" class="danger">Delete note</button>
-  </div>
-</dialog>
+<div class="toast hidden" id="toast"></div>
 
 <script>
-(() => {
+(function () {
   "use strict";
 
-  const $ = id => document.getElementById(id);
   const NOTES_KEY = "notepal_notes_v1";
   const CATEGORIES_KEY = "notepal_categories_v1";
 
   const DEFAULT_CATEGORIES = [
-    "General","Sermon","Bible Study","Devotion","Ministry","Personal"
+    "General",
+    "Sermon",
+    "Bible Study",
+    "Devotion",
+    "Ministry",
+    "Personal"
   ];
 
-  function loadJSON(key, fallback) {
-    try {
-      const value = JSON.parse(localStorage.getItem(key));
-      return value ?? fallback;
-    } catch {
-      return fallback;
-    }
-  }
+  const $ = id => document.getElementById(id);
+
+  const homeScreen = $("homeScreen");
+  const editorScreen = $("editorScreen");
+  const readScreen = $("readScreen");
+
+  const searchInput = $("searchInput");
+  const categoryBar = $("categoryBar");
+  const noteList = $("noteList");
+  const emptyState = $("emptyState");
+
+  const noteTitle = $("noteTitle");
+  const noteCategory = $("noteCategory");
+  const noteContent = $("noteContent");
+
+  const readTitle = $("readTitle");
+  const readMeta = $("readMeta");
+  const readBody = $("readBody");
 
   let notes = loadJSON(NOTES_KEY, []);
   let categories = loadJSON(CATEGORIES_KEY, DEFAULT_CATEGORIES);
 
+  let currentNoteId = null;
+  let activeCategory = "All";
+  let readFontSize = 21;
+  let saveTimer = null;
+  let toastTimer = null;
+  let isCreating = false;
+
   if (!Array.isArray(notes)) notes = [];
-  if (!Array.isArray(categories) || !categories.length) {
-    categories = [...DEFAULT_CATEGORIES];
+
+  if (!Array.isArray(categories) || categories.length === 0) {
+    categories = DEFAULT_CATEGORIES.slice();
   }
 
-  let activeCategory = "All";
-  let currentId = null;
-  let mode = "home";
-  let saveTimer = null;
-  let savedRange = null;
-  let dirty = false;
+  categories = [...new Set(
+    categories.map(c => String(c).trim()).filter(Boolean)
+  )];
 
-  function persistNotes() {
+  saveCategories();
+
+  function loadJSON(key, fallback) {
+    try {
+      const value = localStorage.getItem(key);
+      return value ? JSON.parse(value) : fallback;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function saveNotes() {
     try {
       localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
       return true;
-    } catch (err) {
-      $("saveStatus").textContent = "Storage error";
-      alert("Unable to save. Device storage may be full.");
+    } catch (error) {
+      showToast("Unable to save. Device storage may be full.");
       return false;
     }
   }
 
-  function persistCategories() {
+  function saveCategories() {
     try {
       localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-    } catch {
-      alert("Unable to save categories on this device.");
+    } catch (error) {
+      showToast("Unable to save categories.");
     }
-  }
-
-  function todayISO() {
-    const d = new Date();
-    return d.getFullYear() + "-" +
-      String(d.getMonth()+1).padStart(2,"0") + "-" +
-      String(d.getDate()).padStart(2,"0");
-  }
-
-  function formatDate(value) {
-    if (!value) return "";
-    const d = new Date(value.slice(0,10) + "T12:00:00");
-    return Number.isNaN(d.getTime()) ? value :
-      d.toLocaleDateString(undefined,{
-        year:"numeric",month:"short",day:"numeric"
-      });
   }
 
   function makeId() {
-    return (crypto.randomUUID)
-      ? crypto.randomUUID()
-      : Date.now() + "_" + Math.random().toString(36).slice(2);
+    return "note_" + Date.now().toString(36) +
+      "_" + Math.random().toString(36).slice(2, 9);
   }
 
-  function currentNote() {
-    return notes.find(n => n.id === currentId);
-  }
-
-  function plainText(html) {
-    const el = document.createElement("div");
-    el.innerHTML = html || "";
-    return (el.innerText || el.textContent || "").trim();
+  function todayString() {
+    return new Date().toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
   }
 
   function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, c => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;",
-      '"':"&quot;","'":"&#39;"
-    })[c]);
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
   }
 
-  function show(view) {
-    mode = view;
-    $("homeView").classList.toggle("hidden",view !== "home");
-    $("editView").classList.toggle("hidden",view !== "edit");
-    $("readView").classList.toggle("hidden",view !== "read");
-    $("backBtn").classList.toggle("hidden",view === "home");
-    $("newNoteBtn").classList.toggle("hidden",view !== "home");
-    $("searchBtn").classList.toggle("hidden",view !== "home");
-    window.scrollTo(0,0);
+  function plainText(html) {
+    const temp = document.createElement("div");
+    temp.innerHTML = html || "";
+    return temp.innerText || temp.textContent || "";
+  }
+
+  function showToast(message) {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.classList.remove("hidden");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 2200);
+  }
+
+  function showScreen(screen) {
+    homeScreen.classList.add("hidden");
+    editorScreen.classList.add("hidden");
+    readScreen.classList.add("hidden");
+
+    screen.classList.remove("hidden");
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function getCurrentNote() {
+    return notes.find(note => note.id === currentNoteId) || null;
   }
 
   function renderCategories() {
-    const bar = $("categoryBar");
-    bar.innerHTML = "";
+    categoryBar.innerHTML = "";
 
-    ["All",...categories].forEach(cat => {
+    const allButton = document.createElement("button");
+    allButton.className =
+      "category-chip" + (activeCategory === "All" ? " active" : "");
+    allButton.textContent = "All Notes";
+    allButton.addEventListener("click", () => {
+      activeCategory = "All";
+      renderCategories();
+      renderNotes();
+    });
+    categoryBar.appendChild(allButton);
+
+    categories.forEach(category => {
       const button = document.createElement("button");
-      button.className = "chip" +
-        (activeCategory === cat ? " active" : "");
-      button.textContent = cat;
-      button.addEventListener("click",() => {
-        activeCategory = cat;
+      button.className =
+        "category-chip" + (activeCategory === category ? " active" : "");
+      button.textContent = category;
+
+      button.addEventListener("click", () => {
+        activeCategory = category;
         renderCategories();
         renderNotes();
       });
-      bar.appendChild(button);
+
+      categoryBar.appendChild(button);
     });
 
-    const add = document.createElement("button");
-    add.className = "chip";
-    add.textContent = "＋ Add";
-    add.addEventListener("click",openCategoryDialog);
-    bar.appendChild(add);
+    const addButton = document.createElement("button");
+    addButton.className = "category-chip add-category-chip";
+    addButton.textContent = "＋ Category";
+    addButton.addEventListener("click", addCategory);
+    categoryBar.appendChild(addButton);
+  }
 
-    const select = $("noteCategory");
-    const previous = select.value;
-    select.innerHTML = "";
+  function renderCategorySelect(selectedValue) {
+    noteCategory.innerHTML = "";
 
-    categories.forEach(cat => {
+    categories.forEach(category => {
       const option = document.createElement("option");
-      option.value = cat;
-      option.textContent = cat;
-      select.appendChild(option);
+      option.value = category;
+      option.textContent = category;
+      noteCategory.appendChild(option);
     });
 
-    if (categories.includes(previous)) select.value = previous;
+    if (selectedValue && !categories.includes(selectedValue)) {
+      categories.push(selectedValue);
+      saveCategories();
+      renderCategorySelect(selectedValue);
+      return;
+    }
+
+    noteCategory.value = selectedValue || categories[0] || "General";
+  }
+
+  function addCategory() {
+    const input = prompt("Enter the new category name:");
+
+    if (input === null) return;
+
+    const name = input.trim();
+
+    if (!name) {
+      showToast("Category name cannot be empty.");
+      return;
+    }
+
+    const existing = categories.find(
+      category => category.toLowerCase() === name.toLowerCase()
+    );
+
+    if (existing) {
+      activeCategory = existing;
+      renderCategories();
+      renderNotes();
+      showToast("Category already exists.");
+      return;
+    }
+
+    categories.push(name);
+    saveCategories();
+
+    activeCategory = name;
+    renderCategories();
+    renderNotes();
+
+    if (!editorScreen.classList.contains("hidden")) {
+      renderCategorySelect(name);
+      scheduleAutosave();
+    }
+
+    showToast("Category added.");
   }
 
   function renderNotes() {
-    const query = $("searchInput").value.trim().toLowerCase();
-    const list = $("noteList");
-    list.innerHTML = "";
+    const query = searchInput.value.trim().toLowerCase();
 
-    const visible = notes.filter(n => {
-      const categoryMatch =
-        activeCategory === "All" || n.category === activeCategory;
+    let filtered = notes.filter(note => {
+      const title = String(note.title || "").toLowerCase();
+      const content = plainText(note.content || "").toLowerCase();
+      const category = String(note.category || "").toLowerCase();
 
-      const searchable =
-        (n.title || "") + " " +
-        plainText(n.content) + " " +
-        (n.category || "");
+      const matchesSearch =
+        !query ||
+        title.includes(query) ||
+        content.includes(query) ||
+        category.includes(query);
 
-      return categoryMatch &&
-        searchable.toLowerCase().includes(query);
-    }).sort((a,b) =>
-      Number(!!b.pinned) - Number(!!a.pinned) ||
-      (b.updatedAt || "").localeCompare(a.updatedAt || "")
-    );
+      const matchesCategory =
+        activeCategory === "All" ||
+        note.category === activeCategory;
 
-    visible.forEach(n => {
-      const card = document.createElement("div");
-      card.className = "note-card" + (n.pinned ? " pinned" : "");
-
-      const title = n.title || "Untitled note";
-      const preview = plainText(n.content).slice(0,180) || "No content yet";
-
-      card.innerHTML = `
-        <div class="card-title">${n.pinned ? "📌 " : ""}${escapeHTML(title)}</div>
-        <div class="meta">
-          ${escapeHTML(formatDate(n.date || n.updatedAt))} ·
-          ${escapeHTML(n.category || "General")}
-        </div>
-        <div class="preview">${escapeHTML(preview)}</div>
-        <div class="card-actions">
-          <button class="primary edit-note">✎ Edit</button>
-          <button class="read-note">📖 Read</button>
-          <button class="pin-note ${n.pinned ? "pin-active" : ""}">
-            ${n.pinned ? "Unpin" : "📌 Pin"}
-          </button>
-          <button class="danger delete-note">🗑 Delete</button>
-        </div>`;
-
-      card.querySelector(".card-title").addEventListener("click",
-        () => openReader(n.id));
-      card.querySelector(".edit-note").addEventListener("click",
-        () => openEditor(n.id));
-      card.querySelector(".read-note").addEventListener("click",
-        () => openReader(n.id));
-      card.querySelector(".pin-note").addEventListener("click",() => {
-        n.pinned = !n.pinned;
-        n.updatedAt = new Date().toISOString();
-        persistNotes();
-        renderNotes();
-      });
-      card.querySelector(".delete-note").addEventListener("click",() => {
-        currentId = n.id;
-        $("deleteDialog").showModal();
-      });
-
-      list.appendChild(card);
+      return matchesSearch && matchesCategory;
     });
 
-    $("emptyState").classList.toggle("hidden",visible.length > 0);
+    filtered.sort((a, b) => {
+      if (Boolean(a.pinned) !== Boolean(b.pinned)) {
+        return a.pinned ? -1 : 1;
+      }
+
+      return (b.updatedAt || 0) - (a.updatedAt || 0);
+    });
+
+    noteList.innerHTML = "";
+
+    $("notesHeading").textContent =
+      "My Notes (" + filtered.length + ")";
+
+    emptyState.classList.toggle("hidden", filtered.length > 0);
+
+    filtered.forEach(note => {
+      const card = document.createElement("article");
+      card.className = "note-card" + (note.pinned ? " pinned" : "");
+
+      const top = document.createElement("div");
+      top.className = "note-card-top";
+
+      const title = document.createElement("div");
+      title.className = "note-card-title";
+      title.textContent = (note.pinned ? "📌 " : "") +
+        (note.title || "Untitled Note");
+
+      const date = document.createElement("div");
+      date.style.fontSize = "11px";
+      date.style.color = "#64748b";
+      date.style.whiteSpace = "nowrap";
+      date.textContent = formatDate(note.updatedAt);
+
+      top.append(title, date);
+
+      const preview = document.createElement("div");
+      preview.className = "note-preview";
+      preview.textContent =
+        plainText(note.content || "").trim().slice(0, 180) ||
+        "No content yet.";
+
+      const meta = document.createElement("div");
+      meta.className = "note-meta";
+
+      const categoryLabel = document.createElement("span");
+      categoryLabel.className = "category-label";
+      categoryLabel.textContent = note.category || "General";
+
+      const created = document.createElement("span");
+      created.textContent = "Updated " + formatDate(note.updatedAt);
+
+      meta.append(categoryLabel, created);
+
+      const actions = document.createElement("div");
+      actions.className = "card-actions";
+
+      const openButton = document.createElement("button");
+      openButton.className = "open-note";
+      openButton.textContent = "✎ Edit";
+      openButton.addEventListener("click", () => openNote(note.id));
+
+      const readButton = document.createElement("button");
+      readButton.textContent = "▶ Read";
+      readButton.addEventListener("click", () => {
+        currentNoteId = note.id;
+        openReadMode();
+      });
+
+      const pinButton = document.createElement("button");
+      pinButton.textContent = note.pinned ? "Unpin" : "📌 Pin";
+      pinButton.addEventListener("click", () => togglePin(note.id));
+
+      actions.append(openButton, readButton, pinButton);
+
+      card.append(top, preview, meta, actions);
+      noteList.appendChild(card);
+    });
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return todayString();
+
+    return new Date(timestamp).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  }
+
+  function updateDateLabel(note) {
+    if (note && note.createdAt) {
+      $("dateLabel").textContent =
+        "Created: " + formatDate(note.createdAt);
+    } else {
+      $("dateLabel").textContent = "Date: " + todayString();
+    }
+  }
+
+  function updateWordCount() {
+    const text = plainText(noteContent.innerHTML).trim();
+    const count = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    $("wordCount").textContent = count + (count === 1 ? " word" : " words");
   }
 
   function newNote() {
-    const now = new Date().toISOString();
-    const note = {
-      id:makeId(),
-      title:"",
-      date:todayISO(),
-      category:categories[0] || "General",
-      content:"",
-      pinned:false,
-      createdAt:now,
-      updatedAt:now
+    currentNoteId = null;
+    isCreating = true;
+
+    $("editorHeading").textContent = "Create Note";
+    noteTitle.value = "";
+    noteContent.innerHTML = "";
+
+    renderCategorySelect(
+      categories.includes(activeCategory) ? activeCategory : "General"
+    );
+
+    updateDateLabel(null);
+    $("saveStatus").textContent = "New note";
+    $("pinNoteButton").textContent = "📌 Pin Note";
+    $("deleteNoteButton").disabled = true;
+    $("deleteNoteButton").style.opacity = ".5";
+
+    updateWordCount();
+    showScreen(editorScreen);
+    noteTitle.focus();
+  }
+
+  function openNote(id) {
+    const note = notes.find(item => item.id === id);
+    if (!note) return;
+
+    currentNoteId = id;
+    isCreating = false;
+
+    $("editorHeading").textContent = "Edit Note";
+    noteTitle.value = note.title || "";
+    noteContent.innerHTML = note.content || "";
+
+    renderCategorySelect(note.category || "General");
+    updateDateLabel(note);
+
+    $("saveStatus").textContent = "Last saved: " + formatDate(note.updatedAt);
+    $("pinNoteButton").textContent =
+      note.pinned ? "📌 Unpin Note" : "📌 Pin Note";
+
+    $("deleteNoteButton").disabled = false;
+    $("deleteNoteButton").style.opacity = "1";
+
+    updateWordCount();
+    showScreen(editorScreen);
+  }
+
+  function collectEditorData() {
+    return {
+      title: noteTitle.value.trim(),
+      category: noteCategory.value || "General",
+      content: noteContent.innerHTML
     };
-
-    notes.unshift(note);
-    currentId = note.id;
-    persistNotes();
-    openEditor(note.id);
-    $("titleInput").focus();
   }
 
-  function openEditor(id) {
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
+  function saveCurrentNote(showMessage) {
+    const data = collectEditorData();
+    const now = Date.now();
 
-    if (mode === "edit" && currentId !== id) saveNow();
+    if (!currentNoteId) {
+      if (!data.title && !plainText(data.content).trim()) {
+        if (showMessage) {
+          showToast("Write a title or content first.");
+        }
+        return false;
+      }
 
-    currentId = id;
-    $("editDate").textContent =
-      "Date: " + formatDate(note.date || todayISO());
-    $("titleInput").value = note.title || "";
+      const note = {
+        id: makeId(),
+        title: data.title || "Untitled Note",
+        category: data.category,
+        content: data.content,
+        pinned: false,
+        createdAt: now,
+        updatedAt: now
+      };
 
-    renderCategories();
-    $("noteCategory").value = note.category || categories[0];
-    $("editor").innerHTML = note.content || "";
+      notes.push(note);
+      currentNoteId = note.id;
+      isCreating = false;
 
-    dirty = false;
-    $("saveStatus").textContent = "Saved";
-    updatePinButtons();
-    show("edit");
-  }
+      $("editorHeading").textContent = "Edit Note";
+      $("deleteNoteButton").disabled = false;
+      $("deleteNoteButton").style.opacity = "1";
+      $("pinNoteButton").textContent = "📌 Pin Note";
+      updateDateLabel(note);
+    } else {
+      const note = getCurrentNote();
 
-  function openReader(id) {
-    if (mode === "edit") saveNow();
+      if (!note) {
+        currentNoteId = null;
+        return saveCurrentNote(showMessage);
+      }
 
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
-
-    currentId = id;
-    $("readTitle").textContent = note.title || "Untitled note";
-    $("readDate").textContent =
-      formatDate(note.date || todayISO()) + " · " +
-      (note.category || "General");
-
-    const body = $("readBody");
-    body.innerHTML = note.content || "";
-    wrapReadWords(body);
-
-    updatePinButtons();
-    show("read");
-  }
-
-  function updatePinButtons() {
-    const note = currentNote();
-    if (!note) return;
-
-    $("pinBtn").textContent =
-      note.pinned ? "📌 Pinned" : "📌 Pin";
-    $("readPinBtn").textContent =
-      note.pinned ? "📌 Pinned" : "📌 Pin";
-  }
-
-  function markDirty() {
-    dirty = true;
-    $("saveStatus").textContent = "Saving…";
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveNow,180);
-  }
-
-  function saveNow() {
-    clearTimeout(saveTimer);
-
-    if (mode !== "edit") return;
-
-    const note = currentNote();
-    if (!note) return;
-
-    note.title = $("titleInput").value.trim();
-    note.category = $("noteCategory").value || "General";
-    note.content = $("editor").innerHTML;
-    note.updatedAt = new Date().toISOString();
-
-    const ok = persistNotes();
-    if (ok) {
-      dirty = false;
-      $("saveStatus").textContent = "Saved ✓";
-      renderNotes();
+      note.title = data.title || "Untitled Note";
+      note.category = data.category;
+      note.content = data.content;
+      note.updatedAt = now;
     }
+
+    const saved = saveNotes();
+
+    if (!saved) return false;
+
+    const current = getCurrentNote();
+
+    $("saveStatus").textContent =
+      "Saved at " + new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+    if (current) updateDateLabel(current);
+
+    updateWordCount();
+    renderNotes();
+
+    if (showMessage) showToast("Note saved successfully.");
+
+    return true;
   }
 
-  function togglePin() {
-    const note = currentNote();
+  function scheduleAutosave() {
+    $("saveStatus").textContent = "Saving...";
+
+    clearTimeout(saveTimer);
+
+    saveTimer = setTimeout(() => {
+      if (editorScreen.classList.contains("hidden")) return;
+
+      const data = collectEditorData();
+
+      if (!currentNoteId &&
+          !data.title &&
+          !plainText(data.content).trim()) {
+        $("saveStatus").textContent = "Autosave ready";
+        return;
+      }
+
+      saveCurrentNote(false);
+    }, 350);
+  }
+
+  function deleteCurrentNote() {
+    const note = getCurrentNote();
+
+    if (!note) {
+      showScreen(homeScreen);
+      return;
+    }
+
+    const confirmed = confirm(
+      'Delete "' + (note.title || "Untitled Note") + '"?\n\nThis cannot be undone.'
+    );
+
+    if (!confirmed) return;
+
+    notes = notes.filter(item => item.id !== currentNoteId);
+    saveNotes();
+
+    currentNoteId = null;
+    renderNotes();
+    showScreen(homeScreen);
+    showToast("Note deleted.");
+  }
+
+  function togglePin(id) {
+    const note = notes.find(item => item.id === id);
     if (!note) return;
 
     note.pinned = !note.pinned;
-    note.updatedAt = new Date().toISOString();
-    persistNotes();
-    updatePinButtons();
+    note.updatedAt = Date.now();
+
+    saveNotes();
     renderNotes();
-  }
 
-  function deleteCurrent() {
-    notes = notes.filter(n => n.id !== currentId);
-    persistNotes();
-    $("deleteDialog").close();
-    currentId = null;
-    show("home");
-    renderNotes();
-  }
-
-  function openCategoryDialog() {
-    $("newCategoryInput").value = "";
-    $("categoryDialog").showModal();
-    setTimeout(() => $("newCategoryInput").focus(),50);
-  }
-
-  // Remember the selected text so formatting buttons work on mobile.
-  function rememberSelection() {
-    const selection = window.getSelection();
-
-    if (selection && selection.rangeCount &&
-        $("editor").contains(selection.anchorNode)) {
-      savedRange = selection.getRangeAt(0).cloneRange();
+    if (currentNoteId === id) {
+      $("pinNoteButton").textContent =
+        note.pinned ? "📌 Unpin Note" : "📌 Pin Note";
+      $("readPinButton").textContent =
+        note.pinned ? "📌 Unpin" : "📌 Pin";
     }
+
+    showToast(note.pinned ? "Note pinned." : "Note unpinned.");
   }
 
-  function restoreSelection() {
-    const selection = window.getSelection();
+  function insertCommand(command, value) {
+    noteContent.focus();
 
-    if (savedRange && selection) {
-      selection.removeAllRanges();
-      selection.addRange(savedRange);
+    try {
+      document.execCommand(command, false, value || null);
+    } catch (error) {
+      // Some browser versions may not support a formatting command.
     }
+
+    updateWordCount();
+    scheduleAutosave();
   }
 
-  function command(name,value=null) {
-    $("editor").focus();
-    restoreSelection();
-    document.execCommand(name,false,value);
-    rememberSelection();
-    markDirty();
+  function clearFormatting() {
+    noteContent.focus();
+
+    try {
+      document.execCommand("removeFormat", false, null);
+    } catch (error) {}
+
+    scheduleAutosave();
   }
 
-  // Wrap readable words in temporary spans. This modifies only the
-  // reader's displayed copy, never the saved note.
-  function wrapReadWords(root) {
+  function applyFontFamily() {
+    noteContent.focus();
+
+    try {
+      document.execCommand("fontName", false, $("fontFamily").value);
+    } catch (error) {}
+
+    scheduleAutosave();
+  }
+
+  function applyFontSize() {
+    noteContent.focus();
+
+    // Apply selected size to the current selection.
+    const px = $("fontSize").value;
+    const sizeMap = {
+      "16": "3",
+      "18": "3",
+      "20": "4",
+      "24": "5",
+      "28": "6",
+      "32": "7"
+    };
+
+    try {
+      document.execCommand("fontSize", false, sizeMap[px] || "3");
+
+      // Convert legacy font-size attributes to pixel values.
+      const fonts = noteContent.querySelectorAll('font[size]');
+      fonts.forEach(font => {
+        font.style.fontSize = px + "px";
+        font.removeAttribute("size");
+      });
+    } catch (error) {}
+
+    scheduleAutosave();
+  }
+
+  function applyColor(command, color) {
+    noteContent.focus();
+
+    try {
+      document.execCommand(command, false, color);
+    } catch (error) {}
+
+    scheduleAutosave();
+  }
+
+  /*
+   * READ MODE
+   * Every non-whitespace word is wrapped in a span.
+   * Tapping a word moves the temporary marker.
+   * The original saved note HTML is never modified here.
+   */
+
+  function makeReadWords(root) {
     const walker = document.createTreeWalker(
-      root,NodeFilter.SHOW_TEXT,{
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
         acceptNode(node) {
-          if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
-          if (node.parentElement.closest("script,style,.read-word")) {
+          if (!node.nodeValue || !node.nodeValue.trim()) {
             return NodeFilter.FILTER_REJECT;
           }
+
+          const parent = node.parentElement;
+
+          if (parent && parent.closest("script, style, .read-word")) {
+            return NodeFilter.FILTER_REJECT;
+          }
+
           return NodeFilter.FILTER_ACCEPT;
         }
       }
     );
 
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
+    const textNodes = [];
+    while (walker.nextNode()) {
+      textNodes.push(walker.currentNode);
+    }
 
-    nodes.forEach(node => {
+    textNodes.forEach(textNode => {
+      const text = textNode.nodeValue;
       const fragment = document.createDocumentFragment();
-      const regex = /\S+|\s+/g;
-      let match;
 
-      while ((match = regex.exec(node.nodeValue))) {
-        if (/^\s+$/.test(match[0])) {
-          fragment.appendChild(document.createTextNode(match[0]));
+      // Keep whitespace and punctuation attached to their words.
+      const parts = text.match(/\s+|[^\s]+/g) || [];
+
+      parts.forEach(part => {
+        if (/^\s+$/.test(part)) {
+          fragment.appendChild(document.createTextNode(part));
         } else {
           const span = document.createElement("span");
           span.className = "read-word";
-          span.textContent = match[0];
+          span.textContent = part;
           fragment.appendChild(span);
         }
-      }
+      });
 
-      node.parentNode.replaceChild(fragment,node);
+      if (textNode.parentNode) {
+        textNode.parentNode.replaceChild(fragment, textNode);
+      }
     });
   }
 
-  $("newNoteBtn").addEventListener("click",newNote);
+  function openReadMode() {
+    let note = getCurrentNote();
 
-  $("backBtn").addEventListener("click",() => {
-    if (mode === "edit") saveNow();
-    show("home");
-    renderNotes();
-  });
+    // Save any current editor changes before entering Read Mode.
+    if (!editorScreen.classList.contains("hidden")) {
+      if (currentNoteId || noteTitle.value.trim() ||
+          plainText(noteContent.innerHTML).trim()) {
+        saveCurrentNote(false);
+        note = getCurrentNote();
+      }
+    }
 
-  $("searchBtn").addEventListener("click",() => {
-    $("searchInput").focus();
-  });
-
-  $("searchInput").addEventListener("input",renderNotes);
-
-  $("titleInput").addEventListener("input",markDirty);
-  $("editor").addEventListener("input",() => {
-    rememberSelection();
-    markDirty();
-  });
-  $("editor").addEventListener("keyup",rememberSelection);
-  $("editor").addEventListener("mouseup",rememberSelection);
-  $("noteCategory").addEventListener("change",markDirty);
-
-  $("pinBtn").addEventListener("click",togglePin);
-  $("readPinBtn").addEventListener("click",togglePin);
-
-  $("saveBtn").addEventListener("click",() => {
-    saveNow();
-    $("saveStatus").textContent = "Saved ✓";
-  });
-
-  $("readBtn").addEventListener("click",() => {
-    saveNow();
-    openReader(currentId);
-  });
-
-  $("readEditBtn").addEventListener("click",() => {
-    openEditor(currentId);
-  });
-
-  $("readBody").addEventListener("click",event => {
-    const word = event.target.closest(".read-word");
-    if (!word) return;
-
-    $("readBody").querySelectorAll(".read-word.marked")
-      .forEach(el => el.classList.remove("marked"));
-
-    word.classList.add("marked");
-  });
-
-  document.querySelectorAll("[data-cmd]").forEach(button => {
-    button.addEventListener("mousedown",event => event.preventDefault());
-    button.addEventListener("click",() => command(button.dataset.cmd));
-  });
-
-  $("fontFamily").addEventListener("change",event => {
-    command("fontName",event.target.value);
-  });
-
-  $("fontSize").addEventListener("change",event => {
-    command("fontSize",event.target.value);
-  });
-
-  $("fontColor").addEventListener("input",event => {
-    command("foreColor",event.target.value);
-  });
-
-  $("clearFormatBtn").addEventListener("click",() => {
-    command("removeFormat");
-  });
-
-  $("addCategoryBtn").addEventListener("click",openCategoryDialog);
-
-  $("categoryCancel").addEventListener("click",() => {
-    $("categoryDialog").close();
-  });
-
-  $("categorySave").addEventListener("click",() => {
-    const name = $("newCategoryInput").value.trim();
-    if (!name) {
-      $("newCategoryInput").focus();
+    if (!note) {
+      showToast("Save a note before reading.");
       return;
     }
 
-    const existing = categories.find(
-      c => c.toLowerCase() === name.toLowerCase()
-    );
+    // Clear any previous temporary marker.
+    readBody.innerHTML = "";
 
-    const category = existing || name;
+    readTitle.textContent = note.title || "Untitled Note";
+    readMeta.textContent =
+      (note.category || "General") + " • " +
+      formatDate(note.updatedAt);
 
-    if (!existing) {
-      categories.push(name);
-      persistCategories();
-    }
+    readBody.innerHTML = note.content || "";
+    readBody.style.fontSize = readFontSize + "px";
 
-    activeCategory = category;
-    renderCategories();
+    makeReadWords(readBody);
+
+    $("readPinButton").textContent =
+      note.pinned ? "📌 Unpin" : "📌 Pin";
+
+    showScreen(readScreen);
+  }
+
+  function exitReadMode() {
+    // Remove the temporary marker completely.
+    readBody.innerHTML = "";
+    showScreen(homeScreen);
     renderNotes();
+  }
 
-    if (mode === "edit") {
-      $("noteCategory").value = category;
-      markDirty();
-    }
+  function markReadWord(word) {
+    const previous = readBody.querySelector(".read-word.marked");
+    if (previous) previous.classList.remove("marked");
 
-    $("categoryDialog").close();
-  });
+    word.classList.add("marked");
+  }
 
-  $("newCategoryInput").addEventListener("keydown",event => {
-    if (event.key === "Enter") {
+  /*
+   * Prevent Android long-press selection, drag selection,
+   * and context-menu / Google Search popup in Read Mode.
+   */
+
+  ["contextmenu", "selectstart", "dragstart"].forEach(eventName => {
+    readBody.addEventListener(eventName, event => {
       event.preventDefault();
-      $("categorySave").click();
+    });
+  });
+
+  readBody.addEventListener("click", event => {
+    const word = event.target.closest(".read-word");
+    if (!word || !readBody.contains(word)) return;
+
+    event.preventDefault();
+    markReadWord(word);
+  });
+
+  // Reduce the chance of accidental selection during a long press.
+  readBody.addEventListener("pointerdown", event => {
+    if (event.pointerType === "mouse" && event.button !== 0) {
+      event.preventDefault();
     }
   });
 
-  $("deleteBtn").addEventListener("click",() => {
-    $("deleteDialog").showModal();
+  $("readSmallerButton").addEventListener("click", () => {
+    readFontSize = Math.max(14, readFontSize - 2);
+    readBody.style.fontSize = readFontSize + "px";
   });
 
-  $("deleteCancel").addEventListener("click",() => {
-    $("deleteDialog").close();
+  $("readLargerButton").addEventListener("click", () => {
+    readFontSize = Math.min(42, readFontSize + 2);
+    readBody.style.fontSize = readFontSize + "px";
   });
 
-  $("deleteConfirm").addEventListener("click",deleteCurrent);
-
-  document.addEventListener("visibilitychange",() => {
-    if (document.hidden && mode === "edit") saveNow();
+  $("readPinButton").addEventListener("click", () => {
+    if (currentNoteId) togglePin(currentNoteId);
   });
 
-  window.addEventListener("pagehide",() => {
-    if (mode === "edit") saveNow();
+  // BUTTON EVENTS
+
+  $("newNoteButton").addEventListener("click", newNote);
+
+  $("homeButton").addEventListener("click", () => {
+    if (!editorScreen.classList.contains("hidden")) {
+      const data = collectEditorData();
+
+      if (currentNoteId || data.title || plainText(data.content).trim()) {
+        saveCurrentNote(false);
+      }
+    }
+
+    readBody.innerHTML = "";
+    showScreen(homeScreen);
+    renderNotes();
   });
 
+  $("backButton").addEventListener("click", () => {
+    const data = collectEditorData();
+
+    if (currentNoteId || data.title || plainText(data.content).trim()) {
+      saveCurrentNote(false);
+    }
+
+    showScreen(homeScreen);
+    renderNotes();
+  });
+
+  $("saveNoteButton").addEventListener("click", () => {
+    if (saveCurrentNote(true)) {
+      showScreen(homeScreen);
+      renderNotes();
+    }
+  });
+
+  $("readNoteButton").addEventListener("click", openReadMode);
+  $("exitReadButton").addEventListener("click", exitReadMode);
+  $("deleteNoteButton").addEventListener("click", deleteCurrentNote);
+
+  $("pinNoteButton").addEventListener("click", () => {
+    if (!currentNoteId) {
+      if (!saveCurrentNote(false)) {
+        showToast("Write something before pinning.");
+        return;
+      }
+    }
+
+    togglePin(currentNoteId);
+  });
+
+  $("addCategoryButton").addEventListener("click", addCategory);
+
+  searchInput.addEventListener("input", renderNotes);
+
+  noteTitle.addEventListener("input", scheduleAutosave);
+  noteCategory.addEventListener("change", scheduleAutosave);
+
+  noteContent.addEventListener("input", () => {
+    updateWordCount();
+    scheduleAutosave();
+  });
+
+  noteContent.addEventListener("keyup", updateWordCount);
+
+  document.querySelectorAll("[data-command]").forEach(button => {
+    button.addEventListener("mousedown", event => {
+      // Keep the text selection when tapping toolbar buttons.
+      event.preventDefault();
+    });
+
+    button.addEventListener("click", () => {
+      insertCommand(button.dataset.command);
+    });
+  });
+
+  $("clearFormatButton").addEventListener("mousedown", event => {
+    event.preventDefault();
+  });
+
+  $("clearFormatButton").addEventListener("click", clearFormatting);
+
+  $("fontColor").addEventListener("input", event => {
+    applyColor("foreColor", event.target.value);
+  });
+
+  $("highlightColor").addEventListener("input", event => {
+    applyColor("hiliteColor", event.target.value);
+  });
+
+  $("fontFamily").addEventListener("change", applyFontFamily);
+  $("fontSize").addEventListener("change", applyFontSize);
+
+  // If the app is backgrounded, attempt to save editor changes.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden" &&
+        !editorScreen.classList.contains("hidden")) {
+      clearTimeout(saveTimer);
+
+      const data = collectEditorData();
+
+      if (currentNoteId || data.title || plainText(data.content).trim()) {
+        saveCurrentNote(false);
+      }
+    }
+  });
+
+  // INITIALIZE
   renderCategories();
   renderNotes();
-  show("home");
+  renderCategorySelect("General");
+  updateWordCount();
 })();
 </script>
+
 </body>
 </html>
