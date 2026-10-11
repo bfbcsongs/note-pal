@@ -11,13 +11,13 @@
 
 <style>
 :root {
-  --primary: #172554;
   --accent: #2563eb;
-  --bg: #ffffff;
   --text: #242424;
-  --muted: #777777;
-  --border: #e5e7eb;
-  --yellow: #ffeb3b;
+  --muted: #777;
+  --line: #ededed;
+  --amber: #ffad32;
+  --amber-dark: #211405;
+  --yellow: #ffe56b;
 }
 
 * {
@@ -25,19 +25,16 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html {
-  min-height: 100%;
-  background: #fff;
-  scroll-behavior: smooth;
-}
-
-body {
+html, body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100%;
   background: #fff;
   color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
+}
+
+body {
   font-size: 16px;
 }
 
@@ -64,10 +61,9 @@ header {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgba(255,255,255,.96);
-  color: #202020;
-  border-bottom: 1px solid #eeeeee;
-  padding: 10px 14px;
+  background: rgba(255,255,255,.97);
+  border-bottom: 1px solid #eee;
+  padding: 10px 13px;
   backdrop-filter: blur(10px);
 }
 
@@ -80,8 +76,8 @@ header {
 
 .brand {
   font-size: 21px;
-  font-weight: 800;
-  letter-spacing: -.5px;
+  font-weight: 850;
+  letter-spacing: -.6px;
 }
 
 .brand span {
@@ -89,54 +85,44 @@ header {
 }
 
 .header-subtitle {
-  font-size: 11px;
-  color: #777;
   margin-top: 1px;
+  color: #888;
+  font-size: 11px;
 }
-
-.header-button {
-  background: #f3f4f6;
-  color: #222;
-  border-radius: 22px;
-  padding: 8px 13px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1px solid #e5e7eb;
-}
-
-/* MAIN: FULL-WIDTH, MINIMAL FRAMES */
 
 main {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 12px 14px 35px;
+  padding: 10px 12px 30px;
 }
 
+/* BUTTONS */
+
 .primary-btn {
-  background: #2563eb;
-  color: white;
   border: 0;
   border-radius: 24px;
-  padding: 11px 16px;
-  font-weight: 650;
+  background: #2563eb;
+  color: white;
+  padding: 11px 17px;
+  font-weight: 700;
 }
 
 .secondary-btn {
-  background: #f3f4f6;
-  color: #303030;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e8e8e8;
   border-radius: 22px;
+  background: #f6f6f6;
+  color: #333;
   padding: 9px 13px;
   font-size: 13px;
   font-weight: 600;
 }
 
 .danger-btn {
-  background: #fff1f2;
-  color: #be123c;
   border: 1px solid #ffe4e6;
   border-radius: 22px;
+  background: #fff1f2;
+  color: #be123c;
   padding: 9px 13px;
   font-size: 13px;
   font-weight: 600;
@@ -149,8 +135,8 @@ select {
   min-width: 0;
   padding: 11px 12px;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
+  border-radius: 11px;
+  background: white;
   color: #222;
   outline: none;
 }
@@ -162,10 +148,17 @@ select:focus {
   box-shadow: 0 0 0 2px #dbeafe;
 }
 
-.top-actions {
+/* HOME */
+
+.home-add-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin: 4px 0 13px;
+}
+
+#newNoteButton {
+  flex: 1;
+  min-height: 44px;
 }
 
 .category-bar {
@@ -173,8 +166,9 @@ select:focus {
   align-items: center;
   gap: 7px;
   overflow-x: auto;
-  padding: 12px 0;
+  padding: 2px 0 12px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .category-bar::-webkit-scrollbar {
@@ -182,160 +176,209 @@ select:focus {
 }
 
 .category-chip {
-  flex-shrink: 0;
-  border: 1px solid #e5e7eb;
-  padding: 7px 12px;
-  border-radius: 20px;
-  background: #fff;
-  color: #444;
+  flex: 0 0 auto;
+  border: 1px solid #e8e8e8;
+  border-radius: 22px;
+  background: white;
+  color: #555;
+  padding: 7px 13px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 650;
+  white-space: nowrap;
 }
 
 .category-chip.active {
+  color: white;
   background: #172554;
   border-color: #172554;
-  color: white;
 }
 
-.add-category-chip {
+.category-chip.add-category-chip {
   color: #2563eb;
   background: #eff6ff;
+  border-color: #dbeafe;
 }
 
-.section-heading {
-  font-size: 14px;
-  font-weight: 700;
-  margin: 15px 0 10px;
+.home-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 9px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.home-section-heading span:last-child {
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
 }
 
 .note-list {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
 }
 
 .note-card {
-  background: white;
-  padding: 15px 2px;
-  border-bottom: 1px solid #eeeeee;
+  min-width: 0;
+  min-height: 105px;
+  padding: 11px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  box-shadow: 0 1px 3px #00000006;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
 }
 
 .note-card.pinned {
-  border-left: 3px solid #f59e0b;
-  padding-left: 10px;
+  border-color: #e8b85b;
+  background: #fffdf7;
 }
 
-.note-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
+.note-card:active {
+  background: #f8fafc;
 }
 
 .note-card-title {
-  font-size: 16px;
-  font-weight: 700;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 
 .note-preview {
-  margin-top: 7px;
-  color: #555;
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.note-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 7px;
-  margin-top: 9px;
-  font-size: 11px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
   color: #777;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
-.category-label {
-  background: #eff6ff;
-  color: #1d4ed8;
-  padding: 4px 8px;
-  border-radius: 15px;
-}
-
-.card-actions {
+.note-card-meta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 3px;
+  color: #999;
+  font-size: 9px;
 }
 
-.card-actions button {
-  background: #f5f5f5;
-  color: #333;
-  border: 1px solid #eee;
-  border-radius: 20px;
-  padding: 7px 11px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.card-actions .open-note {
-  background: #eff6ff;
-  color: #1d4ed8;
+.note-card-category {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #2563eb;
 }
 
 .empty-state {
+  padding: 42px 10px;
+  color: #888;
   text-align: center;
-  padding: 45px 10px;
-  color: #777;
+  font-size: 13px;
   line-height: 1.8;
 }
 
-/* EDIT MODE: NO OUTER CARD OR FRAME */
+@media (max-width: 350px) {
+  .note-list {
+    gap: 7px;
+  }
+
+  .note-card {
+    padding: 9px;
+    min-height: 96px;
+  }
+
+  .note-card-title {
+    font-size: 12px;
+  }
+
+  .note-preview {
+    font-size: 10px;
+  }
+}
+
+/* EDIT MODE */
 
 #editorScreen {
   width: 100%;
-  max-width: 100%;
   margin: 0;
   padding: 0;
 }
 
 .editor-panel {
   width: 100%;
+  margin: 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
-  box-shadow: none;
-  padding: 0;
   background: #fff;
+  box-shadow: none;
+}
+
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0 12px;
+  border-bottom: 1px solid #eee;
 }
 
 .editor-heading {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 750;
-  letter-spacing: -.5px;
-  margin: 8px 0 18px;
+}
+
+.editor-top-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.editor-top-actions button {
+  border: 0;
+  border-radius: 20px;
+  padding: 8px 11px;
+  background: #f3f4f6;
+  color: #333;
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .editor-label {
   display: block;
-  color: #666;
-  font-size: 12px;
-  font-weight: 650;
-  margin: 15px 0 6px;
+  margin: 14px 0 5px;
+  color: #777;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .35px;
 }
 
 #noteTitle {
-  font-size: 23px;
-  font-weight: 700;
-  letter-spacing: -.4px;
-  border: none;
-  border-bottom: 1px solid #eeeeee;
-  border-radius: 0;
   padding: 9px 0 12px;
+  border: 0;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
   box-shadow: none;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -.5px;
 }
 
 #noteTitle:focus {
@@ -349,26 +392,26 @@ select:focus {
 }
 
 .category-select-row select {
-  border-radius: 10px;
+  flex: 1;
 }
 
 .editor-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
   align-items: center;
+  gap: 6px;
   margin: 8px 0 12px;
 }
 
 .tool-btn {
-  min-width: 37px;
+  min-width: 36px;
   min-height: 36px;
   padding: 7px 10px;
-  background: #f5f5f5;
-  border: 1px solid #e9e9e9;
+  border: 1px solid #e8e8e8;
   border-radius: 9px;
+  background: #f6f6f6;
   color: #333;
-  font-weight: 650;
+  font-weight: 700;
 }
 
 .color-control {
@@ -376,24 +419,19 @@ select:focus {
   align-items: center;
   gap: 5px;
   padding: 4px 7px;
-  background: #f5f5f5;
   border: 1px solid #eee;
   border-radius: 9px;
+  background: #f6f6f6;
   font-size: 12px;
   font-weight: 650;
 }
 
 input[type="color"] {
-  width: 26px;
-  height: 26px;
+  width: 25px;
+  height: 25px;
   padding: 0;
   border: 0;
   background: transparent;
-}
-
-#fontFamily,
-#fontSize {
-  border-radius: 10px;
 }
 
 #noteContent {
@@ -401,7 +439,7 @@ input[type="color"] {
   width: 100%;
   min-height: 48vh;
   margin: 0;
-  padding: 10px 0 25px;
+  padding: 12px 0 25px;
   border: 0;
   border-radius: 0;
   outline: none;
@@ -422,48 +460,43 @@ input[type="color"] {
 }
 
 #noteContent:empty:before {
-  content: "Write your sermon, devotion, Bible study, or notes...";
-  color: #a0a0a0;
+  content: "Start writing your note...";
+  color: #aaa;
   pointer-events: none;
 }
 
 .editor-status {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 6px;
-  color: #777;
-  font-size: 11px;
   padding: 7px 0;
+  color: #888;
+  font-size: 11px;
 }
 
 .editor-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 7px;
   padding: 12px 0 20px;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid #eee;
 }
 
 .editor-actions button {
   flex: 1 1 auto;
 }
 
-.editor-actions .full-width {
-  flex-basis: 100%;
-}
-
-/* READ MODE: CHATGPT-STYLE TEXT */
+/* READ MODE */
 
 #readScreen {
   width: 100%;
-  max-width: 100%;
-  min-height: calc(100dvh - 70px);
+  min-height: calc(100dvh - 65px);
   margin: 0;
   padding: 0;
-  background: #fff;
-  border: none;
+  border: 0;
   border-radius: 0;
+  background: white;
   box-shadow: none;
   overflow: visible;
 }
@@ -473,57 +506,94 @@ input[type="color"] {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  padding: 7px 0 11px;
-  background: white;
-  border-bottom: 1px solid #eeeeee;
+  padding: 3px 0 10px;
+  border-bottom: 1px solid #eee;
+  background: #fff;
 }
 
 .read-toolbar button {
-  background: #f5f5f5;
-  color: #333;
-  border: 1px solid #e9e9e9;
+  padding: 8px 11px;
+  border: 1px solid #e8e8e8;
   border-radius: 20px;
-  padding: 8px 12px;
+  background: #f6f6f6;
+  color: #333;
   font-size: 12px;
   font-weight: 650;
 }
 
 .read-info {
   padding: 17px 0 10px;
-  border: 0;
 }
 
 .read-title {
-  color: #202020;
-  font-size: 25px;
+  font-size: 24px;
   line-height: 1.3;
-  font-weight: 750;
-  letter-spacing: -.5px;
+  font-weight: 800;
+  letter-spacing: -.45px;
   overflow-wrap: anywhere;
 }
 
 .read-meta {
-  margin-top: 7px;
+  margin-top: 6px;
   color: #888;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .read-instruction {
-  color: #777;
-  background: white;
-  border: 0;
+  padding: 8px 0 10px;
   border-bottom: 1px solid #f0f0f0;
-  padding: 7px 0 11px;
+  color: #777;
   font-size: 11px;
   line-height: 1.5;
 }
+
+/* AMBER NEON MARKER INDICATOR */
+
+.marker-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 36px;
+  padding: 5px 8px 5px 12px;
+  border: 1px solid #b96c12;
+  border-radius: 22px;
+  background: #211405;
+  color: #ffe18b;
+  box-shadow:
+    0 0 4px #ffb52e,
+    0 0 10px #ff9f1c55,
+    inset 0 0 7px #ff9f1c22;
+  letter-spacing: .45px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.marker-indicator .marker-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  border-radius: 50%;
+  background: #ffbd38;
+  color: #261300;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 0 7px #ffb52e88;
+}
+
+/* FULL-WIDTH READING TEXT */
 
 #readBody {
   width: 100%;
   min-height: 65vh;
   margin: 0;
   padding: 15px 0 35px;
-  background: #fff;
+  border: 0;
+  outline: none;
+  background: white;
   color: #242424;
   font-family: system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
@@ -531,9 +601,6 @@ input[type="color"] {
   line-height: 1.8;
   overflow-wrap: anywhere;
   white-space: normal;
-  border: 0;
-  outline: none;
-
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
@@ -566,21 +633,31 @@ input[type="color"] {
   padding-left: 1.4em;
 }
 
+/* AMBER-GLOW WORD MARKER */
+
 .read-word {
   display: inline;
-  border-radius: 3px;
+  border-radius: 4px;
+  transition: background .12s ease, box-shadow .12s ease;
 }
 
 .read-word.marked {
-  background: var(--yellow) !important;
-  color: #111827 !important;
-  box-shadow: 0 0 0 2px var(--yellow);
+  background: #281800 !important;
+  color: #fff16b !important;
+  border-radius: 5px;
+  outline: 1px solid #ffbd38;
+  box-shadow:
+    0 0 3px #ffb52e,
+    0 0 9px #ff9f1c77,
+    inset 0 0 5px #ffb52e22;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .read-footer {
-  background: white;
-  border-top: 1px solid #eeeeee;
   padding: 9px 0;
+  border-top: 1px solid #eee;
+  background: white;
   color: #888;
   font-size: 10px;
   text-align: center;
@@ -592,20 +669,18 @@ input[type="color"] {
   position: fixed;
   left: 50%;
   bottom: 22px;
-  transform: translateX(-50%);
   z-index: 100;
+  transform: translateX(-50%);
   width: max-content;
   max-width: calc(100% - 28px);
+  padding: 11px 16px;
+  border-radius: 24px;
   background: #202020;
   color: white;
-  border-radius: 24px;
-  padding: 11px 16px;
-  font-size: 13px;
   box-shadow: 0 4px 15px #0002;
+  font-size: 13px;
   text-align: center;
 }
-
-/* SMALL PHONES */
 
 @media (max-width: 480px) {
   header {
@@ -613,16 +688,11 @@ input[type="color"] {
   }
 
   main {
-    padding: 9px 12px 28px;
+    padding: 8px 10px 25px;
   }
 
-  #editorScreen,
-  #readScreen {
-    width: 100%;
-  }
-
-  .editor-heading {
-    margin-top: 8px;
+  .note-card {
+    min-height: 101px;
   }
 
   #noteContent {
@@ -636,9 +706,9 @@ input[type="color"] {
   }
 
   #readBody {
+    padding-top: 13px;
     font-size: 21px;
     line-height: 1.8;
-    padding-top: 13px;
   }
 }
 
@@ -664,42 +734,44 @@ input[type="color"] {
       <div class="brand">NOTE <span>PAL</span></div>
       <div class="header-subtitle">Your notes. Your message. Your moment.</div>
     </div>
-    <button class="header-button" id="homeButton">⌂ Home</button>
   </div>
 </header>
 
 <main>
 
-  <!-- HOME -->
+  <!-- HOME: ADD, CATEGORIES, COMPACT NOTE BOXES -->
   <section id="homeScreen">
-    <div class="top-actions">
-      <button class="primary-btn" id="newNoteButton" style="flex:1">＋ New Note</button>
+    <div class="home-add-row">
+      <button class="primary-btn" id="newNoteButton">＋ Add Note</button>
     </div>
-
-    <input
-      class="search-input"
-      id="searchInput"
-      type="search"
-      placeholder="🔎 Search notes..."
-      autocomplete="off"
-    >
 
     <div class="category-bar" id="categoryBar"></div>
 
-    <div class="section-heading" id="notesHeading">My Notes</div>
+    <div class="home-section-heading">
+      <span id="notesHeading">Saved Notes</span>
+      <span>Tap a note to open</span>
+    </div>
+
     <div class="note-list" id="noteList"></div>
 
     <div class="empty-state hidden" id="emptyState">
-      <div style="font-size:36px">📝</div>
-      <strong>No notes found.</strong><br>
-      Create a new note or try another search.
+      <div style="font-size:35px">📝</div>
+      <strong>No saved notes yet.</strong><br>
+      Tap <b>＋ Add Note</b> to get started.
     </div>
   </section>
 
-  <!-- EDIT -->
+  <!-- EDITOR: ONLY SHOWN AFTER ADD OR NOTE SELECTION -->
   <section id="editorScreen" class="hidden">
     <div class="editor-panel">
-      <div class="editor-heading" id="editorHeading">Create Note</div>
+
+      <div class="editor-topbar">
+        <div class="editor-heading" id="editorHeading">New Note</div>
+        <div class="editor-top-actions">
+          <button id="editorBackButton">← Home</button>
+          <button id="editorReadButton">▶ Read</button>
+        </div>
+      </div>
 
       <label class="editor-label" for="noteTitle">TITLE</label>
       <input
@@ -713,8 +785,8 @@ input[type="color"] {
 
       <label class="editor-label" for="noteCategory">CATEGORY</label>
       <div class="category-select-row">
-        <select id="noteCategory" style="flex:1"></select>
-        <button class="secondary-btn" id="addCategoryButton">＋ Add</button>
+        <select id="noteCategory"></select>
+        <button class="secondary-btn" id="addCategoryButton">＋</button>
       </div>
 
       <div class="editor-status">
@@ -777,21 +849,24 @@ input[type="color"] {
 
       <div class="editor-actions">
         <button class="primary-btn" id="saveNoteButton">✓ Save</button>
-        <button class="secondary-btn" id="readNoteButton">▶ Read Mode</button>
-        <button class="secondary-btn" id="pinNoteButton">📌 Pin Note</button>
+        <button class="secondary-btn" id="pinNoteButton">📌 Pin</button>
         <button class="danger-btn" id="deleteNoteButton">🗑 Delete</button>
-        <button class="secondary-btn full-width" id="backButton">← Back to Notes</button>
       </div>
     </div>
   </section>
 
-  <!-- READ -->
+  <!-- READ MODE -->
   <section id="readScreen" class="hidden">
     <div class="read-toolbar">
-      <button id="exitReadButton">← Back</button>
+      <button id="exitReadButton">← Home</button>
+      <button id="readEditButton">✎ Edit</button>
       <button id="readSmallerButton">A−</button>
       <button id="readLargerButton">A＋</button>
-      <button id="readPinButton">📌 Pin</button>
+
+      <button class="marker-indicator" id="markerIndicator" aria-label="Reading marker status">
+        <span>MARKER</span>
+        <span class="marker-badge" id="markerBadge">0</span>
+      </button>
     </div>
 
     <div class="read-info">
@@ -800,8 +875,8 @@ input[type="color"] {
     </div>
 
     <div class="read-instruction">
-      📖 Tap a word to mark where you stopped. Tap another word to move the marker.
-      The yellow marker is temporary.
+      Tap a word to mark where you stopped. Tap another word to move the marker.
+      The amber glow is temporary.
     </div>
 
     <div id="readBody"></div>
@@ -836,15 +911,13 @@ input[type="color"] {
   const homeScreen = $("homeScreen");
   const editorScreen = $("editorScreen");
   const readScreen = $("readScreen");
-  const searchInput = $("searchInput");
+
   const categoryBar = $("categoryBar");
   const noteList = $("noteList");
   const emptyState = $("emptyState");
   const noteTitle = $("noteTitle");
   const noteCategory = $("noteCategory");
   const noteContent = $("noteContent");
-  const readTitle = $("readTitle");
-  const readMeta = $("readMeta");
   const readBody = $("readBody");
 
   let notes = loadJSON(NOTES_KEY, []);
@@ -856,7 +929,8 @@ input[type="color"] {
   let toastTimer = null;
 
   if (!Array.isArray(notes)) notes = [];
-  if (!Array.isArray(categories) || !categories.length) {
+
+  if (!Array.isArray(categories) || categories.length === 0) {
     categories = DEFAULT_CATEGORIES.slice();
   }
 
@@ -916,11 +990,11 @@ input[type="color"] {
     const toast = $("toast");
     toast.textContent = message;
     toast.classList.remove("hidden");
-    clearTimeout(toastTimer);
 
+    clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toast.classList.add("hidden");
-    }, 2300);
+    }, 2200);
   }
 
   function formatDate(timestamp) {
@@ -948,15 +1022,18 @@ input[type="color"] {
   function renderCategories() {
     categoryBar.innerHTML = "";
 
+    // ALL must always be the first category.
     const all = document.createElement("button");
     all.className = "category-chip" +
       (activeCategory === "All" ? " active" : "");
-    all.textContent = "All Notes";
+    all.textContent = "ALL";
+
     all.addEventListener("click", () => {
       activeCategory = "All";
       renderCategories();
       renderNotes();
     });
+
     categoryBar.appendChild(all);
 
     categories.forEach(category => {
@@ -976,7 +1053,9 @@ input[type="color"] {
 
     const add = document.createElement("button");
     add.className = "category-chip add-category-chip";
-    add.textContent = "＋ Category";
+    add.textContent = "＋";
+    add.title = "Add category";
+    add.setAttribute("aria-label", "Add category");
     add.addEventListener("click", addCategory);
     categoryBar.appendChild(add);
   }
@@ -1026,8 +1105,8 @@ input[type="color"] {
 
     categories.push(name);
     saveCategories();
-    activeCategory = name;
 
+    activeCategory = name;
     renderCategories();
     renderNotes();
 
@@ -1040,95 +1119,60 @@ input[type="color"] {
   }
 
   function renderNotes() {
-    const query = searchInput.value.trim().toLowerCase();
-
-    const filtered = notes.filter(note => {
-      const title = String(note.title || "").toLowerCase();
-      const content = plainText(note.content || "").toLowerCase();
-      const category = String(note.category || "").toLowerCase();
-
-      const matchesQuery =
-        !query ||
-        title.includes(query) ||
-        content.includes(query) ||
-        category.includes(query);
-
-      const matchesCategory =
-        activeCategory === "All" ||
-        note.category === activeCategory;
-
-      return matchesQuery && matchesCategory;
-    });
+    const filtered = notes.filter(note =>
+      activeCategory === "All" || note.category === activeCategory
+    );
 
     filtered.sort((a, b) => {
       if (Boolean(a.pinned) !== Boolean(b.pinned)) {
         return a.pinned ? -1 : 1;
       }
+
       return (b.updatedAt || 0) - (a.updatedAt || 0);
     });
 
     noteList.innerHTML = "";
-    $("notesHeading").textContent = "My Notes (" + filtered.length + ")";
+
+    $("notesHeading").textContent =
+      activeCategory === "All"
+        ? "Saved Notes (" + filtered.length + ")"
+        : activeCategory + " (" + filtered.length + ")";
+
     emptyState.classList.toggle("hidden", filtered.length > 0);
 
     filtered.forEach(note => {
-      const card = document.createElement("article");
+      // Each compact box opens its note in the editor.
+      const card = document.createElement("button");
+      card.type = "button";
       card.className = "note-card" + (note.pinned ? " pinned" : "");
+      card.setAttribute("aria-label", "Open note: " + (note.title || "Untitled Note"));
 
-      const top = document.createElement("div");
-      top.className = "note-card-top";
-
-      const title = document.createElement("div");
+      const title = document.createElement("span");
       title.className = "note-card-title";
-      title.textContent = (note.pinned ? "📌 " : "") +
-        (note.title || "Untitled Note");
+      title.textContent =
+        (note.pinned ? "📌 " : "") + (note.title || "Untitled Note");
 
-      const date = document.createElement("div");
-      date.style.fontSize = "10px";
-      date.style.color = "#777";
-      date.textContent = formatDate(note.updatedAt);
-
-      top.append(title, date);
-
-      const preview = document.createElement("div");
+      const preview = document.createElement("span");
       preview.className = "note-preview";
       preview.textContent =
-        plainText(note.content || "").trim().slice(0, 200) ||
+        plainText(note.content || "").trim().slice(0, 180) ||
         "No content yet.";
 
-      const meta = document.createElement("div");
-      meta.className = "note-meta";
+      const meta = document.createElement("span");
+      meta.className = "note-card-meta";
 
       const category = document.createElement("span");
-      category.className = "category-label";
+      category.className = "note-card-category";
       category.textContent = note.category || "General";
 
-      const updated = document.createElement("span");
-      updated.textContent = "Updated " + formatDate(note.updatedAt);
+      const date = document.createElement("span");
+      date.textContent = formatDate(note.updatedAt);
 
-      meta.append(category, updated);
+      meta.append(category, date);
+      card.append(title, preview, meta);
 
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
+      card.addEventListener("click", () => openNote(note.id));
 
-      const edit = document.createElement("button");
-      edit.className = "open-note";
-      edit.textContent = "✎ Edit";
-      edit.addEventListener("click", () => openNote(note.id));
-
-      const read = document.createElement("button");
-      read.textContent = "▶ Read";
-      read.addEventListener("click", () => {
-        currentNoteId = note.id;
-        openReadMode();
-      });
-
-      const pin = document.createElement("button");
-      pin.textContent = note.pinned ? "Unpin" : "📌 Pin";
-      pin.addEventListener("click", () => togglePin(note.id));
-
-      actions.append(edit, read, pin);
-      card.append(top, preview, meta, actions);
       noteList.appendChild(card);
     });
   }
@@ -1142,13 +1186,15 @@ input[type="color"] {
   function updateWordCount() {
     const text = plainText(noteContent.innerHTML).trim();
     const count = text ? text.split(/\s+/).filter(Boolean).length : 0;
+
     $("wordCount").textContent =
       count + (count === 1 ? " word" : " words");
   }
 
   function newNote() {
     currentNoteId = null;
-    $("editorHeading").textContent = "Create Note";
+
+    $("editorHeading").textContent = "New Note";
     noteTitle.value = "";
     noteContent.innerHTML = "";
 
@@ -1158,7 +1204,7 @@ input[type="color"] {
 
     updateDateLabel(null);
     $("saveStatus").textContent = "Autosave ready";
-    $("pinNoteButton").textContent = "📌 Pin Note";
+    $("pinNoteButton").textContent = "📌 Pin";
     $("deleteNoteButton").disabled = true;
     $("deleteNoteButton").style.opacity = ".45";
 
@@ -1172,6 +1218,7 @@ input[type="color"] {
     if (!note) return;
 
     currentNoteId = id;
+
     $("editorHeading").textContent = "Edit Note";
     noteTitle.value = note.title || "";
     noteContent.innerHTML = note.content || "";
@@ -1181,7 +1228,7 @@ input[type="color"] {
 
     $("saveStatus").textContent = "Last saved: " + formatDate(note.updatedAt);
     $("pinNoteButton").textContent =
-      note.pinned ? "📌 Unpin Note" : "📌 Pin Note";
+      note.pinned ? "📌 Unpin" : "📌 Pin";
 
     $("deleteNoteButton").disabled = false;
     $("deleteNoteButton").style.opacity = "1";
@@ -1224,7 +1271,7 @@ input[type="color"] {
       $("editorHeading").textContent = "Edit Note";
       $("deleteNoteButton").disabled = false;
       $("deleteNoteButton").style.opacity = "1";
-      $("pinNoteButton").textContent = "📌 Pin Note";
+      $("pinNoteButton").textContent = "📌 Pin";
       updateDateLabel(note);
     } else {
       const note = getCurrentNote();
@@ -1256,6 +1303,7 @@ input[type="color"] {
     renderNotes();
 
     if (showMessage) showToast("Note saved successfully.");
+
     return true;
   }
 
@@ -1313,13 +1361,13 @@ input[type="color"] {
 
     if (currentNoteId === id) {
       $("pinNoteButton").textContent =
-        note.pinned ? "📌 Unpin Note" : "📌 Pin Note";
-      $("readPinButton").textContent =
         note.pinned ? "📌 Unpin" : "📌 Pin";
     }
 
     showToast(note.pinned ? "Note pinned." : "Note unpinned.");
   }
+
+  /* FORMATTING */
 
   function insertCommand(command, value) {
     noteContent.focus();
@@ -1438,6 +1486,14 @@ input[type="color"] {
     });
   }
 
+  function updateMarkerBadge(marked) {
+    $("markerBadge").textContent = marked ? "1" : "0";
+    $("markerIndicator").setAttribute(
+      "aria-label",
+      marked ? "Reading marker active" : "No reading marker selected"
+    );
+  }
+
   function openReadMode() {
     if (!editorScreen.classList.contains("hidden")) {
       const data = collectEditorData();
@@ -1454,9 +1510,11 @@ input[type="color"] {
       return;
     }
 
+    // A new Read Mode session always starts without a marker.
     readBody.innerHTML = "";
-    readTitle.textContent = note.title || "Untitled Note";
-    readMeta.textContent =
+
+    $("readTitle").textContent = note.title || "Untitled Note";
+    $("readMeta").textContent =
       (note.category || "General") + " • " +
       formatDate(note.updatedAt);
 
@@ -1464,27 +1522,30 @@ input[type="color"] {
     readBody.style.fontSize = readFontSize + "px";
 
     makeReadWords(readBody);
-
-    $("readPinButton").textContent =
-      note.pinned ? "📌 Unpin" : "📌 Pin";
+    updateMarkerBadge(false);
 
     showScreen(readScreen);
   }
 
   function exitReadMode() {
-    // Temporary marker is removed when leaving Read Mode.
+    // Remove the temporary marker and all word wrappers.
     readBody.innerHTML = "";
+    updateMarkerBadge(false);
+
     showScreen(homeScreen);
     renderNotes();
   }
 
   function markReadWord(word) {
     const previous = readBody.querySelector(".read-word.marked");
+
     if (previous) previous.classList.remove("marked");
+
     word.classList.add("marked");
+    updateMarkerBadge(true);
   }
 
-  // Block Android long-press selection and context menus.
+  // Prevent Android long-press text selection and context menus.
   ["contextmenu", "selectstart", "dragstart"].forEach(eventName => {
     readBody.addEventListener(eventName, event => {
       event.preventDefault();
@@ -1493,11 +1554,14 @@ input[type="color"] {
 
   readBody.addEventListener("click", event => {
     const word = event.target.closest(".read-word");
+
     if (!word || !readBody.contains(word)) return;
 
     event.preventDefault();
     markReadWord(word);
   });
+
+  /* READ MODE CONTROLS */
 
   $("readSmallerButton").addEventListener("click", () => {
     readFontSize = Math.max(14, readFontSize - 2);
@@ -1509,29 +1573,19 @@ input[type="color"] {
     readBody.style.fontSize = readFontSize + "px";
   });
 
-  $("readPinButton").addEventListener("click", () => {
-    if (currentNoteId) togglePin(currentNoteId);
+  $("readEditButton").addEventListener("click", () => {
+    readBody.innerHTML = "";
+    updateMarkerBadge(false);
+    openNote(currentNoteId);
   });
 
-  /* BUTTONS */
+  $("exitReadButton").addEventListener("click", exitReadMode);
+
+  /* GENERAL CONTROLS */
 
   $("newNoteButton").addEventListener("click", newNote);
 
-  $("homeButton").addEventListener("click", () => {
-    if (!editorScreen.classList.contains("hidden")) {
-      const data = collectEditorData();
-
-      if (currentNoteId || data.title || plainText(data.content).trim()) {
-        saveCurrentNote(false);
-      }
-    }
-
-    readBody.innerHTML = "";
-    showScreen(homeScreen);
-    renderNotes();
-  });
-
-  $("backButton").addEventListener("click", () => {
+  $("editorBackButton").addEventListener("click", () => {
     const data = collectEditorData();
 
     if (currentNoteId || data.title || plainText(data.content).trim()) {
@@ -1549,10 +1603,9 @@ input[type="color"] {
     }
   });
 
-  $("readNoteButton").addEventListener("click", openReadMode);
-  $("exitReadButton").addEventListener("click", exitReadMode);
+  $("editorReadButton").addEventListener("click", openReadMode);
+
   $("deleteNoteButton").addEventListener("click", deleteCurrentNote);
-  $("addCategoryButton").addEventListener("click", addCategory);
 
   $("pinNoteButton").addEventListener("click", () => {
     if (!currentNoteId && !saveCurrentNote(false)) {
@@ -1563,7 +1616,7 @@ input[type="color"] {
     togglePin(currentNoteId);
   });
 
-  searchInput.addEventListener("input", renderNotes);
+  $("addCategoryButton").addEventListener("click", addCategory);
 
   noteTitle.addEventListener("input", scheduleAutosave);
   noteCategory.addEventListener("change", scheduleAutosave);
@@ -1619,6 +1672,7 @@ input[type="color"] {
   renderNotes();
   renderCategorySelect("General");
   updateWordCount();
+  updateMarkerBadge(false);
 })();
 </script>
 
