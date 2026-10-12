@@ -91,6 +91,8 @@ input,button,select,textarea{font-size:16px}
 .editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
 .mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
+
+/* Note editor: scroll space is adjusted by JavaScript when editing. */
 .note-body{
   flex:1;
   min-height:0;
@@ -107,65 +109,23 @@ input,button,select,textarea{font-size:16px}
   user-select:text;
   -webkit-user-select:text;
   box-sizing:border-box;
-}
-
-.note-body:empty:before{
-  content:"Write your note here...";
-  color:#9ca3af;
-  pointer-events:none;
-}
-
-.note-body[contenteditable="false"]{
-  cursor:text;
-}
-
-.note-body p{
-  margin:0 0 8px;
-}
-
-.note-body div{
-  margin-top:0;
-  margin-bottom:0;
-}
-
-.note-body img{
-  max-width:100%;
-  height:auto;
-}
-
-.note-body blockquote{
-  border-left:3px solid #9ca3af;
-  margin:8px 0;
-  padding-left:12px;
-  color:#4b5563;
-}
-
-.note-body ul,
-.note-body ol{
-  padding-left:25px;
-  margin-top:6px;
-  margin-bottom:8px;
+  scroll-behavior:auto;
+  overflow-anchor:none;
 }
 .note-body:empty:before{content:"Write your note here...";color:#9ca3af;pointer-events:none}
 .note-body[contenteditable="false"]{cursor:text}
+.note-body p{margin:0 0 8px}
+.note-body div{margin-top:0;margin-bottom:0}
 .note-body img{max-width:100%;height:auto}
-.note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
-.note-body ul,.note-body ol{padding-left:25px}
+.note-body blockquote{border-left:3px solid #9ca3af;margin:8px 0;padding-left:12px;color:#4b5563}
+.note-body ul,.note-body ol{padding-left:25px;margin-top:6px;margin-bottom:8px}
 .read-word-marker{display:inline-block!important;position:relative;padding:0!important;margin:0!important;color:#ffeb3b!important;background:#8f7910!important;border:0!important;outline:1px solid #ffe45c;outline-offset:0;border-radius:1px;box-shadow:none!important;text-shadow:0 0 1px rgba(255,244,163,.65);font-family:Roboto,sans-serif!important;font-size:inherit!important;font-weight:300!important;-webkit-text-stroke:0!important;line-height:inherit!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:wordVibrate 1.8s linear infinite!important;will-change:transform}
 .read-word-marker::after{content:none!important;display:none!important}
-@keyframes wordVibrate {
-  0%, 15% {
-    transform: translateX(0);
-  }
-  2%, 6%, 10%, 14% {
-    transform: translateX(-1.5px);
-  }
-  4%, 8%, 12% {
-    transform: translateX(1.5px);
-  }
-  16%, 100% {
-    transform: translateX(0);
-  }
+@keyframes wordVibrate{
+  0%,15%{transform:translateX(0)}
+  2%,6%,10%,14%{transform:translateX(-1.5px)}
+  4%,8%,12%{transform:translateX(1.5px)}
+  16%,100%{transform:translateX(0)}
 }
 @media(prefers-reduced-motion:reduce){.read-word-marker{animation:none!important}}
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
@@ -287,6 +247,7 @@ input,button,select,textarea{font-size:16px}
 <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+
 (() => {
 "use strict";
 const $ = id => document.getElementById(id);
@@ -563,6 +524,7 @@ function openNote(id){
   clearReadMarker();noteTitle.value=n.title||"";noteBody.innerHTML=n.content||"";
   noteBody.dataset.fontSize=String(n.fontSize||17);
   noteBody.style.fontSize=(n.fontSize||17)+"px";noteBody.style.color=n.color||"#111827";
+  noteBody.style.paddingBottom="120px";
   home.classList.add("hidden");editor.classList.remove("hidden");menu.classList.add("hidden");
   closePalette();setMode(false);updatePinMenu();noteBody.scrollTop=0;
 }
@@ -574,6 +536,7 @@ function newNote(){
 function closeEditor(){
   clearReadMarker();saveCurrentNote();closePalette();editor.classList.add("hidden");
   toolbar.classList.add("hidden");menu.classList.add("hidden");home.classList.remove("hidden");
+  noteBody.style.paddingBottom="120px";
   currentNoteId=null;renderCategories();renderNotes();
 }
 function setMode(edit){
@@ -584,7 +547,17 @@ function setMode(edit){
   $("modeLabel").textContent=isEditMode?"EDIT":"READ";
   $("menuMode").textContent=isEditMode?"Read Mode":"Edit Mode";
   toolbar.classList.toggle("hidden",!isEditMode);
-  if(isEditMode)updateToolbarPosition();else toolbar.style.bottom="0px";
+
+  if(isEditMode){
+    updateToolbarPosition();
+    updateNoteBottomSpace();
+    requestAnimationFrame(()=>{
+      scheduleTypingScroll();
+    });
+  }else{
+    toolbar.style.bottom="0px";
+    noteBody.style.paddingBottom="120px";
+  }
 }
 function clearReadMarker(){
   noteBody.querySelectorAll(".read-word-marker").forEach(old=>old.replaceWith(...old.childNodes));
@@ -746,105 +719,215 @@ function updateToolbarPosition(){
   }
 }
 
-/* AUTO-SCROLL: KEEP TYPING LINE VISIBLE */
-let typingScrollFrame = 0;
+/* =========================================================
+   AUTO-SCROLL FIX
+   Keep the typing line above the toolbar and keyboard.
+   Add enough bottom scroll space for the final lines.
+   ========================================================= */
 
-function getTypingCaretRect() {
+let typingScrollFrame = 0;
+let typingScrollFrame2 = 0;
+
+function updateNoteBottomSpace(){
+  if(!noteBody || !toolbar) return;
+
+  const viewportHeight = vv
+    ? vv.height
+    : window.innerHeight;
+
+  const toolbarHeight = toolbar.classList.contains("hidden")
+    ? 0
+    : toolbar.getBoundingClientRect().height;
+
+  /*
+    Leave enough scrollable room for the end of the note
+    to move upward while the keyboard and toolbar are visible.
+  */
+  const extraSpace = Math.max(
+    120,
+    viewportHeight - toolbarHeight
+  );
+
+  noteBody.style.paddingBottom =
+    `calc(${Math.ceil(extraSpace)}px + env(safe-area-inset-bottom))`;
+}
+
+function getTypingCaretRect(){
   const selection = window.getSelection();
 
-  if (!selection || !selection.rangeCount) return null;
+  if(!selection || !selection.rangeCount) return null;
 
   const range = selection.getRangeAt(0);
 
-  if (!noteBody.contains(range.startContainer)) return null;
+  if(!noteBody.contains(range.startContainer)) return null;
 
-  let rect = range.getBoundingClientRect();
+  const caretRect = range.getBoundingClientRect();
 
-  if (rect.height > 0) return rect;
+  if(caretRect.height > 0) return caretRect;
 
+  /*
+    Android can return an empty rectangle for a collapsed
+    contenteditable caret. Measure the character near it.
+  */
   const node = range.startContainer;
 
-  // Fallback para sa ilang Android contenteditable caret.
-  if (node.nodeType === Node.TEXT_NODE && node.textContent.length) {
-    const offset = Math.min(
-      range.startOffset,
-      node.textContent.length - 1
+  if(node.nodeType === Node.TEXT_NODE && node.textContent.length){
+    const length = node.textContent.length;
+    const offset = Math.max(
+      0,
+      Math.min(range.startOffset, length - 1)
     );
 
     const probe = document.createRange();
     probe.setStart(node, offset);
-    probe.setEnd(node, Math.min(offset + 1, node.textContent.length));
+    probe.setEnd(node, Math.min(offset + 1, length));
 
     const rects = probe.getClientRects();
 
-    if (rects.length) {
-      const r = rects[0];
+    if(rects.length){
+      const r = rects[rects.length - 1];
       return {
-        top: r.top,
-        bottom: r.bottom,
-        height: r.height,
-        width: r.width
+        top:r.top,
+        bottom:r.bottom,
+        height:r.height,
+        left:r.left,
+        right:r.right,
+        width:r.width
       };
+    }
+  }
+
+  /*
+    Fallback for a caret positioned at the end of an element.
+  */
+  if(node.nodeType === Node.ELEMENT_NODE && range.startOffset > 0){
+    const previous = node.childNodes[range.startOffset - 1];
+
+    if(previous){
+      const probe = document.createRange();
+
+      try{
+        if(previous.nodeType === Node.TEXT_NODE && previous.length){
+          probe.setStart(previous, previous.length - 1);
+          probe.setEnd(previous, previous.length);
+        }else{
+          probe.selectNodeContents(previous);
+          probe.collapse(false);
+        }
+
+        const r = probe.getBoundingClientRect();
+
+        if(r.height > 0) return r;
+      }catch(e){}
     }
   }
 
   return null;
 }
 
-function keepTypingLineVisible() {
-  if (!isEditMode || editor.classList.contains("hidden")) return;
+function keepTypingLineVisible(){
+  if(
+    !isEditMode ||
+    editor.classList.contains("hidden") ||
+    document.activeElement !== noteBody
+  ){
+    return;
+  }
 
-  const rect = getTypingCaretRect();
-  if (!rect) return;
+  const caret = getTypingCaretRect();
+  if(!caret) return;
 
   const bodyRect = noteBody.getBoundingClientRect();
-  const lineHeight =
-    parseFloat(getComputedStyle(noteBody).lineHeight) || 25;
 
+  /*
+    updateToolbarPosition() places the toolbar above the
+    keyboard. Its top edge is the typing area's lower limit.
+  */
   const toolbarTop = toolbar.classList.contains("hidden")
-    ? window.innerHeight
+    ? (vv ? vv.offsetTop + vv.height : window.innerHeight)
     : toolbar.getBoundingClientRect().top;
 
-  const visibleTop = Math.max(bodyRect.top, 0) + 12;
+  const viewportTop = vv ? vv.offsetTop : 0;
+  const viewportBottom = vv
+    ? vv.offsetTop + vv.height
+    : window.innerHeight;
+
+  const visibleTop = Math.max(
+    bodyRect.top,
+    viewportTop
+  ) + 8;
+
   const visibleBottom = Math.min(
     bodyRect.bottom,
     toolbarTop,
-    vv ? vv.offsetTop + vv.height : window.innerHeight
-  ) - lineHeight;
+    viewportBottom
+  ) - 8;
 
-  // Kung bumaba ang typing line sa safe area,
-  // iangat ang editing screen nang katumbas ng kailangan.
-  if (rect.bottom > visibleBottom) {
-    noteBody.scrollTop += rect.bottom - visibleBottom;
+  /*
+    As soon as the typing line reaches the toolbar boundary,
+    scroll the note upward by the amount needed to reveal it.
+    This repeats for every line as the user continues typing.
+  */
+  const targetBottom = visibleBottom - 2;
+
+  if(caret.bottom > targetBottom){
+    const delta = caret.bottom - targetBottom;
+    noteBody.scrollTop += Math.max(1, delta);
+    return;
   }
 
-  // Kung umakyat ang cursor sa itaas ng visible area,
-  // ibalik din ito sa loob ng editing screen.
-  if (rect.top < visibleTop) {
-    noteBody.scrollTop -= visibleTop - rect.top;
+  /*
+    If the user taps or moves the caret to an earlier line,
+    keep that typing position visible too.
+  */
+  if(caret.top < visibleTop){
+    noteBody.scrollTop -= visibleTop - caret.top;
   }
 }
 
-function scheduleTypingScroll() {
-  if (typingScrollFrame) {
+function scheduleTypingScroll(){
+  if(typingScrollFrame){
     cancelAnimationFrame(typingScrollFrame);
   }
 
-  typingScrollFrame = requestAnimationFrame(() => {
+  if(typingScrollFrame2){
+    cancelAnimationFrame(typingScrollFrame2);
+  }
+
+  /*
+    Wait two animation frames so Android has time to update
+    the caret, text layout, and visible keyboard viewport.
+  */
+  typingScrollFrame = requestAnimationFrame(()=>{
     typingScrollFrame = 0;
-    keepTypingLineVisible();
+
+    typingScrollFrame2 = requestAnimationFrame(()=>{
+      typingScrollFrame2 = 0;
+      keepTypingLineVisible();
+    });
   });
 }
 
 noteBody.addEventListener("input", scheduleTypingScroll);
 noteBody.addEventListener("keyup", scheduleTypingScroll);
 noteBody.addEventListener("click", scheduleTypingScroll);
+noteBody.addEventListener("touchend", scheduleTypingScroll);
+noteBody.addEventListener("focus", scheduleTypingScroll);
 
 document.addEventListener("selectionchange", scheduleTypingScroll);
 
-if (vv) {
-  vv.addEventListener("resize", scheduleTypingScroll);
-  vv.addEventListener("scroll", scheduleTypingScroll);
+if(vv){
+  vv.addEventListener("resize", ()=>{
+    updateToolbarPosition();
+    updateNoteBottomSpace();
+    scheduleTypingScroll();
+  });
+
+  vv.addEventListener("scroll", ()=>{
+    updateToolbarPosition();
+    updateNoteBottomSpace();
+    scheduleTypingScroll();
+  });
 }
 
 $("btnBold").addEventListener("mousedown",e=>e.preventDefault());
@@ -880,7 +963,7 @@ $("btnMenu").addEventListener("click",e=>{
   }
   menu.classList.toggle("hidden");
 });
-  document.addEventListener("click",e=>{
+document.addEventListener("click",e=>{
   if(menu.classList.contains("hidden")) return;
 
   if(!menu.contains(e.target) && !e.target.closest("#btnMenu")){
@@ -963,9 +1046,10 @@ function handleAppBack(){
   }
 
   /* 3. Close color palette first */
-  if(typeof palette!=="undefined" &&
-     palette &&
-     !palette.classList.contains("hidden")){
+  if(
+    palette &&
+    !palette.classList.contains("hidden")
+  ){
     closePalette();
     return;
   }
@@ -1059,12 +1143,11 @@ window.addEventListener("popstate",()=>{
 });
 
 /* Android / browser page lifecycle */
-if(vv){
-  vv.addEventListener("resize",updateToolbarPosition);
-  vv.addEventListener("scroll",updateToolbarPosition);
-}
-
-window.addEventListener("resize",updateToolbarPosition);
+window.addEventListener("resize",()=>{
+  updateToolbarPosition();
+  updateNoteBottomSpace();
+  scheduleTypingScroll();
+});
 
 window.addEventListener("pagehide",()=>{
   if(currentNoteId)saveCurrentNote();
