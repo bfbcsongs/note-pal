@@ -380,12 +380,7 @@ function updatePinMenu(){
   const n=currentNote();
   if(n)$("menuPin").textContent=n.pinned?"📌 Unpin Note":"📌 Pin to Top";
 }
-/* =========================================================
-   KEEP THE CURRENT TYPING LINE VISIBLE
-   ========================================================= */
 
-
-  
 /* Category tabs and drawer share the same saved category order. */
 function renderCategories(){
   const row=$("categoryTabs");row.innerHTML="";
