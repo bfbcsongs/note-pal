@@ -823,7 +823,10 @@ function handleAppBack(){
   },2000);
 }
 
-/* Initialize the history guard */
+/* =========================================================
+   HISTORY GUARD — HOME EXIT
+   ========================================================= */
+
 try{
   history.replaceState(
     {preachMateBase:true},
@@ -831,12 +834,40 @@ try{
     location.href
   );
 
+  /* Keep two guard entries available */
+  addBackGuard();
   addBackGuard();
 }catch(e){}
 
 /* Handle Android/browser Back */
 window.addEventListener("popstate",()=>{
 
+  if(allowNativeBack){
+    allowNativeBack=false;
+    return;
+  }
+
+  if(backActionInProgress)return;
+
+  /*
+    Handle the Back action first.
+    In-app actions close the current UI.
+    Home actions show the exit toast on first Back.
+  */
+  handleAppBack();
+
+  /*
+    If this was the first Home Back, restore the guard.
+    If the second Home Back was detected, do not restore.
+  */
+  if(!allowNativeBack){
+    setTimeout(()=>{
+      if(!allowNativeBack){
+        addBackGuard();
+      }
+    },0);
+  }
+});
   if(backActionInProgress)return;
 
   if(allowNativeBack){
