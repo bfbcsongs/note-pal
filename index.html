@@ -81,24 +81,36 @@ input,button,select,textarea{font-size:16px}
 .editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
 .mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
-..note-body{
+.note-body{
   flex:1;
   min-height:0;
   overflow-y:auto;
+  overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
   outline:0;
   border:0;
-  padding:14px 17px 120px;
+  padding:18px 20px 120px;
   font-size:17px;
-  line-height:1.4;
+  line-height:1.45;
   overflow-wrap:anywhere;
   user-select:text;
   -webkit-user-select:text;
+  box-sizing:border-box;
+}
+
+.note-body:empty:before{
+  content:"Write your note here...";
+  color:#9ca3af;
+  pointer-events:none;
+}
+
+.note-body[contenteditable="false"]{
+  cursor:text;
 }
 
 .note-body p{
-  margin-top:0;
-  margin-bottom:6px;
+  margin:0 0 8px;
 }
 
 .note-body div{
@@ -106,18 +118,23 @@ input,button,select,textarea{font-size:16px}
   margin-bottom:0;
 }
 
-.note-body ul,
-.note-body ol{
-  padding-left:25px;
-  margin-top:4px;
-  margin-bottom:6px;
+.note-body img{
+  max-width:100%;
+  height:auto;
 }
 
 .note-body blockquote{
   border-left:3px solid #9ca3af;
-  margin:6px 0;
+  margin:8px 0;
   padding-left:12px;
   color:#4b5563;
+}
+
+.note-body ul,
+.note-body ol{
+  padding-left:25px;
+  margin-top:6px;
+  margin-bottom:8px;
 }
 .note-body:empty:before{content:"Write your note here...";color:#9ca3af;pointer-events:none}
 .note-body[contenteditable="false"]{cursor:text}
