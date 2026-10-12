@@ -380,7 +380,87 @@ function updatePinMenu(){
   const n=currentNote();
   if(n)$("menuPin").textContent=n.pinned?"📌 Unpin Note":"📌 Pin to Top";
 }
+/* =========================================================
+   KEEP THE CURRENT TYPING LINE VISIBLE
+   ========================================================= */
 
+function keepTypingLineVisible(){
+  if(editor.classList.contains("hidden"))return;
+
+  const selection=window.getSelection();
+  if(!selection || !selection.rangeCount)return;
+
+  const range=selection.getRangeAt(0);
+  if(!noteBody.contains(range.startContainer))return;
+
+  const rects=range.getClientRects();
+  let caretRect=rects.length
+    ? rects[rects.length-1]
+    : range.getBoundingClientRect();
+
+  /*
+    If the caret has no usable rectangle, use a temporary
+    collapsed range at the current cursor position.
+  */
+  if(!caretRect || (!caretRect.height && !caretRect.width)){
+    const caretRange=range.cloneRange();
+    caretRange.collapse(true);
+    caretRect=caretRange.getBoundingClientRect();
+  }
+
+  if(!caretRect)return;
+
+  const toolbar=document.querySelector(".editor-toolbar");
+  const toolbarTop=toolbar
+    ? toolbar.getBoundingClientRect().top
+    : window.innerHeight;
+
+  const keyboardTop=(
+    window.visualViewport
+      ? window.visualViewport.height+
+        window.visualViewport.offsetTop
+      : window.innerHeight
+  );
+
+  /*
+    Use whichever boundary is higher:
+    keyboard or formatting toolbar.
+  */
+  const visibleBottom=Math.min(toolbarTop,keyboardTop)-12;
+  const visibleTop=editor.getBoundingClientRect().top+8;
+
+  if(caretRect.bottom>visibleBottom){
+    const amount=caretRect.bottom-visibleBottom+8;
+    noteBody.scrollTop+=amount;
+  }else if(caretRect.top<visibleTop){
+    noteBody.scrollTop-=visibleTop-caretRect.top+8;
+  }
+}
+
+/* Check the cursor whenever text changes or the cursor moves. */
+noteBody.addEventListener("input",()=>{
+  requestAnimationFrame(keepTypingLineVisible);
+});
+
+noteBody.addEventListener("keyup",()=>{
+  requestAnimationFrame(keepTypingLineVisible);
+});
+
+noteBody.addEventListener("click",()=>{
+  requestAnimationFrame(keepTypingLineVisible);
+});
+
+/* Re-check when the keyboard changes the visible screen. */
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize",()=>{
+    requestAnimationFrame(keepTypingLineVisible);
+  });
+
+  window.visualViewport.addEventListener("scroll",()=>{
+    requestAnimationFrame(keepTypingLineVisible);
+  });
+}
+  
 /* Category tabs and drawer share the same saved category order. */
 function renderCategories(){
   const row=$("categoryTabs");row.innerHTML="";
