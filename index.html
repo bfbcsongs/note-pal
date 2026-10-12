@@ -717,9 +717,6 @@ $("dialogConfirm").addEventListener("click",()=>{
     if(result!==false)closeDialog();
   }
 });
-document.addEventListener("click",e=>{
-  if(!menu.classList.contains("hidden")&&!menu.contains(e.target)&&e.target!==$("btnMenu"))menu.classList.add("hidden");
-});
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){
     if(!$("dialogBackdrop").classList.contains("hidden"))closeDialog();
@@ -727,13 +724,123 @@ document.addEventListener("keydown",e=>{
     else if(!menu.classList.contains("hidden"))menu.classList.add("hidden");
     else if(!editor.classList.contains("hidden"))closeEditor();
   }
-  if(e.key==="Enter"&&e.target.id==="dialogCategoryName"){e.preventDefault();$("dialogConfirm").click()}
-});
-if(vv){vv.addEventListener("resize",updateToolbarPosition);vv.addEventListener("scroll",updateToolbarPosition)}
-window.addEventListener("resize",updateToolbarPosition);
-window.addEventListener("pagehide",()=>{if(currentNoteId)saveCurrentNote()});
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&currentNoteId)saveCurrentNote()});
 
+  if(e.key==="Enter"&&e.target.id==="dialogCategoryName"){
+    e.preventDefault();
+    $("dialogConfirm").click();
+  }
+});
+
+/* =========================================================
+   PHONE BACK BUTTON / ANDROID BACK GESTURE
+   ========================================================= */
+let lastHomeBackTime=0;
+let backExitTimer=null;
+
+function handleAppBack(){
+  /* 1. Dialog is open */
+  if(!$("dialogBackdrop").classList.contains("hidden")){
+    closeDialog();
+    return true;
+  }
+
+  /* 2. Drawer is open */
+  if(!$("drawerBackdrop").classList.contains("hidden")){
+    closeDrawer();
+    return true;
+  }
+
+  /* 3. Color palette is open */
+  if(!palette.classList.contains("hidden")){
+    closePalette();
+    return true;
+  }
+
+  /* 4. More-options menu is open */
+  if(!menu.classList.contains("hidden")){
+    menu.classList.add("hidden");
+    return true;
+  }
+
+  /* 5. Currently inside a note */
+  if(!editor.classList.contains("hidden")){
+    closeEditor();
+    return true;
+  }
+
+  /* 6. Already on Home */
+  const now=Date.now();
+
+  if(now-lastHomeBackTime<2000){
+    lastHomeBackTime=0;
+    clearTimeout(backExitTimer);
+
+    /*
+      Let the browser history handle the second back.
+      On a PWA / installed app this allows the system
+      to close the app normally.
+    */
+    history.back();
+    return true;
+  }
+
+  lastHomeBackTime=now;
+  showToast("Press back again to exit");
+
+  clearTimeout(backExitTimer);
+  backExitTimer=setTimeout(()=>{
+    lastHomeBackTime=0;
+  },2000);
+
+  return true;
+}
+
+/*
+  Android/browser back.
+  A history state keeps the app inside the current page
+  instead of immediately navigating away.
+*/
+try{
+  history.replaceState({preachMateHome:true},"",location.href);
+
+  window.addEventListener("popstate",()=>{
+    const handled=handleAppBack();
+
+    /*
+      Put the app state back so another hardware Back
+      can be detected while staying inside the app.
+    */
+    if(handled){
+      setTimeout(()=>{
+        try{
+          history.pushState({preachMateHome:true},"",location.href);
+        }catch(e){}
+      },0);
+    }
+  });
+}catch(e){}
+
+/* Android / browser page lifecycle */
+if(vv){
+  vv.addEventListener("resize",updateToolbarPosition);
+  vv.addEventListener("scroll",updateToolbarPosition);
+}
+
+window.addEventListener("resize",updateToolbarPosition);
+
+window.addEventListener("pagehide",()=>{
+  if(currentNoteId)saveCurrentNote();
+});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="hidden"&&currentNoteId){
+    saveCurrentNote();
+  }
+});
+
+persist();
+renderCategories();
+renderNotes();
 persist();renderCategories();renderNotes();
 })();
 </script>
