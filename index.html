@@ -76,7 +76,17 @@ input,button,select,textarea{font-size:16px}
 .drawer-category .cat-icon{flex-shrink:0}
 .drawer-category .cat-name{overflow-wrap:anywhere}
 .drawer-footer{margin-top:auto;font-size:12px;color:var(--muted);padding:12px 6px}
-.editor-screen{position:fixed;inset:0;background:#fff;z-index:30;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+..editor-screen{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  z-index:30;
+  display:flex;
+  flex-direction:column;
+  padding-top:env(safe-area-inset-top);
+  padding-bottom:0;
+  min-height:0;
+}
 .editor-header{display:flex;align-items:center;gap:4px;padding:7px 7px;border-bottom:1px solid var(--border);min-height:54px;flex-shrink:0;background:#fff}
 .editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
