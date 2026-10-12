@@ -150,7 +150,7 @@
       word-break: break-word;
     }
 
-    /* Mode-Specific Rules */
+    /* Read Mode Styles */
     .read-mode .note-body {
       cursor: pointer;
       user-select: none;
@@ -161,44 +161,23 @@
       pointer-events: none;
     }
 
-    /* Hide formatting toolbar during Read Mode! */
+    /* Hide formatting toolbar in Read Mode */
     .read-mode .formatting-toolbar {
       display: none !important;
     }
 
-    /* Hide read toolbar during Edit Mode! */
-    .edit-mode .read-toolbar {
-      display: none !important;
-    }
-
-    /* Reading Progress Highlight Badge */
-    .end-reading-marker {
-      background-color: var(--marker-bg);
-      border-bottom: 2px solid var(--marker-border);
+    /* Temporary Marker Highlight for Tapped Word */
+    .read-marker-highlight {
+      background-color: #fef08a;
+      border-radius: 3px;
+      padding: 0 2px;
+      box-shadow: 0 0 0 1px #eab308;
       font-weight: bold;
-      padding: 2px 4px;
-      border-radius: 4px;
-      position: relative;
     }
 
-    .end-reading-marker::after {
-      content: "📍 END";
-      position: absolute;
-      top: -18px;
-      right: -8px;
-      background: #eab308;
-      color: white;
-      font-size: 0.6rem;
-      font-weight: 800;
-      padding: 1px 4px;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      pointer-events: none;
-    }
-
-    /* EDIT MODE: Sticky Keyboard Formatting Toolbar */
+    /* EDIT MODE: Keyboard-Anchored Formatting Toolbar */
     .formatting-toolbar {
-      position: sticky;
+      position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
@@ -210,32 +189,6 @@
       align-items: center;
       box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
       z-index: 20;
-    }
-
-    /* READ MODE: Minimal Action Bar */
-    .read-toolbar {
-      background-color: var(--toolbar-bg);
-      border-top: 1px solid var(--border-color);
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .read-info {
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    .quick-edit-btn {
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
     }
 
     .fmt-btn {
@@ -268,9 +221,9 @@
     /* Toast Notification */
     .toast {
       position: absolute;
-      bottom: 70px;
+      top: 60px;
       left: 50%;
-      transform: translateX(-50%) translateY(20px);
+      transform: translateX(-50%);
       background-color: rgba(0,0,0,0.85);
       color: white;
       padding: 8px 16px;
@@ -284,7 +237,6 @@
 
     .toast.show {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
     }
 
     /* Dropdown Menu */
@@ -387,7 +339,7 @@
       text-align: center;
       font-size: 0.7rem;
       color: #777;
-      padding: 4px;
+      padding: 6px;
       background-color: var(--toolbar-bg);
       border-top: 1px solid #efefef;
     }
@@ -401,13 +353,13 @@
       <span class="status-badge read" id="modeBadge">READ MODE</span>
       
       <div class="top-actions">
-        <!-- ALWAYS-VISIBLE COPY ICON -->
+        <!-- Always-Visible Copy Icon -->
         <button class="icon-btn" id="topCopyBtn" title="Copy All Text">📋</button>
         <button class="icon-btn" id="menuBtn" title="More Options">⋮</button>
       </div>
     </div>
 
-    <!-- Dropdown Menu -->
+    <!-- Dropdown Menu (3-dots) -->
     <div class="dropdown-menu" id="dropdownMenu">
       <button class="menu-item" id="btnSwitchEdit">✏️ Edit Mode</button>
       <button class="menu-item" id="btnSwitchRead">📖 Read Mode</button>
@@ -427,7 +379,7 @@
       </select>
     </div>
 
-    <!-- Main Canvas -->
+    <!-- Main Content Canvas -->
     <div class="editor-container">
       <input type="text" class="note-title" id="noteTitle" value="Resurrection & Life" readonly />
       <div class="note-body" id="noteBody" contenteditable="false">mabubuhay siyang muli sa huling araw, kapag bubuhayin na ang mga namatay." 
@@ -437,13 +389,7 @@
 [26] Ang sinumang nabubuhay at sumasampalataya sa akin ay hindi mamamatay kailanman. Naniniwala ka ba dito?</div>
     </div>
 
-    <!-- READ MODE TOOLBAR (Minimal) -->
-    <div class="read-toolbar">
-      <span class="read-info">💡 Tap any word to mark where you stopped</span>
-      <button class="quick-edit-btn" id="quickEditBtn">✏️ Edit</button>
-    </div>
-
-    <!-- EDIT MODE TOOLBAR (Keyboard-Anchored Formatting Tools) -->
+    <!-- EDIT MODE TOOLBAR ONLY (Keyboard-Anchored Formatting Tools) -->
     <div class="formatting-toolbar" id="formattingToolbar">
       <button class="fmt-btn" id="tbCopyBtn" title="Copy">📋</button>
       <button class="fmt-btn" id="btnBold" title="Bold"><b>B</b></button>
@@ -489,10 +435,10 @@
     const noteTitle = document.getElementById('noteTitle');
     const noteBody = document.getElementById('noteBody');
     const toast = document.getElementById('toast');
+    const formattingToolbar = document.getElementById('formattingToolbar');
     
     const topCopyBtn = document.getElementById('topCopyBtn');
     const tbCopyBtn = document.getElementById('tbCopyBtn');
-    const quickEditBtn = document.getElementById('quickEditBtn');
 
     // Formatting Buttons
     const btnBold = document.getElementById('btnBold');
@@ -535,6 +481,9 @@
       isEditMode = edit;
       dropdownMenu.classList.remove('show');
 
+      // Clear any temporary read markers when toggling mode
+      clearReadMarker();
+
       if (isEditMode) {
         appContainer.classList.remove('read-mode');
         appContainer.classList.add('edit-mode');
@@ -556,7 +505,6 @@
     }
 
     btnSwitchEdit.addEventListener('click', () => setMode(true));
-    quickEditBtn.addEventListener('click', () => setMode(true));
     btnSwitchRead.addEventListener('click', () => setMode(false));
 
     // Copy Action
@@ -578,15 +526,20 @@
     topCopyBtn.addEventListener('click', copyAllText);
     tbCopyBtn.addEventListener('click', copyAllText);
 
-    // READ MODE Progress Marker
-    noteBody.addEventListener('click', (e) => {
-      if (isEditMode) return;
-
-      const currentMarker = noteBody.querySelector('.end-reading-marker');
+    // Clear Previous Read Marker
+    function clearReadMarker() {
+      const currentMarker = noteBody.querySelector('.read-marker-highlight');
       if (currentMarker) {
         const textNode = document.createTextNode(currentMarker.textContent);
         currentMarker.parentNode.replaceChild(textNode, currentMarker);
       }
+    }
+
+    // READ MODE SINGLE-WORD HIGHLIGHT MARKER
+    noteBody.addEventListener('click', (e) => {
+      if (isEditMode) return;
+
+      clearReadMarker();
 
       const selection = window.getSelection();
       if (!selection.rangeCount) return;
@@ -610,16 +563,15 @@
           wordRange.setEnd(node, end);
 
           const span = document.createElement('span');
-          span.className = 'end-reading-marker';
+          span.className = 'read-marker-highlight';
           span.textContent = word;
 
           wordRange.surroundContents(span);
-          showToast(`Marked position at "${word}"`);
         }
       }
     });
 
-    // Formatting Toolbar Handlers (Works in Edit Mode)
+    // Formatting Toolbar Handlers (Edit Mode)
     function formatDoc(cmd, value = null) {
       if (!isEditMode) setMode(true);
       document.execCommand(cmd, false, value);
@@ -681,6 +633,22 @@
         showToast("Note cleared");
       }
     });
+
+    // KEEP TOOLBAR ABOVE KEYBOARD IN EDIT MODE
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        if (isEditMode) {
+          const keyboardHeight = window.innerHeight - window.visualViewport.height;
+          formattingToolbar.style.bottom = `${keyboardHeight}px`;
+        }
+      });
+      window.visualViewport.addEventListener('scroll', () => {
+        if (isEditMode) {
+          const keyboardHeight = window.innerHeight - window.visualViewport.height;
+          formattingToolbar.style.bottom = `${keyboardHeight}px`;
+        }
+      });
+    }
   </script>
 </body>
 </html>
