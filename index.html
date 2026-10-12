@@ -91,8 +91,6 @@ input,button,select,textarea{font-size:16px}
 .editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
 .mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
-
-/* Auto-Save status: compact and separate from note content. */
 .save-status{
   display:inline-block;
   flex-shrink:0;
@@ -111,8 +109,6 @@ input,button,select,textarea{font-size:16px}
 .save-status.saving{color:#92400e;background:#fef3c7}
 .save-status.saved{color:#166534;background:#dcfce7}
 .save-status.error{color:#b91c1c;background:#fee2e2}
-
-/* Note editor: scroll space is adjusted by JavaScript when editing. */
 .note-body{
   flex:1;
   min-height:0;
@@ -471,7 +467,7 @@ function renderDrawerCategories(){
 }
 function attachCategoryDrag(button,surface){
   const isTabs=surface==="tabs";
-  const container=isTabs?$("categoryTabs"):$("drawerCategories");
+  const container=isTabs?$ ("categoryTabs"):$("drawerCategories");
   const selector=isTabs?".category-tab[data-category]":".drawer-category[data-category]";
   const axis=isTabs?"x":"y";
   button.addEventListener("pointerdown",e=>{
@@ -776,20 +772,20 @@ function updateToolbarPosition(){
 
 /* =========================================================
    AUTO-SCROLL FIX
-   Keep the typing line above the toolbar and keyboard.
-   Add enough bottom scroll space for the final lines.
+   Normal typing: keep caret above toolbar/keyboard.
+   After paste: position final caret line at 65% of the
+   visible editing area above toolbar and keyboard.
    ========================================================= */
 
 let typingScrollFrame = 0;
 let typingScrollFrame2 = 0;
+let pasteScrollPending = false;
+let pasteScrollToken = 0;
 
 function updateNoteBottomSpace(){
   if(!noteBody || !toolbar) return;
 
-  const viewportHeight = vv
-    ? vv.height
-    : window.innerHeight;
-
+  const viewportHeight = vv ? vv.height : window.innerHeight;
   const toolbarHeight = toolbar.classList.contains("hidden")
     ? 0
     : toolbar.getBoundingClientRect().height;
@@ -803,6 +799,34 @@ function updateNoteBottomSpace(){
     `calc(${Math.ceil(extraSpace)}px + env(safe-area-inset-bottom))`;
 }
 
+function getVisibleTypingArea(){
+  const bodyRect = noteBody.getBoundingClientRect();
+
+  const viewportTop = vv ? vv.offsetTop : 0;
+  const viewportBottom = vv
+    ? vv.offsetTop + vv.height
+    : window.innerHeight;
+
+  const toolbarTop = toolbar.classList.contains("hidden")
+    ? viewportBottom
+    : toolbar.getBoundingClientRect().top;
+
+  const visibleTop = Math.max(bodyRect.top, viewportTop) + 8;
+  const visibleBottom = Math.min(
+    bodyRect.bottom,
+    toolbarTop,
+    viewportBottom
+  ) - 8;
+
+  if(visibleBottom <= visibleTop) return null;
+
+  return {
+    visibleTop,
+    visibleBottom,
+    targetY: visibleTop + (visibleBottom - visibleTop) * 0.65
+  };
+}
+
 function getTypingCaretRect(){
   const selection = window.getSelection();
 
@@ -810,13 +834,8 @@ function getTypingCaretRect(){
 
   const range = selection.getRangeAt(0);
 
-  /*
-    Do not run typing auto-scroll while text is selected.
-    This prevents auto-scroll from fighting Android's
-    upper and lower text-selection handles.
-  */
+  // Avoid fighting Android's upper and lower selection handles.
   if(!range.collapsed) return null;
-
   if(!noteBody.contains(range.startContainer)) return null;
 
   const caretRect = range.getBoundingClientRect();
@@ -863,166 +882,10 @@ function getTypingCaretRect(){
           probe.setEnd(previous, previous.length);
         }else{
           probe.selectNodeContents(previous);
-
-/* =========================================================
-   AUTO-SCROLL FIX
-   Normal typing: keep caret above toolbar.
-   Bulk paste: position the final line at 65% of the
-   visible editing area, above the toolbar and keyboard.
-   ========================================================= */
-
-let typingScrollFrame = 0;
-let typingScrollFrame2 = 0;
-
-function getVisibleTypingArea(){
-  const bodyRect = noteBody.getBoundingClientRect();
-
-  const toolbarTop = toolbar.classList.contains("hidden")
-    ? (vv ? vv.offsetTop + vv.height : window.innerHeight)
-    : toolbar.getBoundingClientRect().top;
-
-  const viewportTop = vv ? vv.offsetTop : 0;
-  const viewportBottom = vv
-    ? vv.offsetTop + vv.height
-    : window.innerHeight;
-
-  const visibleTop = Math.max(
-    bodyRect.top,
-    viewportTop
-  ) + 8;
-
-  const visibleBottom = Math.min(
-    bodyRect.bottom,
-    toolbarTop,
-    viewportBottom
-  ) - 8;
-
-  if(visibleBottom <= visibleTop) return null;
-
-  /*
-    Target: 65% down the usable editing area.
-    This leaves room below the pasted tail before
-    reaching the editing toolbar.
-  */
-  const targetY =
-    visibleTop + (visibleBottom - visibleTop) * 0.65;
-
-  return {
-    bodyRect,
-    visibleTop,
-    visibleBottom,
-    targetY
-  };
-}
-
-function updateNoteBottomSpace(){
-  if(!noteBody || !toolbar) return;
-
-  const viewportHeight = vv
-    ? vv.height
-    : window.innerHeight;
-
-  const toolbarHeight = toolbar.classList.contains("hidden")
-    ? 0
-    : toolbar.getBoundingClientRect().height;
-
-  let extraSpace = Math.max(
-    120,
-    viewportHeight - toolbarHeight
-  );
-
-  /*
-    Provide enough scrollable space to bring the final
-    pasted line up to the 65% target, even if Android's
-    keyboard overlays the lower part of the screen.
-  */
-  const area = getVisibleTypingArea();
-
-  if(area){
-    const requiredSpace =
-      area.bodyRect.bottom - area.targetY + 32;
-
-    extraSpace = Math.max(extraSpace, requiredSpace);
-  }
-
-  noteBody.style.paddingBottom =
-    `calc(${Math.ceil(extraSpace)}px + env(safe-area-inset-bottom))`;
-}
-
-function getTypingCaretRect(){
-  const selection = window.getSelection();
-
-  if(!selection || !selection.rangeCount) return null;
-
-  const range = selection.getRangeAt(0);
-
-  /*
-    Never auto-scroll while text is selected.
-    Preserve Android's text-selection handles.
-  */
-  if(!range.collapsed) return null;
-
-  if(!noteBody.contains(range.startContainer)) return null;
-
-  const caretRect = range.getBoundingClientRect();
-
-  if(caretRect.height > 0) return caretRect;
-
-  const node = range.startContainer;
-
-  if(
-    node.nodeType === Node.TEXT_NODE &&
-    node.textContent.length
-  ){
-    const length = node.textContent.length;
-    const offset = Math.max(
-      0,
-      Math.min(range.startOffset, length - 1)
-    );
-
-    const probe = document.createRange();
-    probe.setStart(node, offset);
-    probe.setEnd(node, Math.min(offset + 1, length));
-
-    const rects = probe.getClientRects();
-
-    if(rects.length){
-      const r = rects[rects.length - 1];
-
-      return {
-        top:r.top,
-        bottom:r.bottom,
-        height:r.height,
-        left:r.left,
-        right:r.right,
-        width:r.width
-      };
-    }
-  }
-
-  if(
-    node.nodeType === Node.ELEMENT_NODE &&
-    range.startOffset > 0
-  ){
-    const previous = node.childNodes[range.startOffset - 1];
-
-    if(previous){
-      const probe = document.createRange();
-
-      try{
-        if(
-          previous.nodeType === Node.TEXT_NODE &&
-          previous.length
-        ){
-          probe.setStart(previous, previous.length - 1);
-          probe.setEnd(previous, previous.length);
-        }else{
-          probe.selectNodeContents(previous);
           probe.collapse(false);
         }
 
         const r = probe.getBoundingClientRect();
-
         if(r.height > 0) return r;
       }catch(e){}
     }
@@ -1031,9 +894,10 @@ function getTypingCaretRect(){
   return null;
 }
 
-/* Existing behavior for normal typing. */
+/* Keep normal typing behavior separate from paste positioning. */
 function keepTypingLineVisible(){
   if(
+    pasteScrollPending ||
     !isEditMode ||
     editor.classList.contains("hidden") ||
     document.activeElement !== noteBody
@@ -1042,10 +906,9 @@ function keepTypingLineVisible(){
   }
 
   const caret = getTypingCaretRect();
-  if(!caret) return;
-
   const area = getVisibleTypingArea();
-  if(!area) return;
+
+  if(!caret || !area) return;
 
   if(caret.bottom > area.visibleBottom - 2){
     noteBody.scrollTop += caret.bottom - (area.visibleBottom - 2);
@@ -1057,43 +920,17 @@ function keepTypingLineVisible(){
   }
 }
 
-/*
-  Bulk-paste behavior:
-  move the final line to the 65% target, rather than
-  leaving it behind the toolbar or keyboard.
-*/
-function keepPastedTailAtTarget(){
-  if(
-    !isEditMode ||
-    editor.classList.contains("hidden") ||
-    document.activeElement !== noteBody
-  ){
-    return;
-  }
-
-  const caret = getTypingCaretRect();
-
-  /*
-    If text is still selected, do nothing. This protects
-    selection handles and avoids fighting the user.
-  */
-  if(!caret) return;
-
-  const area = getVisibleTypingArea();
-  if(!area) return;
-
-  if(caret.bottom > area.targetY){
-    noteBody.scrollTop += caret.bottom - area.targetY;
-  }
-}
-
 function scheduleTypingScroll(){
+  if(pasteScrollPending) return;
+
   if(typingScrollFrame){
     cancelAnimationFrame(typingScrollFrame);
+    typingScrollFrame = 0;
   }
 
   if(typingScrollFrame2){
     cancelAnimationFrame(typingScrollFrame2);
+    typingScrollFrame2 = 0;
   }
 
   typingScrollFrame = requestAnimationFrame(()=>{
@@ -1106,32 +943,67 @@ function scheduleTypingScroll(){
   });
 }
 
-/*
-  Wait until Android has inserted the pasted content and
-  updated the layout before scrolling the final line.
-*/
+/* Position the final line after a paste has been inserted. */
+function keepPastedTailAtTarget(){
+  if(
+    !isEditMode ||
+    editor.classList.contains("hidden") ||
+    document.activeElement !== noteBody
+  ){
+    return false;
+  }
+
+  const caret = getTypingCaretRect();
+  const area = getVisibleTypingArea();
+
+  if(!caret || !area) return false;
+
+  const difference = caret.bottom - area.targetY;
+
+  if(Math.abs(difference) > 1){
+    noteBody.scrollTop += difference;
+  }
+
+  return true;
+}
+
 function schedulePasteTailScroll(){
+  pasteScrollPending = true;
+  const token = ++pasteScrollToken;
+
   setTimeout(()=>{
+    if(token !== pasteScrollToken) return;
+
     updateToolbarPosition();
     updateNoteBottomSpace();
 
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        keepPastedTailAtTarget();
+    let attempts = 0;
 
-        /*
-          Extra checks help when a large paste causes
-          delayed layout updates on mobile browsers.
-        */
-        setTimeout(keepPastedTailAtTarget, 80);
-        setTimeout(keepPastedTailAtTarget, 220);
-      });
+    function positionPastedTail(){
+      if(token !== pasteScrollToken) return;
+
+      updateToolbarPosition();
+      updateNoteBottomSpace();
+
+      const positioned = keepPastedTailAtTarget();
+
+      if(positioned || attempts >= 8){
+        pasteScrollPending = false;
+        scheduleTypingScroll();
+        return;
+      }
+
+      attempts++;
+      requestAnimationFrame(positionPastedTail);
+    }
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(positionPastedTail);
     });
-  }, 0);
+  },0);
 }
 
 noteBody.addEventListener("paste", schedulePasteTailScroll);
-
 noteBody.addEventListener("input", scheduleTypingScroll);
 noteBody.addEventListener("keyup", scheduleTypingScroll);
 noteBody.addEventListener("click", scheduleTypingScroll);
@@ -1153,7 +1025,6 @@ if(vv){
     scheduleTypingScroll();
   });
 }
-
 
 $("btnBold").addEventListener("mousedown",e=>e.preventDefault());
 $("btnItalic").addEventListener("mousedown",e=>e.preventDefault());
