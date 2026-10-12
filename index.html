@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,9 +33,45 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .home-content{flex:1;overflow-y:auto;padding:12px 12px 90px}
 .section-heading{font-size:13px;color:var(--muted);margin:3px 3px 12px}
 .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.note-card{min-height:135px;background:#fff;border:1px solid var(--border);border-radius:15px;padding:13px;box-shadow:0 3px 12px #0000000b;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
-.note-card-title{font-weight:750;font-size:15px;overflow-wrap:anywhere;padding-right:17px}
-.note-card-preview{font-size:13px;line-height:1.45;color:#4b5563;overflow-wrap:anywhere;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+
+/* FIX 1: Every saved-note card has the same height */
+.note-card{
+  height:210px;
+  min-height:210px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:13px;
+  box-shadow:0 3px 12px #0000000b;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.note-card-title{
+  font-weight:750;
+  font-size:15px;
+  overflow-wrap:anywhere;
+  padding-right:17px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.note-card-preview{
+  font-size:13px;
+  line-height:1.45;
+  color:#4b5563;
+  overflow-wrap:anywhere;
+  white-space:pre-wrap;
+  display:-webkit-box;
+  -webkit-line-clamp:5;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  flex-shrink:0;
+}
 
 /* Live Search keyword highlight: preview and title only */
 .search-match{
@@ -76,34 +111,25 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
 
-/* Read Mode only: amber neon underline, no black background or number */
+/* FIX 2: Read Mode marker with low-opacity black background and yellow text */
 .read-word-marker{
   display:inline;
   position:relative;
-  padding:1px 3px;
+  padding:1px 4px;
   margin:0 1px;
-  color:inherit!important;
-  background:transparent!important;
+  color:#ffeb3b!important;
+  background:rgba(0,0,0,0.38)!important;
   border:0;
-  border-bottom:2px solid #ffb300;
-  border-radius:0;
-  box-shadow:0 2px 5px #ffb30055;
-  text-shadow:0 0 5px #ffb30070;
-  animation:amberGlow 1.8s ease-in-out infinite alternate;
+  border-bottom:2px solid #ffca28;
+  border-radius:4px;
+  box-shadow:0 0 5px rgba(0,0,0,0.12);
+  text-shadow:0 0 3px rgba(255,235,59,0.25);
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
 }
 .read-word-marker::after{
   content:none!important;
   display:none!important;
-}
-@keyframes amberGlow{
-  from{
-    box-shadow:0 2px 3px #ffb30040;
-    border-bottom-color:#d99000;
-  }
-  to{
-    box-shadow:0 2px 9px #ffb30099;
-    border-bottom-color:#ffe082;
-  }
 }
 
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
@@ -131,7 +157,10 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
 .btn.danger{color:#dc2626}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 15px;border-radius:20px;font-size:13px;z-index:100;box-shadow:0 4px 15px #0003;max-width:90vw;text-align:center}
-@media(min-width:650px){.notes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.home-content{padding-left:22px;padding-right:22px}}
+@media(min-width:650px){
+  .notes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .home-content{padding-left:22px;padding-right:22px}
+}
 </style>
 </head>
 <body>
