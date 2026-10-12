@@ -1028,10 +1028,12 @@ noteBody.addEventListener("paste", schedulePasteTailScroll);
 noteBody.addEventListener("input", scheduleTypingScroll);
 noteBody.addEventListener("keyup", scheduleTypingScroll);
 noteBody.addEventListener("click", scheduleTypingScroll);
-noteBody.addEventListener("touchend", scheduleTypingScroll);
+noteBody.addEventListener("paste", schedulePasteTailScroll);
+noteBody.addEventListener("input", scheduleTypingScroll);
+noteBody.addEventListener("keyup", scheduleTypingScroll);
+noteBody.addEventListener("click", scheduleTypingScroll);
 noteBody.addEventListener("focus", scheduleTypingScroll);
-
-document.addEventListener("selectionchange", scheduleTypingScroll);
+noteBody.addEventListener("focus", scheduleTypingScroll);
 
 if(vv){
   vv.addEventListener("resize", ()=>{
