@@ -151,9 +151,22 @@ input,button,select,textarea{font-size:16px}
 .note-body img{max-width:100%;height:auto}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
-.read-word-marker{display:inline-block!important;position:relative;padding:0!important;margin:0!important;color:#ffeb3b!important;background:#8f7910!important;border:0!important;outline:1px solid #ffe45c;outline-offset:0;border-radius:1px;box-shadow:none!important;text-shadow:0 0 1px rgba(255,244,163,.65);font-family:Roboto,sans-serif!important;font-size:inherit!important;font-weight:300!important;-webkit-text-stroke:0!important;line-height:inherit!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:wordVibrate .12s linear infinite!important;will-change:transform}
+.read-word-marker{display:inline-block!important;position:relative;padding:0!important;margin:0!important;color:#ffeb3b!important;background:#8f7910!important;border:0!important;outline:1px solid #ffe45c;outline-offset:0;border-radius:1px;box-shadow:none!important;text-shadow:0 0 1px rgba(255,244,163,.65);font-family:Roboto,sans-serif!important;font-size:inherit!important;font-weight:300!important;-webkit-text-stroke:0!important;line-height:inherit!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:wordVibrate 1.8s linear infinite!important;will-change:transform}
 .read-word-marker::after{content:none!important;display:none!important}
-@keyframes wordVibrate{0%,100%{transform:translateX(0)}20%{transform:translateX(-1.5px)}40%{transform:translateX(1.5px)}60%{transform:translateX(-1px)}80%{transform:translateX(1px)}}
+@keyframes wordVibrate {
+  0%, 15% {
+    transform: translateX(0);
+  }
+  2%, 6%, 10%, 14% {
+    transform: translateX(-1.5px);
+  }
+  4%, 8%, 12% {
+    transform: translateX(1.5px);
+  }
+  16%, 100% {
+    transform: translateX(0);
+  }
+}
 @media(prefers-reduced-motion:reduce){.read-word-marker{animation:none!important}}
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
 .fmt-btn{min-width:30px;height:38px;border:1px solid transparent;border-radius:8px;background:transparent;color:#1f2937;display:inline-flex;align-items:center;justify-content:center;font-size:16px;padding:5px 4px;flex:1;max-width:55px}
