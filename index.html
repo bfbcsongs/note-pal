@@ -92,6 +92,26 @@ input,button,select,textarea{font-size:16px}
 .editor-title::placeholder{color:#9ca3af}
 .mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
 
+/* Auto-Save status: compact and separate from note content. */
+.save-status{
+  display:inline-block;
+  flex-shrink:0;
+  min-width:43px;
+  max-width:62px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:clip;
+  text-align:center;
+  font-size:9px;
+  line-height:1.2;
+  font-weight:600;
+  padding:3px 2px;
+  border-radius:5px;
+}
+.save-status.saving{color:#92400e;background:#fef3c7}
+.save-status.saved{color:#166534;background:#dcfce7}
+.save-status.error{color:#b91c1c;background:#fee2e2}
+
 /* Note editor: scroll space is adjusted by JavaScript when editing. */
 .note-body{
   flex:1;
@@ -167,6 +187,7 @@ input,button,select,textarea{font-size:16px}
   .editor-header{gap:1px;padding-left:3px;padding-right:3px}
   .editor-header .icon-btn{width:35px}
   .mode-label{font-size:9px}
+  .save-status{min-width:38px;max-width:45px;font-size:8px;padding-left:1px;padding-right:1px}
 }
 </style>
 </head>
@@ -206,6 +227,7 @@ input,button,select,textarea{font-size:16px}
     <button class="icon-btn" id="btnBack" title="Back" aria-label="Back">‹</button>
     <input class="editor-title" id="noteTitle" placeholder="Note title" maxlength="180" aria-label="Note title">
     <span class="mode-label" id="modeLabel">READ</span>
+    <span class="save-status saved" id="saveStatus" role="status" aria-live="polite">✓ Saved</span>
     <button class="icon-btn" id="btnCopy" title="Copy note" aria-label="Copy note">▣</button>
     <button class="icon-btn" id="btnMenu" title="More options" aria-label="More options">⋮</button>
   </header>
@@ -247,7 +269,6 @@ input,button,select,textarea{font-size:16px}
 <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-
 (() => {
 "use strict";
 const $ = id => document.getElementById(id);
@@ -301,15 +322,38 @@ let activeCategory="All Notes",favoritesOnly=false,currentNoteId=null,isEditMode
 let dialogAction=null,toastTimer=null,markerSpan=null,savedSelection=null;
 let paletteType="highlight";
 let dragInfo=null,suppressCategoryClick=false;
+let saveStatusTimer=null;
+
 const home=$("app"),editor=$("editorScreen"),noteTitle=$("noteTitle"),noteBody=$("noteBody");
 const toolbar=$("editorToolbar"),palette=$("colorPalette"),menu=$("editorMenu");
 const vv=window.visualViewport;
+
+function setSaveStatus(state){
+  const status=$("saveStatus");
+  if(!status)return;
+  status.classList.remove("saving","saved","error");
+  status.classList.add(state);
+  if(state==="saving")status.textContent="Saving…";
+  else if(state==="saved")status.textContent="✓ Saved";
+  else status.textContent="Save failed";
+}
+
+function scheduleSavedStatus(){
+  clearTimeout(saveStatusTimer);
+  saveStatusTimer=setTimeout(()=>{
+    setSaveStatus("saved");
+  },220);
+}
 
 function persist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));
     localStorage.setItem(CATEGORIES_KEY,JSON.stringify(categories));
-  }catch(e){showToast("Unable to save. Device storage may be full.")}
+    return true;
+  }catch(e){
+    showToast("Unable to save. Device storage may be full.");
+    return false;
+  }
 }
 function currentNote(){return notes.find(n=>n.id===currentNoteId)||null}
 function plainText(html){
@@ -349,7 +393,17 @@ function saveCurrentNote(){
   n.content=clone.innerHTML;
   n.fontSize=parseInt(noteBody.dataset.fontSize||n.fontSize||17,10);
   n.color=noteBody.style.color||n.color||"#111827";
-  n.updated=Date.now();persist();
+  n.updated=Date.now();
+
+  setSaveStatus("saving");
+  const saved=persist();
+
+  if(saved){
+    scheduleSavedStatus();
+  }else{
+    clearTimeout(saveStatusTimer);
+    setSaveStatus("error");
+  }
 }
 function togglePin(id){
   const n=notes.find(x=>x.id===id);if(!n)return;
@@ -527,6 +581,7 @@ function openNote(id){
   noteBody.style.paddingBottom="120px";
   home.classList.add("hidden");editor.classList.remove("hidden");menu.classList.add("hidden");
   closePalette();setMode(false);updatePinMenu();noteBody.scrollTop=0;
+  clearTimeout(saveStatusTimer);setSaveStatus("saved");
 }
 function newNote(){
   const cat=activeCategory!=="All Notes"&&categories.includes(activeCategory)?activeCategory:(categories.find(c=>c!=="All Notes")||"Personal");
@@ -739,10 +794,6 @@ function updateNoteBottomSpace(){
     ? 0
     : toolbar.getBoundingClientRect().height;
 
-  /*
-    Leave enough scrollable room for the end of the note
-    to move upward while the keyboard and toolbar are visible.
-  */
   const extraSpace = Math.max(
     120,
     viewportHeight - toolbarHeight
@@ -759,24 +810,19 @@ function getTypingCaretRect(){
 
   const range = selection.getRangeAt(0);
 
-/*
-  IMPORTANT:
-  Do not run typing auto-scroll while text is selected.
-  This prevents the auto-scroll from fighting Android's
-  upper and lower text-selection handles.
-*/
-if(!range.collapsed) return null;
+  /*
+    Do not run typing auto-scroll while text is selected.
+    This prevents auto-scroll from fighting Android's
+    upper and lower text-selection handles.
+  */
+  if(!range.collapsed) return null;
 
-if(!noteBody.contains(range.startContainer)) return null;
+  if(!noteBody.contains(range.startContainer)) return null;
 
   const caretRect = range.getBoundingClientRect();
 
   if(caretRect.height > 0) return caretRect;
 
-  /*
-    Android can return an empty rectangle for a collapsed
-    contenteditable caret. Measure the character near it.
-  */
   const node = range.startContainer;
 
   if(node.nodeType === Node.TEXT_NODE && node.textContent.length){
@@ -805,9 +851,6 @@ if(!noteBody.contains(range.startContainer)) return null;
     }
   }
 
-  /*
-    Fallback for a caret positioned at the end of an element.
-  */
   if(node.nodeType === Node.ELEMENT_NODE && range.startOffset > 0){
     const previous = node.childNodes[range.startOffset - 1];
 
@@ -847,10 +890,6 @@ function keepTypingLineVisible(){
 
   const bodyRect = noteBody.getBoundingClientRect();
 
-  /*
-    updateToolbarPosition() places the toolbar above the
-    keyboard. Its top edge is the typing area's lower limit.
-  */
   const toolbarTop = toolbar.classList.contains("hidden")
     ? (vv ? vv.offsetTop + vv.height : window.innerHeight)
     : toolbar.getBoundingClientRect().top;
@@ -871,11 +910,6 @@ function keepTypingLineVisible(){
     viewportBottom
   ) - 8;
 
-  /*
-    As soon as the typing line reaches the toolbar boundary,
-    scroll the note upward by the amount needed to reveal it.
-    This repeats for every line as the user continues typing.
-  */
   const targetBottom = visibleBottom - 2;
 
   if(caret.bottom > targetBottom){
@@ -884,10 +918,6 @@ function keepTypingLineVisible(){
     return;
   }
 
-  /*
-    If the user taps or moves the caret to an earlier line,
-    keep that typing position visible too.
-  */
   if(caret.top < visibleTop){
     noteBody.scrollTop -= visibleTop - caret.top;
   }
@@ -902,10 +932,6 @@ function scheduleTypingScroll(){
     cancelAnimationFrame(typingScrollFrame2);
   }
 
-  /*
-    Wait two animation frames so Android has time to update
-    the caret, text layout, and visible keyboard viewport.
-  */
   typingScrollFrame = requestAnimationFrame(()=>{
     typingScrollFrame = 0;
 
@@ -1040,20 +1066,16 @@ function addBackGuard(){
 }
 
 function handleAppBack(){
-
-  /* 1. Close dialog first */
   if(!$("dialogBackdrop").classList.contains("hidden")){
     closeDialog();
     return;
   }
 
-  /* 2. Close drawer first */
   if(!$("drawerBackdrop").classList.contains("hidden")){
     closeDrawer();
     return;
   }
 
-  /* 3. Close color palette first */
   if(
     palette &&
     !palette.classList.contains("hidden")
@@ -1062,13 +1084,11 @@ function handleAppBack(){
     return;
   }
 
-  /* 4. Close more-options menu first */
   if(!menu.classList.contains("hidden")){
     menu.classList.add("hidden");
     return;
   }
 
-  /* 5. Return from Read/Edit Mode to Home immediately */
   if(!editor.classList.contains("hidden")){
     saveCurrentNote();
     closeEditor();
@@ -1078,7 +1098,6 @@ function handleAppBack(){
     return;
   }
 
-  /* 6. Home screen: double-Back detection only */
   const now=Date.now();
 
   if(lastHomeBackTime!==0 &&
@@ -1087,10 +1106,6 @@ function handleAppBack(){
     lastHomeBackTime=0;
     clearTimeout(backExitTimer);
 
-    /*
-      Do not push another guard here.
-      Allow the browser/PWA to handle native Back.
-    */
     allowNativeBack=true;
     backActionInProgress=true;
 
@@ -1101,7 +1116,6 @@ function handleAppBack(){
     return;
   }
 
-  /* First Back on Home */
   lastHomeBackTime=now;
   showToast("Press back again to exit");
 
@@ -1110,10 +1124,6 @@ function handleAppBack(){
     lastHomeBackTime=0;
   },2000);
 }
-
-/* =========================================================
-   HISTORY GUARD — HOME EXIT
-   ========================================================= */
 
 try{
   history.replaceState(
@@ -1125,9 +1135,7 @@ try{
   addBackGuard();
 }catch(e){}
 
-/* Handle Android/browser Back — ONLY ONE HANDLER */
 window.addEventListener("popstate",()=>{
-
   if(allowNativeBack){
     allowNativeBack=false;
     return;
@@ -1137,10 +1145,6 @@ window.addEventListener("popstate",()=>{
 
   handleAppBack();
 
-  /*
-    Restore the guard after an in-app action or first
-    Home Back. Do not restore it after the second Home Back.
-  */
   if(!allowNativeBack){
     setTimeout(()=>{
       if(!allowNativeBack){
@@ -1150,7 +1154,6 @@ window.addEventListener("popstate",()=>{
   }
 });
 
-/* Android / browser page lifecycle */
 window.addEventListener("resize",()=>{
   updateToolbarPosition();
   updateNoteBottomSpace();
