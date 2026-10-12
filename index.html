@@ -3,8 +3,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Preach Mate</title>
 <style>
 :root{
@@ -12,85 +14,55 @@
   --border:#e5e7eb;--primary:#2563eb;--highlight:#fef08a;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-body{overflow:hidden}
+html{width:100%;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;width:100%;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 button,input{font:inherit}
-button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+input,button,select,textarea{font-size:16px}
 .hidden{display:none!important}
-#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.topbar{min-height:58px;background:#fff;display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+#app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.topbar{min-height:58px;background:#fff;display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0;padding-top:max(8px,env(safe-area-inset-top))}
 .brand{font-size:20px;font-weight:800;flex:1}
-.icon-btn{border:0;background:transparent;border-radius:10px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;color:var(--text)}
+.icon-btn{border:0;background:transparent;border-radius:10px;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;color:var(--text);flex-shrink:0}
 .icon-btn:active{background:var(--border)}
 .searchbar{padding:9px 12px 5px;background:#fff;flex-shrink:0}
 .searchbar input{width:100%;border:1px solid var(--border);background:var(--bg);padding:11px 13px;border-radius:12px;outline:none}
-.category-row{display:flex;align-items:center;gap:7px;overflow-x:auto;white-space:nowrap;padding:10px 12px;background:#fff;scrollbar-width:none;flex-shrink:0;touch-action:pan-y}
+.category-row{display:flex;align-items:center;gap:7px;overflow-x:auto;white-space:nowrap;padding:10px 12px;background:#fff;scrollbar-width:none;flex-shrink:0;touch-action:pan-x}
 .category-row::-webkit-scrollbar{display:none}
-.category-tab{border:1px solid var(--border);border-radius:22px;padding:8px 13px;background:#fff;color:#374151;font-size:13px;flex-shrink:0;user-select:none;touch-action:pan-y}
+.category-tab{border:1px solid var(--border);border-radius:22px;padding:8px 13px;background:#fff;color:#374151;font-size:13px;flex-shrink:0;user-select:none;-webkit-user-select:none}
 .category-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
 .category-tab.dragging,.drawer-category.dragging{opacity:.4;border:2px dashed var(--primary)}
 .category-tab.drag-target,.drawer-category.drag-target{outline:2px solid var(--primary);outline-offset:2px}
 .add-category{width:37px;height:37px;flex-shrink:0;border:1px dashed #9ca3af;border-radius:50%;background:#fff;color:#374151;font-size:18px}
-.home-content{flex:1;overflow-y:auto;padding:12px 12px 90px}
+.home-content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 12px calc(90px + env(safe-area-inset-bottom))}
 .section-heading{font-size:13px;color:var(--muted);margin:3px 3px 12px}
 .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-
-/* FIX 1: Every saved-note card has the same height */
 .note-card{
-  height:210px;
-  min-height:210px;
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:15px;
-  padding:13px;
-  box-shadow:0 3px 12px #0000000b;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+  height:210px;min-height:210px;min-width:0;
+  background:#fff;border:1px solid var(--border);border-radius:15px;
+  padding:13px;box-shadow:0 3px 12px #0000000b;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px;
 }
-.note-card-title{
-  font-weight:750;
-  font-size:15px;
-  overflow-wrap:anywhere;
-  padding-right:17px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  flex-shrink:0;
+.note-card.pinned{border-color:#93c5fd}
+.note-card-title{font-weight:750;font-size:15px;overflow-wrap:anywhere;padding-right:48px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex-shrink:0}
+.note-card-preview{font-size:13px;line-height:1.45;color:#4b5563;overflow-wrap:anywhere;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;flex-shrink:0}
+.search-match{background:#fde047;color:#111827;border-radius:3px;padding:0 2px;font-weight:800;box-shadow:0 0 0 1px #eab30840;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.note-card-meta{margin-top:auto;padding-top:5px;display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px;min-width:0}
+.note-card-meta span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-fav{position:absolute;top:10px;right:10px;font-size:15px;color:#d97706;pointer-events:none}
+.note-pin{
+  position:absolute;top:5px;right:32px;width:30px;height:30px;
+  border:0;border-radius:8px;background:transparent;color:#9ca3af;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  padding:0;z-index:2;
 }
-.note-card-preview{
-  font-size:13px;
-  line-height:1.45;
-  color:#4b5563;
-  overflow-wrap:anywhere;
-  white-space:pre-wrap;
-  display:-webkit-box;
-  -webkit-line-clamp:5;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-  flex-shrink:0;
-}
-
-/* Live Search keyword highlight: preview and title only */
-.search-match{
-  background:#fde047;
-  color:#111827;
-  border-radius:3px;
-  padding:0 2px;
-  font-weight:800;
-  box-shadow:0 0 0 1px #eab30840;
-  -webkit-box-decoration-break:clone;
-  box-decoration-break:clone;
-}
-.note-card-meta{margin-top:auto;padding-top:5px;display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px}
-.note-fav{position:absolute;top:8px;right:9px;font-size:15px;color:#d97706}
+.note-pin:active{background:#dbeafe}
+.note-pin.is-pinned{color:#2563eb;background:#dbeafe}
+.note-pin:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 .empty-state{text-align:center;color:var(--muted);padding:50px 20px;line-height:1.6}
-.fab{position:fixed;right:21px;bottom:22px;width:58px;height:58px;border:0;border-radius:50%;background:var(--primary);color:#fff;font-size:32px;box-shadow:0 6px 18px #0003;z-index:20}
+.fab{position:fixed;right:21px;right:max(21px,env(safe-area-inset-right));bottom:22px;bottom:max(22px,env(safe-area-inset-bottom));width:58px;height:58px;border:0;border-radius:50%;background:var(--primary);color:#fff;font-size:32px;box-shadow:0 6px 18px #0003;z-index:20}
 .drawer-backdrop,.dialog-backdrop{position:fixed;inset:0;background:#0006;z-index:50}
-.drawer{position:absolute;left:0;top:0;bottom:0;width:min(84vw,330px);background:#fff;padding:16px;box-shadow:5px 0 24px #0002;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.drawer{position:absolute;left:0;top:0;bottom:0;bottom:env(safe-area-inset-bottom);width:min(84vw,330px);background:#fff;padding:16px;padding-top:max(16px,env(safe-area-inset-top));box-shadow:5px 0 24px #0002;display:flex;flex-direction:column;gap:6px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .drawer-title{font-size:21px;font-weight:800;padding:10px 6px 16px}
 .drawer-item{border:0;background:transparent;text-align:left;padding:12px;border-radius:10px;font-size:15px}
 .drawer-item:active,.drawer-item:hover{background:var(--bg)}
@@ -99,101 +71,28 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .drawer-category{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:#fff;padding:11px 10px;border-radius:9px;font-size:14px;user-select:none;-webkit-user-select:none}
 .drawer-category.active{background:#dbeafe;color:#1d4ed8;font-weight:700}
 .drawer-category .cat-count{margin-left:auto;font-size:11px;color:#6b7280}
-
-/* Category drag handle: only the handle captures vertical drag */
-.drawer-category .cat-drag-handle{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  width:23px;
-  min-height:27px;
-  margin-left:-5px;
-  border-radius:6px;
-  color:#9ca3af;
-  font-size:21px;
-  line-height:1;
-  cursor:grab;
-  touch-action:none;
-  user-select:none;
-  -webkit-user-select:none;
-}
+.drawer-category .cat-drag-handle{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:23px;min-height:27px;margin-left:-5px;border-radius:6px;color:#9ca3af;font-size:21px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 .drawer-category .cat-drag-handle:active{background:#e5e7eb;color:#374151}
 .drawer-category .cat-icon{flex-shrink:0}
 .drawer-category .cat-name{overflow-wrap:anywhere}
 .drawer-footer{margin-top:auto;font-size:12px;color:var(--muted);padding:12px 6px}
-.editor-screen{position:fixed;inset:0;background:#fff;z-index:30;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.editor-screen{position:fixed;inset:0;background:#fff;z-index:30;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
 .editor-header{display:flex;align-items:center;gap:4px;padding:7px 7px;border-bottom:1px solid var(--border);min-height:54px;flex-shrink:0;background:#fff}
-.editor-title{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
+.editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
-.mode-label{font-size:10px;color:var(--muted);padding:0 2px}
-.note-body{flex:1;min-height:0;overflow-y:auto;outline:0;border:0;padding:18px 17px 120px;font-size:17px;line-height:1.7;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
+.mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
+.note-body{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;outline:0;border:0;padding:18px 17px 120px;font-size:17px;line-height:1.7;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
 .note-body:empty:before{content:"Write your note here...";color:#9ca3af;pointer-events:none}
 .note-body[contenteditable="false"]{cursor:text}
 .note-body img{max-width:100%;height:auto}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
-
-/* FIX 2: Read Mode highlighter — visible vibration */
-.read-word-marker{
-  display:inline-block!important;
-  position:relative;
-  padding:0!important;
-  margin:0!important;
-  color:#ffeb3b!important;
-  background:#8f7910!important;
-  border:0!important;
-  outline:1px solid #ffe45c;
-  outline-offset:0;
-  border-radius:1px;
-  box-shadow:none!important;
-  text-shadow:0 0 1px rgba(255,244,163,.65);
-  font-family:Roboto,sans-serif!important;
-  font-size:inherit!important;
-  font-weight:300!important;
-  -webkit-text-stroke:0!important;
-  line-height:inherit!important;
-  -webkit-box-decoration-break:clone;
-  box-decoration-break:clone;
-  animation:wordVibrate .12s linear infinite!important;
-  will-change:transform;
-}
-
-.read-word-marker::after{
-  content:none!important;
-  display:none!important;
-}
-
-@keyframes wordVibrate{
-  0%,100% { transform:translateX(0); }
-  20%     { transform:translateX(-1.5px); }
-  40%     { transform:translateX(1.5px); }
-  60%     { transform:translateX(-1px); }
-  80%     { transform:translateX(1px); }
-}
-
-@media (prefers-reduced-motion:reduce){
-  .read-word-marker{
-    animation:none!important;
-  }
-}
-
-@keyframes wordVibrate{
-  0%   {transform:translateX(0);}
-  25%  {transform:translateX(-.35px);}
-  50%  {transform:translateX(.35px);}
-  75%  {transform:translateX(-.2px);}
-  100% {transform:translateX(0);}
-}
-
-@media (prefers-reduced-motion:reduce){
-  .read-word-marker{
-    animation:none!important;
-  }
-}
-
+.read-word-marker{display:inline-block!important;position:relative;padding:0!important;margin:0!important;color:#ffeb3b!important;background:#8f7910!important;border:0!important;outline:1px solid #ffe45c;outline-offset:0;border-radius:1px;box-shadow:none!important;text-shadow:0 0 1px rgba(255,244,163,.65);font-family:Roboto,sans-serif!important;font-size:inherit!important;font-weight:300!important;-webkit-text-stroke:0!important;line-height:inherit!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:wordVibrate .12s linear infinite!important;will-change:transform}
+.read-word-marker::after{content:none!important;display:none!important}
+@keyframes wordVibrate{0%,100%{transform:translateX(0)}20%{transform:translateX(-1.5px)}40%{transform:translateX(1.5px)}60%{transform:translateX(-1px)}80%{transform:translateX(1px)}}
+@media(prefers-reduced-motion:reduce){.read-word-marker{animation:none!important}}
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
-.fmt-btn{min-width:34px;height:38px;border:1px solid transparent;border-radius:8px;background:transparent;color:#1f2937;display:inline-flex;align-items:center;justify-content:center;font-size:16px;padding:5px 7px;flex:1;max-width:55px}
+.fmt-btn{min-width:30px;height:38px;border:1px solid transparent;border-radius:8px;background:transparent;color:#1f2937;display:inline-flex;align-items:center;justify-content:center;font-size:16px;padding:5px 4px;flex:1;max-width:55px}
 .fmt-btn:active,.fmt-btn.active{background:#e5e7eb}
 #btnHighlight{background:#fef08a;border-color:#eab308}
 #btnTextColor{font-size:19px}
@@ -203,23 +102,34 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .color-swatch{width:100%;aspect-ratio:1;border:2px solid #e5e7eb;border-radius:50%;position:relative;min-width:25px}
 .color-swatch.selected{outline:2px solid #2563eb;outline-offset:2px}
 .color-swatch.selected:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#111;font-size:15px;font-weight:bold;text-shadow:0 0 3px white}
-.palette-close{border:0;background:transparent;font-size:20px;padding:0 5px}
-.editor-menu{position:absolute;right:8px;top:49px;width:215px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 28px #0002;padding:6px;z-index:60}
+.palette-close{border:0;background:transparent;font-size:24px;padding:0 8px;min-width:40px;min-height:40px}
+.editor-menu{position:absolute;right:8px;top:calc(49px + env(safe-area-inset-top));width:min(215px,calc(100vw - 16px));background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 28px #0002;padding:6px;z-index:60}
 .menu-item{width:100%;border:0;background:transparent;text-align:left;padding:12px 11px;border-radius:8px;font-size:14px;color:#111827}
 .menu-item:active{background:var(--bg)}
 .menu-item.danger{color:#dc2626}
-.dialog-backdrop{display:flex;align-items:center;justify-content:center;padding:20px;z-index:80}
-.dialog{width:min(100%,360px);background:#fff;border-radius:16px;padding:20px;box-shadow:0 12px 40px #0003}
+.dialog-backdrop{display:flex;align-items:center;justify-content:center;padding:20px;z-index:80;overflow-y:auto}
+.dialog{width:min(100%,360px);max-height:calc(100dvh - 40px);overflow-y:auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 12px 40px #0003}
 .dialog h3{margin:0 0 14px;font-size:18px}
 .dialog input,.dialog select{width:100%;padding:12px;border:1px solid var(--border);border-radius:9px;margin-bottom:13px;background:#fff}
 .dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:6px}
 .btn{border:1px solid var(--border);background:#fff;padding:10px 14px;border-radius:9px}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
 .btn.danger{color:#dc2626}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 15px;border-radius:20px;font-size:13px;z-index:100;box-shadow:0 4px 15px #0003;max-width:90vw;text-align:center}
+.toast{position:fixed;bottom:80px;bottom:calc(80px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 15px;border-radius:20px;font-size:13px;z-index:100;box-shadow:0 4px 15px #0003;max-width:90vw;text-align:center}
 @media(min-width:650px){
   .notes-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .home-content{padding-left:22px;padding-right:22px}
+}
+@media(max-width:360px){
+  .topbar{gap:4px;padding-left:7px;padding-right:7px}
+  .brand{font-size:18px}
+  .notes-grid{gap:7px}
+  .note-card{padding:10px;height:205px;min-height:205px}
+  .note-card-title{font-size:14px}
+  .note-card-preview{font-size:12px}
+  .editor-header{gap:1px;padding-left:3px;padding-right:3px}
+  .editor-header .icon-btn{width:35px}
+  .mode-label{font-size:9px}
 }
 </style>
 </head>
@@ -228,9 +138,9 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   <header class="topbar">
     <button class="icon-btn" id="btnDrawer" aria-label="Open menu">☰</button>
     <div class="brand">Preach Mate</div>
-    <button class="icon-btn" id="btnFavorites" title="Favorites">☆</button>
+    <button class="icon-btn" id="btnFavorites" title="Favorites" aria-label="Favorites">☆</button>
   </header>
-  <div class="searchbar"><input id="searchInput" type="search" placeholder="Search notes..." autocomplete="off"></div>
+  <div class="searchbar"><input id="searchInput" type="search" placeholder="Search notes..." autocomplete="off" aria-label="Search notes"></div>
   <nav class="category-row" id="categoryTabs" aria-label="Categories"></nav>
   <main class="home-content">
     <div class="section-heading" id="notesCount">Your notes</div>
@@ -256,16 +166,17 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 
 <section class="editor-screen hidden" id="editorScreen">
   <header class="editor-header">
-    <button class="icon-btn" id="btnBack" title="Back">‹</button>
-    <input class="editor-title" id="noteTitle" placeholder="Note title" maxlength="180">
+    <button class="icon-btn" id="btnBack" title="Back" aria-label="Back">‹</button>
+    <input class="editor-title" id="noteTitle" placeholder="Note title" maxlength="180" aria-label="Note title">
     <span class="mode-label" id="modeLabel">READ</span>
-    <button class="icon-btn" id="btnCopy" title="Copy note">▣</button>
-    <button class="icon-btn" id="btnMenu" title="More options">⋮</button>
+    <button class="icon-btn" id="btnCopy" title="Copy note" aria-label="Copy note">▣</button>
+    <button class="icon-btn" id="btnMenu" title="More options" aria-label="More options">⋮</button>
   </header>
   <div class="note-body" id="noteBody" contenteditable="false" spellcheck="true"></div>
   <div class="editor-menu hidden" id="editorMenu">
     <button class="menu-item" id="menuMode">Edit Mode</button>
     <button class="menu-item" id="menuMove">↪ Move to Category</button>
+    <button class="menu-item" id="menuPin">📌 Pin to Top</button>
     <button class="menu-item" id="menuFavorite">☆ Favorite</button>
     <button class="menu-item danger" id="menuDelete">Delete Note</button>
   </div>
@@ -282,7 +193,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 </div>
 
 <div class="color-palette hidden" id="colorPalette">
-  <div class="palette-heading"><span id="paletteTitle">Choose color</span><button class="palette-close" id="paletteClose">×</button></div>
+  <div class="palette-heading"><span id="paletteTitle">Choose color</span><button class="palette-close" id="paletteClose" aria-label="Close color palette">×</button></div>
   <div class="palette-colors" id="paletteColors"></div>
 </div>
 
@@ -296,7 +207,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
     </div>
   </div>
 </div>
-<div class="toast hidden" id="toast"></div>
+<div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
@@ -334,15 +245,20 @@ const DEFAULT_CATEGORIES=["All Notes","Personal","Study","Work","Ideas"];
 let categories=parseJSON(localStorage.getItem(CATEGORIES_KEY),DEFAULT_CATEGORIES);
 if(!Array.isArray(categories)||!categories.length)categories=[...DEFAULT_CATEGORIES];
 if(!categories.includes("All Notes"))categories.unshift("All Notes");
+categories=["All Notes",...categories.filter(c=>c!=="All Notes")];
 
 let notes=parseJSON(localStorage.getItem(STORAGE_KEY),null);
 if(!Array.isArray(notes)){
   notes=[{
     id:makeId(),title:"Welcome to Preach Mate",
     content:"<p>Your notes are saved automatically on this device.</p><p><b>Read Mode:</b> Tap a word to temporarily mark where you stopped reading.</p><p><b>Edit Mode:</b> Select text, then choose highlight or font color from the toolbar.</p>",
-    category:"Personal",favorite:false,fontSize:17,color:"#111827",updated:Date.now()
+    category:"Personal",favorite:false,pinned:false,fontSize:17,color:"#111827",updated:Date.now()
   }];
 }
+if(Array.isArray(notes)){
+  notes.forEach(n=>{if(typeof n.pinned!=="boolean")n.pinned=false});
+}
+
 let activeCategory="All Notes",favoritesOnly=false,currentNoteId=null,isEditMode=false;
 let dialogAction=null,toastTimer=null,markerSpan=null,savedSelection=null;
 let paletteType="highlight";
@@ -370,56 +286,51 @@ function esc(s){
 function escapeRegExp(s){
   return String(s).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
 }
-
-/* Highlight search terms safely without changing saved note content. */
 function highlightSearchTerms(text,query){
   const value=String(text||"");
-  const terms=[...new Set(
-    String(query||"").trim().split(/\s+/).filter(Boolean)
-  )].sort((a,b)=>b.length-a.length);
-
+  const terms=[...new Set(String(query||"").trim().split(/\s+/).filter(Boolean))]
+    .sort((a,b)=>b.length-a.length);
   if(!terms.length)return esc(value);
-
-  const regex=new RegExp(
-    "("+terms.map(escapeRegExp).join("|")+")",
-    "gi"
-  );
-
+  const regex=new RegExp("("+terms.map(escapeRegExp).join("|")+")","gi");
   return value.split(regex).map(part=>{
-    const matched=terms.some(term=>
-      part.toLowerCase()===term.toLowerCase()
-    );
-    return matched
-      ? '<mark class="search-match">'+esc(part)+'</mark>'
-      : esc(part);
+    const matched=terms.some(term=>part.toLowerCase()===term.toLowerCase());
+    return matched?'<mark class="search-match">'+esc(part)+'</mark>':esc(part);
   }).join("");
 }
-
 function showToast(msg){
   $("toast").textContent=msg;$("toast").classList.remove("hidden");
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),1900);
 }
 function cleanTemporaryMarker(root){
-  root.querySelectorAll(".read-word-marker").forEach(s=>{
-    s.replaceWith(...s.childNodes);
-  });
+  root.querySelectorAll(".read-word-marker").forEach(s=>s.replaceWith(...s.childNodes));
 }
 function saveCurrentNote(){
   const n=currentNote();if(!n)return;
   n.title=noteTitle.value.trim();
-  const clone=noteBody.cloneNode(true);
-  cleanTemporaryMarker(clone);
+  const clone=noteBody.cloneNode(true);cleanTemporaryMarker(clone);
   n.content=clone.innerHTML;
   n.fontSize=parseInt(noteBody.dataset.fontSize||n.fontSize||17,10);
   n.color=noteBody.style.color||n.color||"#111827";
   n.updated=Date.now();persist();
+}
+function togglePin(id){
+  const n=notes.find(x=>x.id===id);if(!n)return;
+  n.pinned=!n.pinned;
+  n.updated=Date.now();
+  persist();
+  renderNotes();
+  if(currentNoteId===id)updatePinMenu();
+  showToast(n.pinned?"📌 Note pinned to top":"Pin removed");
+}
+function updatePinMenu(){
+  const n=currentNote();
+  if(n)$("menuPin").textContent=n.pinned?"📌 Unpin Note":"📌 Pin to Top";
 }
 
 /* Category tabs and drawer share the same saved category order. */
 function renderCategories(){
   const row=$("categoryTabs");row.innerHTML="";
   const ordered=["All Notes",...categories.filter(c=>c!=="All Notes")];
-
   ordered.forEach(cat=>{
     const b=document.createElement("button");
     b.className="category-tab"+(activeCategory===cat&&!favoritesOnly?" active":"");
@@ -431,155 +342,89 @@ function renderCategories(){
     if(cat!=="All Notes")attachCategoryDrag(b,"tabs");
     row.appendChild(b);
   });
-
   const add=document.createElement("button");
   add.className="add-category";add.textContent="⊞+";add.title="Add category";
+  add.setAttribute("aria-label","Add category");
   add.addEventListener("click",addCategoryDialog);row.appendChild(add);
-
   renderDrawerCategories();
 }
-
 function renderDrawerCategories(){
   const holder=$("drawerCategories");holder.innerHTML="";
   const ordered=["All Notes",...categories.filter(c=>c!=="All Notes")];
-
   ordered.forEach(cat=>{
     const b=document.createElement("button");
     b.className="drawer-category"+(activeCategory===cat&&!favoritesOnly?" active":"");
     b.dataset.category=cat;
-
     const handle=document.createElement("span");
     handle.className="cat-drag-handle";
-    handle.textContent=cat==="All Notes"?"": "⠿";
+    handle.textContent=cat==="All Notes"?"":"⠿";
     handle.setAttribute("aria-label",cat==="All Notes"?"":"Drag to reorder category");
     if(cat==="All Notes")handle.style.display="none";
-
     const icon=document.createElement("span");
-    icon.className="cat-icon";
-    icon.textContent=cat==="All Notes"?"▦":"▤";
-
+    icon.className="cat-icon";icon.textContent=cat==="All Notes"?"▦":"▤";
     const name=document.createElement("span");
-    name.className="cat-name";
-    name.textContent=cat;
-
+    name.className="cat-name";name.textContent=cat;
     const count=document.createElement("span");
     count.className="cat-count";
     count.textContent=cat==="All Notes"?notes.length:notes.filter(n=>n.category===cat).length;
-
     b.append(handle,icon,name,count);
-
     b.addEventListener("click",()=>{
       if(suppressCategoryClick){suppressCategoryClick=false;return}
       activeCategory=cat;favoritesOnly=false;$("searchInput").value="";
       renderCategories();renderNotes();closeDrawer();
     });
-
     if(cat!=="All Notes")attachCategoryDrag(b,"drawer");
     holder.appendChild(b);
   });
 }
-
-/*
-  Category drag:
-  - Tabs use horizontal movement.
-  - Drawer categories use vertical movement from the ⠿ handle.
-  - All Notes cannot be dragged.
-  - Reordering in either place updates the same categories array and storage.
-*/
 function attachCategoryDrag(button,surface){
   const isTabs=surface==="tabs";
   const container=isTabs?$("categoryTabs"):$("drawerCategories");
   const selector=isTabs?".category-tab[data-category]":".drawer-category[data-category]";
   const axis=isTabs?"x":"y";
-
   button.addEventListener("pointerdown",e=>{
     if(e.button!==0&&e.pointerType==="mouse")return;
     if(button.dataset.category==="All Notes")return;
-
     if(!isTabs&&!e.target.closest(".cat-drag-handle"))return;
-
-    dragInfo={
-      button,
-      container,
-      selector,
-      axis,
-      surface,
-      pointerId:e.pointerId,
-      startX:e.clientX,
-      startY:e.clientY,
-      moved:false
-    };
-
+    dragInfo={button,container,selector,axis,surface,pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,moved:false};
     try{button.setPointerCapture(e.pointerId)}catch(err){}
   });
-
   button.addEventListener("pointermove",e=>{
     if(!dragInfo||dragInfo.button!==button||dragInfo.pointerId!==e.pointerId)return;
-
-    const dx=e.clientX-dragInfo.startX;
-    const dy=e.clientY-dragInfo.startY;
-    const primary=axis==="x"?dx:dy;
-    const secondary=axis==="x"?dy:dx;
-
+    const dx=e.clientX-dragInfo.startX,dy=e.clientY-dragInfo.startY;
+    const primary=axis==="x"?dx:dy,secondary=axis==="x"?dy:dx;
     if(!dragInfo.moved){
       if(Math.abs(primary)<8)return;
       if(Math.abs(primary)<Math.abs(secondary))return;
-      dragInfo.moved=true;
-      button.classList.add("dragging");
+      dragInfo.moved=true;button.classList.add("dragging");
     }
-
     if(e.cancelable)e.preventDefault();
-
     const underPointer=document.elementFromPoint(e.clientX,e.clientY);
     const target=underPointer?underPointer.closest(selector):null;
-
-    if(!target||target===button||target.dataset.category==="All Notes")return;
-    if(target.parentElement!==container)return;
-
+    if(!target||target===button||target.dataset.category==="All Notes"||target.parentElement!==container)return;
     container.querySelectorAll(".drag-target").forEach(el=>el.classList.remove("drag-target"));
     target.classList.add("drag-target");
-
     const rect=target.getBoundingClientRect();
-    const before=axis==="x"
-      ?e.clientX<rect.left+rect.width/2
-      :e.clientY<rect.top+rect.height/2;
-
-    if(before){
-      if(button.nextElementSibling!==target)container.insertBefore(button,target);
-    }else{
-      if(target.nextElementSibling!==button)container.insertBefore(button,target.nextElementSibling);
-    }
+    const before=axis==="x"?e.clientX<rect.left+rect.width/2:e.clientY<rect.top+rect.height/2;
+    if(before){if(button.nextElementSibling!==target)container.insertBefore(button,target)}
+    else{if(target.nextElementSibling!==button)container.insertBefore(button,target.nextElementSibling)}
   });
-
   const finish=e=>{
     if(!dragInfo||dragInfo.button!==button||dragInfo.pointerId!==e.pointerId)return;
-
     const moved=dragInfo.moved;
-
     button.classList.remove("dragging");
     container.querySelectorAll(".drag-target").forEach(el=>el.classList.remove("drag-target"));
-
     if(moved){
-      const reordered=[...container.querySelectorAll(selector)]
-        .map(el=>el.dataset.category)
-        .filter(cat=>cat&&cat!=="All Notes");
-
+      const reordered=[...container.querySelectorAll(selector)].map(el=>el.dataset.category).filter(cat=>cat&&cat!=="All Notes");
       const remaining=categories.filter(cat=>cat!=="All Notes"&&!reordered.includes(cat));
       categories=["All Notes",...reordered,...remaining];
-
-      persist();
-      suppressCategoryClick=true;
-
-      renderCategories();
-      renderNotes();
-
+      persist();suppressCategoryClick=true;
+      renderCategories();renderNotes();
       showToast("Category order saved");
       setTimeout(()=>{suppressCategoryClick=false},350);
     }
-
     dragInfo=null;
   };
-
   button.addEventListener("pointerup",finish);
   button.addEventListener("pointercancel",finish);
   button.addEventListener("lostpointercapture",e=>{
@@ -591,45 +436,41 @@ function renderNotes(){
   const grid=$("notesGrid");grid.innerHTML="";
   const search=$("searchInput").value.trim();
   const terms=search.toLowerCase().split(/\s+/).filter(Boolean);
-
   const list=notes.filter(n=>!favoritesOnly||n.favorite)
     .filter(n=>activeCategory==="All Notes"||n.category===activeCategory)
     .filter(n=>{
       if(!terms.length)return true;
-      const searchable=[
-        n.title||"",
-        plainText(n.content),
-        n.category||""
-      ].join(" ").toLowerCase();
-
+      const searchable=[n.title||"",plainText(n.content),n.category||""].join(" ").toLowerCase();
       return terms.every(term=>searchable.includes(term));
     })
-    .sort((a,b)=>(b.updated||0)-(a.updated||0));
+    .sort((a,b)=>(Number(!!b.pinned)-Number(!!a.pinned))||((b.updated||0)-(a.updated||0)));
 
-  $("notesCount").textContent=
-    (favoritesOnly?"Favorite notes":activeCategory==="All Notes"?"Your notes":activeCategory)+" · "+list.length;
-
+  $("notesCount").textContent=(favoritesOnly?"Favorite notes":activeCategory==="All Notes"?"Your notes":activeCategory)+" · "+list.length;
   list.forEach(n=>{
-    const card=document.createElement("article");card.className="note-card";
-
+    const card=document.createElement("article");
+    card.className="note-card"+(n.pinned?" pinned":"");
     const title=document.createElement("div");
     title.className="note-card-title";
     const titleText=n.title||"Untitled note";
-    title.innerHTML=search
-      ?highlightSearchTerms(titleText,search)
-      :esc(titleText);
-
+    title.innerHTML=search?highlightSearchTerms(titleText,search):esc(titleText);
     const preview=document.createElement("div");
     preview.className="note-card-preview";
     const previewText=plainText(n.content)||"No content yet";
-    preview.innerHTML=search
-      ?highlightSearchTerms(previewText,search)
-      :esc(previewText);
-
+    preview.innerHTML=search?highlightSearchTerms(previewText,search):esc(previewText);
     const meta=document.createElement("div");meta.className="note-card-meta";
     const cat=document.createElement("span");cat.textContent=n.category||"Personal";
     const date=document.createElement("span");date.textContent="· "+new Date(n.updated||Date.now()).toLocaleDateString();
     meta.append(cat,date);card.append(title,preview,meta);
+
+    const pin=document.createElement("button");
+    pin.type="button";
+    pin.className="note-pin"+(n.pinned?" is-pinned":"");
+    pin.textContent=n.pinned?"📌":"♧";
+    pin.title=n.pinned?"Unpin note":"Pin to top";
+    pin.setAttribute("aria-label",n.pinned?"Unpin note":"Pin note to top");
+    pin.setAttribute("aria-pressed",String(!!n.pinned));
+    pin.addEventListener("click",e=>{e.stopPropagation();togglePin(n.id)});
+    card.appendChild(pin);
 
     if(n.favorite){
       const star=document.createElement("span");star.className="note-fav";star.textContent="★";card.appendChild(star);
@@ -646,11 +487,11 @@ function openNote(id){
   noteBody.dataset.fontSize=String(n.fontSize||17);
   noteBody.style.fontSize=(n.fontSize||17)+"px";noteBody.style.color=n.color||"#111827";
   home.classList.add("hidden");editor.classList.remove("hidden");menu.classList.add("hidden");
-  closePalette();setMode(false);noteBody.scrollTop=0;
+  closePalette();setMode(false);updatePinMenu();noteBody.scrollTop=0;
 }
 function newNote(){
   const cat=activeCategory!=="All Notes"&&categories.includes(activeCategory)?activeCategory:(categories.find(c=>c!=="All Notes")||"Personal");
-  const n={id:makeId(),title:"",content:"",category:cat,favorite:false,fontSize:17,color:"#111827",updated:Date.now()};
+  const n={id:makeId(),title:"",content:"",category:cat,favorite:false,pinned:false,fontSize:17,color:"#111827",updated:Date.now()};
   notes.unshift(n);persist();openNote(n.id);setMode(true);setTimeout(()=>noteTitle.focus(),100);
 }
 function closeEditor(){
@@ -659,15 +500,8 @@ function closeEditor(){
   currentNoteId=null;renderCategories();renderNotes();
 }
 function setMode(edit){
-  /* Always remove the temporary Read Mode marker before changing modes. */
-  clearReadMarker();
-  isEditMode=!!edit;
-
-  if(!isEditMode){
-    saveCurrentNote();
-    closePalette();
-  }
-
+  clearReadMarker();isEditMode=!!edit;
+  if(!isEditMode){saveCurrentNote();closePalette()}
   noteTitle.readOnly=!isEditMode;
   noteBody.contentEditable=isEditMode?"true":"false";
   $("modeLabel").textContent=isEditMode?"EDIT":"READ";
@@ -676,9 +510,7 @@ function setMode(edit){
   if(isEditMode)updateToolbarPosition();else toolbar.style.bottom="0px";
 }
 function clearReadMarker(){
-  noteBody.querySelectorAll(".read-word-marker").forEach(old=>{
-    old.replaceWith(...old.childNodes);
-  });
+  noteBody.querySelectorAll(".read-word-marker").forEach(old=>old.replaceWith(...old.childNodes));
   markerSpan=null;
 }
 function getRangeAtPoint(e){
@@ -692,28 +524,20 @@ function getRangeAtPoint(e){
 function isWordChar(c){return !!c&&/[\p{L}\p{N}_'-]/u.test(c)}
 function markWordAtPoint(e){
   if(isEditMode||e.target.closest("button,input,a,select,textarea"))return;
-
   const r=getRangeAtPoint(e);
   if(!r||r.startContainer.nodeType!==Node.TEXT_NODE)return;
-
   const node=r.startContainer,text=node.textContent||"";
   if(!text.length)return;
-
   let start=Math.min(r.startOffset,text.length-1);
   if(!isWordChar(text[start])&&start>0&&isWordChar(text[start-1]))start--;
   if(!isWordChar(text[start]))return;
-
   let end=start;
   while(start>0&&isWordChar(text[start-1]))start--;
   while(end<text.length&&isWordChar(text[end]))end++;
-
   clearReadMarker();
-
   try{
-    const wr=document.createRange();
-    wr.setStart(node,start);wr.setEnd(node,end);
-    const span=document.createElement("span");
-    span.className="read-word-marker";
+    const wr=document.createRange();wr.setStart(node,start);wr.setEnd(node,end);
+    const span=document.createElement("span");span.className="read-word-marker";
     wr.surroundContents(span);markerSpan=span;
   }catch(err){}
 }
@@ -726,10 +550,7 @@ function saveSelection(){
 }
 function restoreSelection(){
   if(!savedSelection)return;
-  try{
-    noteBody.focus({preventScroll:true});
-    const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection);
-  }catch(e){}
+  try{noteBody.focus({preventScroll:true});const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection)}catch(e){}
 }
 function applyCommand(command,value=null){
   if(!isEditMode)setMode(true);
@@ -742,7 +563,6 @@ function openPalette(type){
   saveSelection();paletteType=type;
   $("paletteTitle").textContent=type==="highlight"?"Choose highlight color":"Choose font color";
   const holder=$("paletteColors");holder.innerHTML="";
-
   COLORS.forEach(color=>{
     const b=document.createElement("button");b.className="color-swatch";
     b.style.background=color.value;b.title=color.name;b.setAttribute("aria-label",color.name);
@@ -772,7 +592,7 @@ function changeFontSize(delta){
 }
 function copyCurrentNote(){
   const n=currentNote();if(!n)return;
-  const text=(noteTitle.value.trim()?noteTitle.value.trim()+"\n\n":"")+plainText(n.content);
+  const text=(noteTitle.value.trim()?noteTitle.value.trim()+"\n\n":"")+plainText(noteBody.innerHTML);
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>showToast("Note copied"),()=>fallbackCopy(text));
   else fallbackCopy(text);
 }
@@ -823,7 +643,7 @@ function closeDrawer(){$("drawerBackdrop").classList.add("hidden")}
 function exportNotes(){
   const blob=new Blob([JSON.stringify({categories,notes},null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="notepal-backup.json";document.body.appendChild(a);a.click();a.remove();
+  a.href=url;a.download="preach-mate-backup.json";document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);closeDrawer();showToast("Backup exported");
 }
 function updateToolbarPosition(){
@@ -865,11 +685,15 @@ $("btnBack").addEventListener("click",closeEditor);
 $("btnCopy").addEventListener("click",copyCurrentNote);
 $("btnMenu").addEventListener("click",e=>{
   e.stopPropagation();const n=currentNote();
-  if(n)$("menuFavorite").textContent=n.favorite?"★ Remove Favorite":"☆ Favorite";
+  if(n){
+    $("menuFavorite").textContent=n.favorite?"★ Remove Favorite":"☆ Favorite";
+    updatePinMenu();
+  }
   menu.classList.toggle("hidden");
 });
 $("menuMode").addEventListener("click",()=>setMode(!isEditMode));
 $("menuMove").addEventListener("click",()=>{menu.classList.add("hidden");moveCategoryDialog()});
+$("menuPin").addEventListener("click",()=>{const n=currentNote();if(n){togglePin(n.id);menu.classList.add("hidden")}});
 $("menuFavorite").addEventListener("click",toggleFavorite);
 $("menuDelete").addEventListener("click",deleteCurrentNote);
 
