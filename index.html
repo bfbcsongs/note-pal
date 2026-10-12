@@ -112,7 +112,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
 
-/* FIX 2: Read Mode highlighter — visual only, no layout changes */
+/* FIX 2: Read Mode highlighter — thinner font, no layout changes */
 .read-word-marker{
   display:inline;
   position:relative;
@@ -125,14 +125,16 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   outline-offset:0;
   border-radius:1px;
   box-shadow:none!important;
-  text-shadow:0 0 1px #fff4a3,0 0 3px rgba(255,233,92,.65);
-  font-family:inherit!important;
+  text-shadow:0 0 1px rgba(255,244,163,.65);
+  font-family:Roboto, sans-serif!important;
   font-size:inherit!important;
-  font-weight:200!important;
+  font-weight:300!important;
+  -webkit-text-stroke:0!important;
   line-height:inherit!important;
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
 }
+
 .read-word-marker::after{
   content:none!important;
   display:none!important;
