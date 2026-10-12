@@ -759,7 +759,15 @@ function getTypingCaretRect(){
 
   const range = selection.getRangeAt(0);
 
-  if(!noteBody.contains(range.startContainer)) return null;
+/*
+  IMPORTANT:
+  Do not run typing auto-scroll while text is selected.
+  This prevents the auto-scroll from fighting Android's
+  upper and lower text-selection handles.
+*/
+if(!range.collapsed) return null;
+
+if(!noteBody.contains(range.startContainer)) return null;
 
   const caretRect = range.getBoundingClientRect();
 
