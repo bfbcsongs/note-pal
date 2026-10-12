@@ -112,7 +112,7 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
 
-/* FIX 2: Read Mode highlighter — thinner font, no layout changes */
+/* FIX 2: Read Mode highlighter — thin font with subtle vibration */
 .read-word-marker{
   display:inline;
   position:relative;
@@ -126,18 +126,34 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   border-radius:1px;
   box-shadow:none!important;
   text-shadow:0 0 1px rgba(255,244,163,.65);
-  font-family:Roboto, sans-serif!important;
+  font-family:Roboto,sans-serif!important;
   font-size:inherit!important;
-  font-weight:200!important;
+  font-weight:300!important;
   -webkit-text-stroke:0!important;
   line-height:inherit!important;
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
+  animation:wordVibrate .16s linear infinite;
+  will-change:transform;
 }
 
 .read-word-marker::after{
   content:none!important;
   display:none!important;
+}
+
+@keyframes wordVibrate{
+  0%   {transform:translateX(0);}
+  25%  {transform:translateX(-.35px);}
+  50%  {transform:translateX(.35px);}
+  75%  {transform:translateX(-.2px);}
+  100% {transform:translateX(0);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .read-word-marker{
+    animation:none!important;
+  }
 }
 
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
