@@ -112,9 +112,9 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
 
-/* FIX 2: Read Mode highlighter — thin font with subtle vibration */
+/* FIX 2: Read Mode highlighter — visible vibration */
 .read-word-marker{
-  display:inline;
+  display:inline-block!important;
   position:relative;
   padding:0!important;
   margin:0!important;
@@ -133,13 +133,27 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
   line-height:inherit!important;
   -webkit-box-decoration-break:clone;
   box-decoration-break:clone;
-  animation:wordVibrate .16s linear infinite;
+  animation:wordVibrate .12s linear infinite!important;
   will-change:transform;
 }
 
 .read-word-marker::after{
   content:none!important;
   display:none!important;
+}
+
+@keyframes wordVibrate{
+  0%,100% { transform:translateX(0); }
+  20%     { transform:translateX(-1.5px); }
+  40%     { transform:translateX(1.5px); }
+  60%     { transform:translateX(-1px); }
+  80%     { transform:translateX(1px); }
+}
+
+@media (prefers-reduced-motion:reduce){
+  .read-word-marker{
+    animation:none!important;
+  }
 }
 
 @keyframes wordVibrate{
