@@ -733,27 +733,40 @@ document.addEventListener("keydown",e=>{
 
 /* =========================================================
    PHONE BACK BUTTON / ANDROID BACK GESTURE
+   No timer for returning to Home.
+   2-second timer applies ONLY to exiting from Home.
    ========================================================= */
 
 let lastHomeBackTime=0;
 let backExitTimer=null;
 let allowNativeBack=false;
+let backActionInProgress=false;
+
+function addBackGuard(){
+  try{
+    history.pushState(
+      {preachMateGuard:true},
+      "",
+      location.href
+    );
+  }catch(e){}
+}
 
 function handleAppBack(){
 
-  /* 1. Dialog */
+  /* 1. Close dialog first */
   if(!$("dialogBackdrop").classList.contains("hidden")){
     closeDialog();
     return;
   }
 
-  /* 2. Drawer */
+  /* 2. Close drawer first */
   if(!$("drawerBackdrop").classList.contains("hidden")){
     closeDrawer();
     return;
   }
 
-  /* 3. Color palette */
+  /* 3. Close color palette first */
   if(typeof palette!=="undefined" &&
      palette &&
      !palette.classList.contains("hidden")){
@@ -761,36 +774,46 @@ function handleAppBack(){
     return;
   }
 
-  /* 4. More-options menu */
+  /* 4. Close more-options menu first */
   if(!menu.classList.contains("hidden")){
     menu.classList.add("hidden");
     return;
   }
 
-  /* 5. Note editor / Read Mode */
+  /* 5. Return from Read/Edit Mode to Home immediately */
   if(!editor.classList.contains("hidden")){
     saveCurrentNote();
     closeEditor();
+
     lastHomeBackTime=0;
     clearTimeout(backExitTimer);
     return;
   }
 
-  /* 6. Home screen */
+  /* 6. Home screen: double-Back detection only */
   const now=Date.now();
 
-  if(lastHomeBackTime && now-lastHomeBackTime<2000){
+  if(lastHomeBackTime!==0 &&
+     now-lastHomeBackTime<=2000){
+
     lastHomeBackTime=0;
     clearTimeout(backExitTimer);
 
     /*
-      Let the browser or installed PWA handle
-      its normal Back behavior.
+      Do not push another guard here.
+      Allow the browser/PWA to handle native Back.
     */
     allowNativeBack=true;
+    backActionInProgress=true;
+
+    setTimeout(()=>{
+      backActionInProgress=false;
+    },300);
+
     return;
   }
 
+  /* First Back on Home */
   lastHomeBackTime=now;
   showToast("Press back again to exit");
 
@@ -800,7 +823,7 @@ function handleAppBack(){
   },2000);
 }
 
-/* Initialize a single history guard */
+/* Initialize the history guard */
 try{
   history.replaceState(
     {preachMateBase:true},
@@ -808,15 +831,14 @@ try{
     location.href
   );
 
-  history.pushState(
-    {preachMateGuard:true},
-    "",
-    location.href
-  );
+  addBackGuard();
 }catch(e){}
 
 /* Handle Android/browser Back */
 window.addEventListener("popstate",()=>{
+
+  if(backActionInProgress)return;
+
   if(allowNativeBack){
     allowNativeBack=false;
     return;
@@ -825,17 +847,15 @@ window.addEventListener("popstate",()=>{
   handleAppBack();
 
   /*
-    Restore the guard after the first Back so
-    the app remains on screen.
+    Restore the guard after normal in-app Back actions.
+    Do not restore it after the second Home Back.
   */
-  if(lastHomeBackTime || !editor.classList.contains("hidden")){
-    try{
-      history.pushState(
-        {preachMateGuard:true},
-        "",
-        location.href
-      );
-    }catch(e){}
+  if(!allowNativeBack){
+    setTimeout(()=>{
+      if(!allowNativeBack){
+        addBackGuard();
+      }
+    },0);
   }
 });
 
