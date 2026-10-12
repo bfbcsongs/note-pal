@@ -746,9 +746,9 @@ function updateToolbarPosition(){
   }
 }
 
-/* AUTO-SCROLL: KEEP TYPING LINE ABOVE KEYBOARD */
-let typingScrollFrame=0;
-let lastTypingScroll=0;
+/* AUTO-SCROLL: KEEP TYPING LINE VISIBLE */
+let typingScrollFrame = 0;
+let lastCaretTop = null;
 
 function keepTypingLineVisible() {
   if (!isEditMode || editor.classList.contains("hidden")) return;
@@ -759,44 +759,54 @@ function keepTypingLineVisible() {
   const range = selection.getRangeAt(0);
   if (!noteBody.contains(range.startContainer)) return;
 
-  // Get caret rectangle
   const rect = range.getBoundingClientRect();
-  if (!rect || (rect.height === 0 && rect.width === 0)) return;
+  if (!rect || rect.height === 0) return;
 
-  // Get top edge of toolbar (or bottom of visible viewport)
-  const viewportBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
-  const toolbarTop = (!toolbar || toolbar.classList.contains("hidden"))
-    ? viewportBottom 
-    : toolbar.getBoundingClientRect().top;
+  const bodyRect = noteBody.getBoundingClientRect();
+  const lineHeight = parseFloat(getComputedStyle(noteBody).lineHeight) || 25;
 
-  // Set a safe margin above the toolbar (e.g. 20px buffer)
-  const safeBottomLimit = toolbarTop - 20;
+  // Panatilihin ang typing line sa komportableng puwesto.
+  const topLimit = bodyRect.top + 18;
+  const bottomLimit = Math.min(
+    bodyRect.bottom,
+    toolbar.classList.contains("hidden")
+      ? window.innerHeight
+      : toolbar.getBoundingClientRect().top
+  ) - lineHeight * 1.5;
 
-  // Scroll down if caret goes underneath toolbar/keyboard
-  if (rect.bottom > safeBottomLimit) {
-    noteBody.scrollTop += (rect.bottom - safeBottomLimit);
+  // Kapag lumampas sa ibabang limit, umusog pataas ang screen.
+  if (rect.bottom > bottomLimit) {
+    noteBody.scrollTop += rect.bottom - bottomLimit;
   }
+
+  // Kapag umakyat ang cursor lampas sa itaas na limit.
+  if (rect.top < topLimit) {
+    noteBody.scrollTop -= topLimit - rect.top;
+  }
+
+  lastCaretTop = rect.top;
 }
 
-function scheduleTypingScroll(){
-  if(typingScrollFrame){
+function scheduleTypingScroll() {
+  if (typingScrollFrame) {
     cancelAnimationFrame(typingScrollFrame);
   }
 
-  typingScrollFrame=requestAnimationFrame(()=>{
-    typingScrollFrame=0;
+  typingScrollFrame = requestAnimationFrame(() => {
+    typingScrollFrame = 0;
     keepTypingLineVisible();
   });
 }
 
-noteBody.addEventListener("input",scheduleTypingScroll);
-noteBody.addEventListener("keyup",scheduleTypingScroll);
-noteBody.addEventListener("click",scheduleTypingScroll);
+noteBody.addEventListener("input", scheduleTypingScroll);
+noteBody.addEventListener("keyup", scheduleTypingScroll);
+noteBody.addEventListener("click", scheduleTypingScroll);
 
-if(vv){
-  document.addEventListener("selectionchange", scheduleTypingScroll);
-  vv.addEventListener("resize",scheduleTypingScroll);
-  vv.addEventListener("scroll",scheduleTypingScroll);
+document.addEventListener("selectionchange", scheduleTypingScroll);
+
+if (vv) {
+  vv.addEventListener("resize", scheduleTypingScroll);
+  vv.addEventListener("scroll", scheduleTypingScroll);
 }
 
 $("btnBold").addEventListener("mousedown",e=>e.preventDefault());
