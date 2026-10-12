@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,12 +36,7 @@ input,button,select,textarea{font-size:16px}
 .home-content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 12px calc(90px + env(safe-area-inset-bottom))}
 .section-heading{font-size:13px;color:var(--muted);margin:3px 3px 12px}
 .notes-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.note-card{
-  height:210px;min-height:210px;min-width:0;
-  background:#fff;border:1px solid var(--border);border-radius:15px;
-  padding:13px;box-shadow:0 3px 12px #0000000b;
-  position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px;
-}
+.note-card{height:210px;min-height:210px;min-width:0;background:#fff;border:1px solid var(--border);border-radius:15px;padding:13px;box-shadow:0 3px 12px #0000000b;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
 .note-card.pinned{border-color:#93c5fd}
 .note-card-title{font-weight:750;font-size:15px;overflow-wrap:anywhere;padding-right:48px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex-shrink:0}
 .note-card-preview{font-size:13px;line-height:1.45;color:#4b5563;overflow-wrap:anywhere;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;flex-shrink:0}
@@ -50,12 +44,7 @@ input,button,select,textarea{font-size:16px}
 .note-card-meta{margin-top:auto;padding-top:5px;display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px;min-width:0}
 .note-card-meta span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .note-fav{position:absolute;top:10px;right:10px;font-size:15px;color:#d97706;pointer-events:none}
-.note-pin{
-  position:absolute;top:5px;right:32px;width:30px;height:30px;
-  border:0;border-radius:8px;background:transparent;color:#9ca3af;
-  display:flex;align-items:center;justify-content:center;font-size:17px;
-  padding:0;z-index:2;
-}
+.note-pin{position:absolute;top:5px;right:32px;width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-size:17px;padding:0;z-index:2}
 .note-pin:active{background:#dbeafe}
 .note-pin.is-pinned{color:#2563eb;background:#dbeafe}
 .note-pin:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
@@ -76,58 +65,16 @@ input,button,select,textarea{font-size:16px}
 .drawer-category .cat-icon{flex-shrink:0}
 .drawer-category .cat-name{overflow-wrap:anywhere}
 .drawer-footer{margin-top:auto;font-size:12px;color:var(--muted);padding:12px 6px}
-.editor-screen{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  z-index:30;
-  display:flex;
-  flex-direction:column;
-  padding-top:env(safe-area-inset-top);
-  padding-bottom:0;
-  min-height:0;
-}
+.editor-screen{position:fixed;inset:0;background:#fff;z-index:30;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:0;min-height:0}
 .editor-header{display:flex;align-items:center;gap:4px;padding:7px 7px;border-bottom:1px solid var(--border);min-height:54px;flex-shrink:0;background:#fff}
 .editor-title{flex:1;min-width:0;width:0;border:0;outline:0;background:transparent;font-size:18px;font-weight:750;padding:9px 5px;color:var(--text)}
 .editor-title::placeholder{color:#9ca3af}
 .mode-label{font-size:10px;color:var(--muted);padding:0 2px;flex-shrink:0}
-.save-status{
-  display:inline-block;
-  flex-shrink:0;
-  min-width:43px;
-  max-width:62px;
-  overflow:hidden;
-  white-space:nowrap;
-  text-overflow:clip;
-  text-align:center;
-  font-size:9px;
-  line-height:1.2;
-  font-weight:600;
-  padding:3px 2px;
-  border-radius:5px;
-}
+.save-status{display:inline-block;flex-shrink:0;min-width:43px;max-width:62px;overflow:hidden;white-space:nowrap;text-overflow:clip;text-align:center;font-size:9px;line-height:1.2;font-weight:600;padding:3px 2px;border-radius:5px}
 .save-status.saving{color:#92400e;background:#fef3c7}
 .save-status.saved{color:#166534;background:#dcfce7}
 .save-status.error{color:#b91c1c;background:#fee2e2}
-.note-body{
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  overscroll-behavior-y:contain;
-  outline:0;
-  border:0;
-  padding:18px 20px 120px;
-  font-size:17px;
-  line-height:1.45;
-  overflow-wrap:anywhere;
-  user-select:text;
-  -webkit-user-select:text;
-  box-sizing:border-box;
-  scroll-behavior:auto;
-  overflow-anchor:none;
-}
+.note-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;outline:0;border:0;padding:18px 20px 120px;font-size:17px;line-height:1.45;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text;box-sizing:border-box;scroll-behavior:auto;overflow-anchor:none}
 .note-body:empty:before{content:"Write your note here...";color:#9ca3af;pointer-events:none}
 .note-body[contenteditable="false"]{cursor:text}
 .note-body p{margin:0 0 8px}
@@ -135,15 +82,34 @@ input,button,select,textarea{font-size:16px}
 .note-body img{max-width:100%;height:auto}
 .note-body blockquote{border-left:3px solid #9ca3af;margin:8px 0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px;margin-top:6px;margin-bottom:8px}
-.read-word-marker{display:inline-block!important;position:relative;padding:0!important;margin:0!important;color:#ffeb3b!important;background:#8f7910!important;border:0!important;outline:1px solid #ffe45c;outline-offset:0;border-radius:1px;box-shadow:none!important;text-shadow:0 0 1px rgba(255,244,163,.65);font-family:Roboto,sans-serif!important;font-size:inherit!important;font-weight:300!important;-webkit-text-stroke:0!important;line-height:inherit!important;-webkit-box-decoration-break:clone;box-decoration-break:clone;animation:wordVibrate 1.8s linear infinite!important;will-change:transform}
-.read-word-marker::after{content:none!important;display:none!important}
-@keyframes wordVibrate{
-  0%,15%{transform:translateX(0)}
-  2%,6%,10%,14%{transform:translateX(-1.5px)}
-  4%,8%,12%{transform:translateX(1.5px)}
-  16%,100%{transform:translateX(0)}
+
+/* READ MODE MARKER: stable inline text, no vibration or layout shifting. */
+.read-word-marker{
+  display:inline!important;
+  position:relative;
+  padding:0!important;
+  margin:0!important;
+  color:#ffeb3b!important;
+  background:#8f7910!important;
+  border:0!important;
+  outline:1px solid #ffe45c;
+  outline-offset:0;
+  border-radius:1px;
+  box-shadow:none!important;
+  text-shadow:0 0 1px rgba(255,244,163,.65);
+  font-family:inherit!important;
+  font-size:inherit!important;
+  font-weight:400!important;
+  -webkit-text-stroke:0!important;
+  line-height:inherit!important;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+  animation:none!important;
+  transform:none!important;
+  will-change:auto;
 }
-@media(prefers-reduced-motion:reduce){.read-word-marker{animation:none!important}}
+.read-word-marker::after{content:none!important;display:none!important}
+
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
 .fmt-btn{min-width:30px;height:38px;border:1px solid transparent;border-radius:8px;background:transparent;color:#1f2937;display:inline-flex;align-items:center;justify-content:center;font-size:16px;padding:5px 4px;flex:1;max-width:55px}
 .fmt-btn:active,.fmt-btn.active{background:#e5e7eb}
@@ -335,14 +301,10 @@ function setSaveStatus(state){
   else if(state==="saved")status.textContent="✓ Saved";
   else status.textContent="Save failed";
 }
-
 function scheduleSavedStatus(){
   clearTimeout(saveStatusTimer);
-  saveStatusTimer=setTimeout(()=>{
-    setSaveStatus("saved");
-  },220);
+  saveStatusTimer=setTimeout(()=>setSaveStatus("saved"),220);
 }
-
 function persist(){
   try{
     localStorage.setItem(STORAGE_KEY,JSON.stringify(notes));
@@ -379,7 +341,8 @@ function highlightSearchTerms(text,query){
 }
 function showToast(msg){
   $("toast").textContent=msg;$("toast").classList.remove("hidden");
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),1900);
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),1900);
 }
 function cleanTemporaryMarker(root){
   root.querySelectorAll(".read-word-marker").forEach(s=>s.replaceWith(...s.childNodes));
@@ -392,23 +355,15 @@ function saveCurrentNote(){
   n.fontSize=parseInt(noteBody.dataset.fontSize||n.fontSize||17,10);
   n.color=noteBody.style.color||n.color||"#111827";
   n.updated=Date.now();
-
   setSaveStatus("saving");
   const saved=persist();
-
-  if(saved){
-    scheduleSavedStatus();
-  }else{
-    clearTimeout(saveStatusTimer);
-    setSaveStatus("error");
-  }
+  if(saved)scheduleSavedStatus();
+  else{clearTimeout(saveStatusTimer);setSaveStatus("error")}
 }
 function togglePin(id){
   const n=notes.find(x=>x.id===id);if(!n)return;
-  n.pinned=!n.pinned;
-  n.updated=Date.now();
-  persist();
-  renderNotes();
+  n.pinned=!n.pinned;n.updated=Date.now();
+  persist();renderNotes();
   if(currentNoteId===id)updatePinMenu();
   showToast(n.pinned?"📌 Note pinned to top":"Pin removed");
 }
@@ -446,8 +401,7 @@ function renderDrawerCategories(){
     b.className="drawer-category"+(activeCategory===cat&&!favoritesOnly?" active":"");
     b.dataset.category=cat;
     const handle=document.createElement("span");
-    handle.className="cat-drag-handle";
-    handle.textContent=cat==="All Notes"?"":"⠿";
+    handle.className="cat-drag-handle";handle.textContent=cat==="All Notes"?"":"⠿";
     handle.setAttribute("aria-label",cat==="All Notes"?"":"Drag to reorder category");
     if(cat==="All Notes")handle.style.display="none";
     const icon=document.createElement("span");
@@ -469,7 +423,7 @@ function renderDrawerCategories(){
 }
 function attachCategoryDrag(button,surface){
   const isTabs=surface==="tabs";
-  const container=isTabs?$ ("categoryTabs"):$("drawerCategories");
+  const container=isTabs?$("categoryTabs"):$("drawerCategories");
   const selector=isTabs?".category-tab[data-category]":".drawer-category[data-category]";
   const axis=isTabs?"x":"y";
   button.addEventListener("pointerdown",e=>{
@@ -497,7 +451,7 @@ function attachCategoryDrag(button,surface){
     const rect=target.getBoundingClientRect();
     const before=axis==="x"?e.clientX<rect.left+rect.width/2:e.clientY<rect.top+rect.height/2;
     if(before){if(button.nextElementSibling!==target)container.insertBefore(button,target)}
-    else{if(target.nextElementSibling!==button)container.insertBefore(button,target.nextElementSibling)}
+    else if(target.nextElementSibling!==button)container.insertBefore(button,target.nextElementSibling);
   });
   const finish=e=>{
     if(!dragInfo||dragInfo.button!==button||dragInfo.pointerId!==e.pointerId)return;
@@ -508,8 +462,7 @@ function attachCategoryDrag(button,surface){
       const reordered=[...container.querySelectorAll(selector)].map(el=>el.dataset.category).filter(cat=>cat&&cat!=="All Notes");
       const remaining=categories.filter(cat=>cat!=="All Notes"&&!reordered.includes(cat));
       categories=["All Notes",...reordered,...remaining];
-      persist();suppressCategoryClick=true;
-      renderCategories();renderNotes();
+      persist();suppressCategoryClick=true;renderCategories();renderNotes();
       showToast("Category order saved");
       setTimeout(()=>{suppressCategoryClick=false},350);
     }
@@ -551,17 +504,14 @@ function renderNotes(){
     const cat=document.createElement("span");cat.textContent=n.category||"Personal";
     const date=document.createElement("span");date.textContent="· "+new Date(n.updated||Date.now()).toLocaleDateString();
     meta.append(cat,date);card.append(title,preview,meta);
-
     const pin=document.createElement("button");
-    pin.type="button";
-    pin.className="note-pin"+(n.pinned?" is-pinned":"");
+    pin.type="button";pin.className="note-pin"+(n.pinned?" is-pinned":"");
     pin.textContent=n.pinned?"📌":"♧";
     pin.title=n.pinned?"Unpin note":"Pin to top";
     pin.setAttribute("aria-label",n.pinned?"Unpin note":"Pin note to top");
     pin.setAttribute("aria-pressed",String(!!n.pinned));
     pin.addEventListener("click",e=>{e.stopPropagation();togglePin(n.id)});
     card.appendChild(pin);
-
     if(n.favorite){
       const star=document.createElement("span");star.className="note-fav";star.textContent="★";card.appendChild(star);
     }
@@ -570,8 +520,7 @@ function renderNotes(){
   });
   $("emptyState").classList.toggle("hidden",list.length!==0);
 }
-
-function openNote(id){
+  function openNote(id){
   currentNoteId=id;const n=currentNote();if(!n)return;
   clearReadMarker();noteTitle.value=n.title||"";noteBody.innerHTML=n.content||"";
   noteBody.dataset.fontSize=String(n.fontSize||17);
@@ -600,13 +549,10 @@ function setMode(edit){
   $("modeLabel").textContent=isEditMode?"EDIT":"READ";
   $("menuMode").textContent=isEditMode?"Read Mode":"Edit Mode";
   toolbar.classList.toggle("hidden",!isEditMode);
-
   if(isEditMode){
     updateToolbarPosition();
     updateNoteBottomSpace();
-    requestAnimationFrame(()=>{
-      scheduleTypingScroll();
-    });
+    requestAnimationFrame(()=>scheduleTypingScroll());
   }else{
     toolbar.style.bottom="0px";
     noteBody.style.paddingBottom="120px";
@@ -653,32 +599,30 @@ function saveSelection(){
 }
 function restoreSelection(){
   if(!savedSelection)return;
-  try{noteBody.focus({preventScroll:true});const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection)}catch(e){}
+  try{
+    noteBody.focus({preventScroll:true});
+    const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection);
+  }catch(e){}
 }
 function applyCommand(command,value=null){
   if(!isEditMode)setMode(true);
-  restoreSelection();noteBody.focus();
-  try{document.execCommand(command,false,value)}catch(e){}
+  restoreSelection();
+  try{
+    noteBody.focus({preventScroll:true});
+    document.execCommand(command,false,value);
+  }catch(e){}
   saveCurrentNote();saveSelection();
 }
-  function applyHistoryCommand(command){
-  if(!isEditMode || !currentNote()) return;
-
+function applyHistoryCommand(command){
+  if(!isEditMode||!currentNote())return;
   restoreSelection();
-
-  const previousScrollTop = noteBody.scrollTop;
-
+  const previousScrollTop=noteBody.scrollTop;
   try{
     noteBody.focus({preventScroll:true});
     document.execCommand(command,false,null);
   }catch(e){}
-
-  saveSelection();
-  saveCurrentNote();
-
-  requestAnimationFrame(()=>{
-    noteBody.scrollTop = previousScrollTop;
-  });
+  saveSelection();saveCurrentNote();
+  requestAnimationFrame(()=>{noteBody.scrollTop=previousScrollTop});
 }
 function openPalette(type){
   if(!isEditMode)setMode(true);
@@ -690,7 +634,8 @@ function openPalette(type){
     b.style.background=color.value;b.title=color.name;b.setAttribute("aria-label",color.name);
     b.addEventListener("mousedown",e=>e.preventDefault());
     b.addEventListener("click",()=>{
-      restoreSelection();noteBody.focus();
+      restoreSelection();
+      try{noteBody.focus({preventScroll:true})}catch(e){}
       if(type==="highlight"){
         try{document.execCommand("hiliteColor",false,color.value)}
         catch(e){try{document.execCommand("backColor",false,color.value)}catch(ignore){}}
@@ -771,297 +716,147 @@ function exportNotes(){
 
 function updateToolbarPosition(){
   if(!isEditMode||editor.classList.contains("hidden")){
-    toolbar.classList.add("hidden");
-    return;
+    toolbar.classList.add("hidden");return;
   }
-
   toolbar.classList.remove("hidden");
-
   let bottom=0;
-
   if(vv){
     const gap=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
     bottom=vv.height<window.innerHeight*.82?gap:0;
   }
-
   toolbar.style.bottom=bottom+"px";
-
-  if(!palette.classList.contains("hidden")){
-    palette.style.bottom=(bottom+55)+"px";
-  }
+  if(!palette.classList.contains("hidden"))palette.style.bottom=(bottom+55)+"px";
 }
 
-/* =========================================================
-   AUTO-SCROLL FIX
-   Normal typing: keep caret above toolbar/keyboard.
-   After paste: position final caret line at 65% of the
-   visible editing area above toolbar and keyboard.
-   ========================================================= */
-
-let typingScrollFrame = 0;
-let typingScrollFrame2 = 0;
-let pasteScrollPending = false;
-let pasteScrollToken = 0;
+/* AUTO-SCROLL FIX */
+let typingScrollFrame=0;
+let typingScrollFrame2=0;
+let pasteScrollPending=false;
+let pasteScrollToken=0;
 
 function updateNoteBottomSpace(){
-  if(!noteBody || !toolbar) return;
-
-  const viewportHeight = vv ? vv.height : window.innerHeight;
-  const toolbarHeight = toolbar.classList.contains("hidden")
-    ? 0
-    : toolbar.getBoundingClientRect().height;
-
-  const extraSpace = Math.max(
-    120,
-    viewportHeight - toolbarHeight
-  );
-
-  noteBody.style.paddingBottom =
-    `calc(${Math.ceil(extraSpace)}px + env(safe-area-inset-bottom))`;
+  if(!noteBody||!toolbar)return;
+  const viewportHeight=vv?vv.height:window.innerHeight;
+  const toolbarHeight=toolbar.classList.contains("hidden")?0:toolbar.getBoundingClientRect().height;
+  const extraSpace=Math.max(120,viewportHeight-toolbarHeight);
+  noteBody.style.paddingBottom=`calc(${Math.ceil(extraSpace)}px + env(safe-area-inset-bottom))`;
 }
-
 function getVisibleTypingArea(){
-  const bodyRect = noteBody.getBoundingClientRect();
-
-  const viewportTop = vv ? vv.offsetTop : 0;
-  const viewportBottom = vv
-    ? vv.offsetTop + vv.height
-    : window.innerHeight;
-
-  const toolbarTop = toolbar.classList.contains("hidden")
-    ? viewportBottom
-    : toolbar.getBoundingClientRect().top;
-
-  const visibleTop = Math.max(bodyRect.top, viewportTop) + 8;
-  const visibleBottom = Math.min(
-    bodyRect.bottom,
-    toolbarTop,
-    viewportBottom
-  ) - 8;
-
-  if(visibleBottom <= visibleTop) return null;
-
-  return {
-    visibleTop,
-    visibleBottom,
-    targetY: visibleTop + (visibleBottom - visibleTop) * 0.65
-  };
+  const bodyRect=noteBody.getBoundingClientRect();
+  const viewportTop=vv?vv.offsetTop:0;
+  const viewportBottom=vv?vv.offsetTop+vv.height:window.innerHeight;
+  const toolbarTop=toolbar.classList.contains("hidden")?viewportBottom:toolbar.getBoundingClientRect().top;
+  const visibleTop=Math.max(bodyRect.top,viewportTop)+8;
+  const visibleBottom=Math.min(bodyRect.bottom,toolbarTop,viewportBottom)-8;
+  if(visibleBottom<=visibleTop)return null;
+  return{visibleTop,visibleBottom,targetY:visibleTop+(visibleBottom-visibleTop)*0.65};
 }
-
 function getTypingCaretRect(){
-  const selection = window.getSelection();
-
-  if(!selection || !selection.rangeCount) return null;
-
-  const range = selection.getRangeAt(0);
-
-  // Avoid fighting Android's upper and lower selection handles.
-  if(!range.collapsed) return null;
-  if(!noteBody.contains(range.startContainer)) return null;
-
-  const caretRect = range.getBoundingClientRect();
-
-  if(caretRect.height > 0) return caretRect;
-
-  const node = range.startContainer;
-
-  if(node.nodeType === Node.TEXT_NODE && node.textContent.length){
-    const length = node.textContent.length;
-    const offset = Math.max(
-      0,
-      Math.min(range.startOffset, length - 1)
-    );
-
-    const probe = document.createRange();
-    probe.setStart(node, offset);
-    probe.setEnd(node, Math.min(offset + 1, length));
-
-    const rects = probe.getClientRects();
-
+  const selection=window.getSelection();
+  if(!selection||!selection.rangeCount)return null;
+  const range=selection.getRangeAt(0);
+  if(!range.collapsed)return null;
+  if(!noteBody.contains(range.startContainer))return null;
+  const caretRect=range.getBoundingClientRect();
+  if(caretRect.height>0)return caretRect;
+  const node=range.startContainer;
+  if(node.nodeType===Node.TEXT_NODE&&node.textContent.length){
+    const length=node.textContent.length;
+    const offset=Math.max(0,Math.min(range.startOffset,length-1));
+    const probe=document.createRange();
+    probe.setStart(node,offset);probe.setEnd(node,Math.min(offset+1,length));
+    const rects=probe.getClientRects();
     if(rects.length){
-      const r = rects[rects.length - 1];
-      return {
-        top:r.top,
-        bottom:r.bottom,
-        height:r.height,
-        left:r.left,
-        right:r.right,
-        width:r.width
-      };
+      const r=rects[rects.length-1];
+      return{top:r.top,bottom:r.bottom,height:r.height,left:r.left,right:r.right,width:r.width};
     }
   }
-
-  if(node.nodeType === Node.ELEMENT_NODE && range.startOffset > 0){
-    const previous = node.childNodes[range.startOffset - 1];
-
+  if(node.nodeType===Node.ELEMENT_NODE&&range.startOffset>0){
+    const previous=node.childNodes[range.startOffset-1];
     if(previous){
-      const probe = document.createRange();
-
+      const probe=document.createRange();
       try{
-        if(previous.nodeType === Node.TEXT_NODE && previous.length){
-          probe.setStart(previous, previous.length - 1);
-          probe.setEnd(previous, previous.length);
-        }else{
-          probe.selectNodeContents(previous);
-          probe.collapse(false);
-        }
-
-        const r = probe.getBoundingClientRect();
-        if(r.height > 0) return r;
+        if(previous.nodeType===Node.TEXT_NODE&&previous.length){
+          probe.setStart(previous,previous.length-1);probe.setEnd(previous,previous.length);
+        }else{probe.selectNodeContents(previous);probe.collapse(false)}
+        const r=probe.getBoundingClientRect();
+        if(r.height>0)return r;
       }catch(e){}
     }
   }
-
   return null;
 }
-
-/* Keep normal typing behavior separate from paste positioning. */
 function keepTypingLineVisible(){
-  if(
-    pasteScrollPending ||
-    !isEditMode ||
-    editor.classList.contains("hidden") ||
-    document.activeElement !== noteBody
-  ){
-    return;
-  }
-
-  const caret = getTypingCaretRect();
-  const area = getVisibleTypingArea();
-
-  if(!caret || !area) return;
-
-  if(caret.bottom > area.visibleBottom - 2){
-    noteBody.scrollTop += caret.bottom - (area.visibleBottom - 2);
-    return;
-  }
-
-  if(caret.top < area.visibleTop){
-    noteBody.scrollTop -= area.visibleTop - caret.top;
-  }
+  if(pasteScrollPending||!isEditMode||editor.classList.contains("hidden")||document.activeElement!==noteBody)return;
+  const caret=getTypingCaretRect(),area=getVisibleTypingArea();
+  if(!caret||!area)return;
+  if(caret.bottom>area.visibleBottom-2){noteBody.scrollTop+=caret.bottom-(area.visibleBottom-2);return}
+  if(caret.top<area.visibleTop)noteBody.scrollTop-=area.visibleTop-caret.top;
 }
-
 function scheduleTypingScroll(){
-  if(pasteScrollPending) return;
-
-  if(typingScrollFrame){
-    cancelAnimationFrame(typingScrollFrame);
-    typingScrollFrame = 0;
-  }
-
-  if(typingScrollFrame2){
-    cancelAnimationFrame(typingScrollFrame2);
-    typingScrollFrame2 = 0;
-  }
-
-  typingScrollFrame = requestAnimationFrame(()=>{
-    typingScrollFrame = 0;
-
-    typingScrollFrame2 = requestAnimationFrame(()=>{
-      typingScrollFrame2 = 0;
-      keepTypingLineVisible();
+  if(pasteScrollPending)return;
+  if(typingScrollFrame){cancelAnimationFrame(typingScrollFrame);typingScrollFrame=0}
+  if(typingScrollFrame2){cancelAnimationFrame(typingScrollFrame2);typingScrollFrame2=0}
+  typingScrollFrame=requestAnimationFrame(()=>{
+    typingScrollFrame=0;
+    typingScrollFrame2=requestAnimationFrame(()=>{
+      typingScrollFrame2=0;keepTypingLineVisible();
     });
   });
 }
-
-/* Position the final line after a paste has been inserted. */
 function keepPastedTailAtTarget(){
-  if(
-    !isEditMode ||
-    editor.classList.contains("hidden") ||
-    document.activeElement !== noteBody
-  ){
-    return false;
-  }
-
-  const caret = getTypingCaretRect();
-  const area = getVisibleTypingArea();
-
-  if(!caret || !area) return false;
-
-  const difference = caret.bottom - area.targetY;
-
-  if(Math.abs(difference) > 1){
-    noteBody.scrollTop += difference;
-  }
-
+  if(!isEditMode||editor.classList.contains("hidden")||document.activeElement!==noteBody)return false;
+  const caret=getTypingCaretRect(),area=getVisibleTypingArea();
+  if(!caret||!area)return false;
+  const difference=caret.bottom-area.targetY;
+  if(Math.abs(difference)>1)noteBody.scrollTop+=difference;
   return true;
 }
-
 function schedulePasteTailScroll(){
-  pasteScrollPending = true;
-  const token = ++pasteScrollToken;
-
+  pasteScrollPending=true;
+  const token=++pasteScrollToken;
   setTimeout(()=>{
-    if(token !== pasteScrollToken) return;
-
-    updateToolbarPosition();
-    updateNoteBottomSpace();
-
-    let attempts = 0;
-
+    if(token!==pasteScrollToken)return;
+    updateToolbarPosition();updateNoteBottomSpace();
+    let attempts=0;
     function positionPastedTail(){
-      if(token !== pasteScrollToken) return;
-
-      updateToolbarPosition();
-      updateNoteBottomSpace();
-
-      const positioned = keepPastedTailAtTarget();
-
-      if(positioned || attempts >= 8){
-        pasteScrollPending = false;
-        scheduleTypingScroll();
-        return;
+      if(token!==pasteScrollToken)return;
+      updateToolbarPosition();updateNoteBottomSpace();
+      const positioned=keepPastedTailAtTarget();
+      if(positioned||attempts>=8){
+        pasteScrollPending=false;scheduleTypingScroll();return;
       }
-
-      attempts++;
-      requestAnimationFrame(positionPastedTail);
+      attempts++;requestAnimationFrame(positionPastedTail);
     }
-
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(positionPastedTail);
-    });
+    requestAnimationFrame(()=>requestAnimationFrame(positionPastedTail));
   },0);
 }
 
-noteBody.addEventListener("paste", schedulePasteTailScroll);
-noteBody.addEventListener("input", scheduleTypingScroll);
-noteBody.addEventListener("keyup", scheduleTypingScroll);
-noteBody.addEventListener("click", scheduleTypingScroll);
-noteBody.addEventListener("paste", schedulePasteTailScroll);
-noteBody.addEventListener("input", scheduleTypingScroll);
-noteBody.addEventListener("keyup", scheduleTypingScroll);
-noteBody.addEventListener("click", scheduleTypingScroll);
-noteBody.addEventListener("focus", scheduleTypingScroll);
-noteBody.addEventListener("focus", scheduleTypingScroll);
+/* Each listener is registered only once. */
+noteBody.addEventListener("paste",schedulePasteTailScroll);
+noteBody.addEventListener("input",scheduleTypingScroll);
+noteBody.addEventListener("keyup",scheduleTypingScroll);
+noteBody.addEventListener("click",scheduleTypingScroll);
+noteBody.addEventListener("focus",scheduleTypingScroll);
 
 if(vv){
-  vv.addEventListener("resize", ()=>{
-    updateToolbarPosition();
-    updateNoteBottomSpace();
-    scheduleTypingScroll();
+  vv.addEventListener("resize",()=>{
+    updateToolbarPosition();updateNoteBottomSpace();scheduleTypingScroll();
   });
-
-  vv.addEventListener("scroll", ()=>{
-    updateToolbarPosition();
-    updateNoteBottomSpace();
-    scheduleTypingScroll();
+  vv.addEventListener("scroll",()=>{
+    updateToolbarPosition();updateNoteBottomSpace();
   });
 }
 
-$("btnBold").addEventListener("mousedown",e=>e.preventDefault());
-$("btnItalic").addEventListener("mousedown",e=>e.preventDefault());
-$("btnUnderline").addEventListener("mousedown",e=>e.preventDefault());
-$("btnHighlight").addEventListener("mousedown",e=>e.preventDefault());
-$("btnTextColor").addEventListener("mousedown",e=>e.preventDefault());
+["btnBold","btnItalic","btnUnderline","btnHighlight","btnTextColor"].forEach(id=>{
+  $(id).addEventListener("mousedown",e=>e.preventDefault());
+});
 toolbar.querySelectorAll("button").forEach(b=>{
   b.addEventListener("mousedown",e=>{e.preventDefault();saveSelection()});
   b.addEventListener("touchstart",saveSelection,{passive:true});
 });
 $("btnUndo").addEventListener("click",()=>applyHistoryCommand("undo"));
 $("btnRedo").addEventListener("click",()=>applyHistoryCommand("redo"));
-
-$("btnBold").addEventListener("click",()=>applyCommand("bold"));
 $("btnBold").addEventListener("click",()=>applyCommand("bold"));
 $("btnItalic").addEventListener("click",()=>applyCommand("italic"));
 $("btnUnderline").addEventListener("click",()=>applyCommand("underline"));
@@ -1087,11 +882,8 @@ $("btnMenu").addEventListener("click",e=>{
   menu.classList.toggle("hidden");
 });
 document.addEventListener("click",e=>{
-  if(menu.classList.contains("hidden")) return;
-
-  if(!menu.contains(e.target) && !e.target.closest("#btnMenu")){
-    menu.classList.add("hidden");
-  }
+  if(menu.classList.contains("hidden"))return;
+  if(!menu.contains(e.target)&&!e.target.closest("#btnMenu"))menu.classList.add("hidden");
 });
 $("menuMode").addEventListener("click",()=>setMode(!isEditMode));
 $("menuMove").addEventListener("click",()=>{menu.classList.add("hidden");moveCategoryDialog()});
@@ -1126,137 +918,59 @@ document.addEventListener("keydown",e=>{
     else if(!menu.classList.contains("hidden"))menu.classList.add("hidden");
     else if(!editor.classList.contains("hidden"))closeEditor();
   }
-
   if(e.key==="Enter"&&e.target.id==="dialogCategoryName"){
-    e.preventDefault();
-    $("dialogConfirm").click();
+    e.preventDefault();$("dialogConfirm").click();
   }
 });
 
-/* =========================================================
-   PHONE BACK BUTTON / ANDROID BACK GESTURE
-   No timer for returning to Home.
-   2-second timer applies ONLY to exiting from Home.
-   ========================================================= */
-
+/* PHONE BACK BUTTON / ANDROID BACK GESTURE */
 let lastHomeBackTime=0;
 let backExitTimer=null;
 let allowNativeBack=false;
 let backActionInProgress=false;
 
 function addBackGuard(){
-  try{
-    history.pushState(
-      {preachMateGuard:true},
-      "",
-      location.href
-    );
-  }catch(e){}
+  try{history.pushState({preachMateGuard:true},"",location.href)}catch(e){}
 }
-
 function handleAppBack(){
-  if(!$("dialogBackdrop").classList.contains("hidden")){
-    closeDialog();
-    return;
-  }
-
-  if(!$("drawerBackdrop").classList.contains("hidden")){
-    closeDrawer();
-    return;
-  }
-
-  if(
-    palette &&
-    !palette.classList.contains("hidden")
-  ){
-    closePalette();
-    return;
-  }
-
-  if(!menu.classList.contains("hidden")){
-    menu.classList.add("hidden");
-    return;
-  }
-
+  if(!$("dialogBackdrop").classList.contains("hidden")){closeDialog();return}
+  if(!$("drawerBackdrop").classList.contains("hidden")){closeDrawer();return}
+  if(palette&&!palette.classList.contains("hidden")){closePalette();return}
+  if(!menu.classList.contains("hidden")){menu.classList.add("hidden");return}
   if(!editor.classList.contains("hidden")){
-    saveCurrentNote();
-    closeEditor();
-
-    lastHomeBackTime=0;
-    clearTimeout(backExitTimer);
-    return;
+    saveCurrentNote();closeEditor();
+    lastHomeBackTime=0;clearTimeout(backExitTimer);return;
   }
-
   const now=Date.now();
-
-  if(lastHomeBackTime!==0 &&
-     now-lastHomeBackTime<=2000){
-
-    lastHomeBackTime=0;
-    clearTimeout(backExitTimer);
-
-    allowNativeBack=true;
-    backActionInProgress=true;
-
-    setTimeout(()=>{
-      backActionInProgress=false;
-    },300);
-
+  if(lastHomeBackTime!==0&&now-lastHomeBackTime<=2000){
+    lastHomeBackTime=0;clearTimeout(backExitTimer);
+    allowNativeBack=true;backActionInProgress=true;
+    setTimeout(()=>{backActionInProgress=false},300);
     return;
   }
-
   lastHomeBackTime=now;
   showToast("Press back again to exit");
-
   clearTimeout(backExitTimer);
-  backExitTimer=setTimeout(()=>{
-    lastHomeBackTime=0;
-  },2000);
+  backExitTimer=setTimeout(()=>{lastHomeBackTime=0},2000);
 }
-
 try{
-  history.replaceState(
-    {preachMateBase:true},
-    "",
-    location.href
-  );
-
+  history.replaceState({preachMateBase:true},"",location.href);
   addBackGuard();
 }catch(e){}
-
 window.addEventListener("popstate",()=>{
-  if(allowNativeBack){
-    allowNativeBack=false;
-    return;
-  }
-
+  if(allowNativeBack){allowNativeBack=false;return}
   if(backActionInProgress)return;
-
   handleAppBack();
-
-  if(!allowNativeBack){
-    setTimeout(()=>{
-      if(!allowNativeBack){
-        addBackGuard();
-      }
-    },0);
-  }
+  if(!allowNativeBack)setTimeout(()=>{if(!allowNativeBack)addBackGuard()},0);
 });
-
 window.addEventListener("resize",()=>{
-  updateToolbarPosition();
-  updateNoteBottomSpace();
-  scheduleTypingScroll();
+  updateToolbarPosition();updateNoteBottomSpace();scheduleTypingScroll();
 });
-
 window.addEventListener("pagehide",()=>{
   if(currentNoteId)saveCurrentNote();
 });
-
 document.addEventListener("visibilitychange",()=>{
-  if(document.visibilityState==="hidden"&&currentNoteId){
-    saveCurrentNote();
-  }
+  if(document.visibilityState==="hidden"&&currentNoteId)saveCurrentNote();
 });
 
 persist();
