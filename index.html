@@ -737,50 +737,31 @@ function updateToolbarPosition(){
 let typingScrollFrame=0;
 let lastTypingScroll=0;
 
-function keepTypingLineVisible(){
-  if(!isEditMode||editor.classList.contains("hidden")) return;
+function keepTypingLineVisible() {
+  if (!isEditMode || editor.classList.contains("hidden")) return;
 
-  const selection=window.getSelection();
-  if(!selection||!selection.rangeCount) return;
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount) return;
 
-  const range=selection.getRangeAt(0);
-  if(!noteBody.contains(range.startContainer)) return;
+  const range = selection.getRangeAt(0);
+  if (!noteBody.contains(range.startContainer)) return;
 
-  const caret=range.cloneRange();
-  caret.collapse(true);
+  // Get caret rectangle
+  const rect = range.getBoundingClientRect();
+  if (!rect || (rect.height === 0 && rect.width === 0)) return;
 
-  let rect=caret.getBoundingClientRect();
-
-  if(!rect||(!rect.height&&!rect.width)) return;
-
-  const bodyRect=noteBody.getBoundingClientRect();
-
-  const viewportBottom=vv
-    ? vv.offsetTop+vv.height
-    : window.innerHeight;
-
-  const toolbarTop=toolbar.classList.contains("hidden")
-    ? viewportBottom
+  // Get top edge of toolbar (or bottom of visible viewport)
+  const viewportBottom = vv ? (vv.offsetTop + vv.height) : window.innerHeight;
+  const toolbarTop = (!toolbar || toolbar.classList.contains("hidden"))
+    ? viewportBottom 
     : toolbar.getBoundingClientRect().top;
 
-  const visibleBottom=Math.min(
-    bodyRect.bottom,
-    viewportBottom,
-    toolbarTop
-  )-12;
+  // Set a safe margin above the toolbar (e.g. 20px buffer)
+  const safeBottomLimit = toolbarTop - 20;
 
-  const visibleTop=bodyRect.top+8;
-
-  let amount=0;
-
-  if(rect.bottom>visibleBottom){
-    amount=rect.bottom-visibleBottom+12;
-  }else if(rect.top<visibleTop){
-    amount=rect.top-visibleTop;
-  }
-
-  if(amount!==0){
-    noteBody.scrollTop+=amount;
+  // Scroll down if caret goes underneath toolbar/keyboard
+  if (rect.bottom > safeBottomLimit) {
+    noteBody.scrollTop += (rect.bottom - safeBottomLimit);
   }
 }
 
@@ -800,6 +781,7 @@ noteBody.addEventListener("keyup",scheduleTypingScroll);
 noteBody.addEventListener("click",scheduleTypingScroll);
 
 if(vv){
+  document.addEventListener("selectionchange", scheduleTypingScroll);
   vv.addEventListener("resize",scheduleTypingScroll);
   vv.addEventListener("scroll",scheduleTypingScroll);
 }
