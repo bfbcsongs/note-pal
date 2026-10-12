@@ -710,81 +710,98 @@ function exportNotes(){
   a.href=url;a.download="preach-mate-backup.json";document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);closeDrawer();showToast("Backup exported");
 }
+
 function updateToolbarPosition(){
-  if(!isEditMode||editor.classList.contains("hidden")){toolbar.classList.add("hidden");return}
+  if(!isEditMode||editor.classList.contains("hidden")){
+    toolbar.classList.add("hidden");
+    return;
+  }
+
   toolbar.classList.remove("hidden");
+
   let bottom=0;
+
   if(vv){
     const gap=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
     bottom=vv.height<window.innerHeight*.82?gap:0;
   }
+
   toolbar.style.bottom=bottom+"px";
-  if(!palette.classList.contains("hidden"))palette.style.bottom=(bottom+55)+"px";
+
+  if(!palette.classList.contains("hidden")){
+    palette.style.bottom=(bottom+55)+"px";
+  }
 }
 
 /* AUTO-SCROLL: KEEP TYPING LINE ABOVE KEYBOARD */
-let typingScrollFrame = 0;
+let typingScrollFrame=0;
+let lastTypingScroll=0;
 
 function keepTypingLineVisible(){
-  if(!isEditMode || editor.classList.contains("hidden")) return;
+  if(!isEditMode||editor.classList.contains("hidden")) return;
 
-  const selection = window.getSelection();
-  if(!selection || !selection.rangeCount) return;
+  const selection=window.getSelection();
+  if(!selection||!selection.rangeCount) return;
 
-  const range = selection.getRangeAt(0);
+  const range=selection.getRangeAt(0);
   if(!noteBody.contains(range.startContainer)) return;
 
-  const caret = range.cloneRange();
+  const caret=range.cloneRange();
   caret.collapse(true);
 
-  let rect = caret.getBoundingClientRect();
+  let rect=caret.getBoundingClientRect();
 
-  if(!rect || (!rect.height && !rect.width)){
-    const node = range.startContainer;
-    if(node.nodeType === Node.TEXT_NODE && node.textContent.length){
-      const pos = Math.min(range.startOffset, node.textContent.length - 1);
-      const fallback = document.createRange();
-      fallback.setStart(node, pos);
-      fallback.setEnd(node, pos + 1);
-      rect = fallback.getBoundingClientRect();
-    }
-  }
+  if(!rect||(!rect.height&&!rect.width)) return;
 
-  if(!rect || (!rect.height && !rect.width)) return;
+  const bodyRect=noteBody.getBoundingClientRect();
 
-  const bodyRect = noteBody.getBoundingClientRect();
-  const toolbarTop = toolbar.classList.contains("hidden")
-    ? window.innerHeight
+  const viewportBottom=vv
+    ? vv.offsetTop+vv.height
+    : window.innerHeight;
+
+  const toolbarTop=toolbar.classList.contains("hidden")
+    ? viewportBottom
     : toolbar.getBoundingClientRect().top;
 
-  const visibleBottom = Math.min(
-    toolbarTop,
-    vv ? vv.offsetTop + vv.height : window.innerHeight
-  ) - 14;
+  const visibleBottom=Math.min(
+    bodyRect.bottom,
+    viewportBottom,
+    toolbarTop
+  )-12;
 
-  if(rect.bottom > visibleBottom){
-    noteBody.scrollTop += rect.bottom - visibleBottom + 12;
-  } else if(rect.top < bodyRect.top + 8){
-    noteBody.scrollTop -= bodyRect.top + 8 - rect.top;
+  const visibleTop=bodyRect.top+8;
+
+  let amount=0;
+
+  if(rect.bottom>visibleBottom){
+    amount=rect.bottom-visibleBottom+12;
+  }else if(rect.top<visibleTop){
+    amount=rect.top-visibleTop;
+  }
+
+  if(amount!==0){
+    noteBody.scrollTop+=amount;
   }
 }
 
 function scheduleTypingScroll(){
-  if(typingScrollFrame) cancelAnimationFrame(typingScrollFrame);
+  if(typingScrollFrame){
+    cancelAnimationFrame(typingScrollFrame);
+  }
 
-  typingScrollFrame = requestAnimationFrame(()=>{
-    typingScrollFrame = 0;
+  typingScrollFrame=requestAnimationFrame(()=>{
+    typingScrollFrame=0;
     keepTypingLineVisible();
   });
 }
 
-noteBody.addEventListener("input", scheduleTypingScroll);
-noteBody.addEventListener("keyup", scheduleTypingScroll);
-noteBody.addEventListener("click", scheduleTypingScroll);
+noteBody.addEventListener("input",scheduleTypingScroll);
+noteBody.addEventListener("keyup",scheduleTypingScroll);
+noteBody.addEventListener("click",scheduleTypingScroll);
 
 if(vv){
-  vv.addEventListener("resize", scheduleTypingScroll);
-  vv.addEventListener("scroll", scheduleTypingScroll);
+  vv.addEventListener("resize",scheduleTypingScroll);
+  vv.addEventListener("scroll",scheduleTypingScroll);
 }
 
 $("btnBold").addEventListener("mousedown",e=>e.preventDefault());
