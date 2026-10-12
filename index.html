@@ -734,54 +734,61 @@ document.addEventListener("keydown",e=>{
 /* =========================================================
    PHONE BACK BUTTON / ANDROID BACK GESTURE
    ========================================================= */
+
 let lastHomeBackTime=0;
 let backExitTimer=null;
+let allowNativeBack=false;
 
 function handleAppBack(){
-  /* 1. Dialog is open */
+
+  /* 1. Dialog */
   if(!$("dialogBackdrop").classList.contains("hidden")){
     closeDialog();
-    return true;
+    return;
   }
 
-  /* 2. Drawer is open */
+  /* 2. Drawer */
   if(!$("drawerBackdrop").classList.contains("hidden")){
     closeDrawer();
-    return true;
+    return;
   }
 
-  /* 3. Color palette is open */
-  if(!palette.classList.contains("hidden")){
+  /* 3. Color palette */
+  if(typeof palette!=="undefined" &&
+     palette &&
+     !palette.classList.contains("hidden")){
     closePalette();
-    return true;
+    return;
   }
 
-  /* 4. More-options menu is open */
+  /* 4. More-options menu */
   if(!menu.classList.contains("hidden")){
     menu.classList.add("hidden");
-    return true;
+    return;
   }
 
-  /* 5. Currently inside a note */
+  /* 5. Note editor / Read Mode */
   if(!editor.classList.contains("hidden")){
+    saveCurrentNote();
     closeEditor();
-    return true;
+    lastHomeBackTime=0;
+    clearTimeout(backExitTimer);
+    return;
   }
 
-  /* 6. Already on Home */
+  /* 6. Home screen */
   const now=Date.now();
 
-  if(now-lastHomeBackTime<2000){
+  if(lastHomeBackTime && now-lastHomeBackTime<2000){
     lastHomeBackTime=0;
     clearTimeout(backExitTimer);
 
     /*
-      Let the browser history handle the second back.
-      On a PWA / installed app this allows the system
-      to close the app normally.
+      Let the browser or installed PWA handle
+      its normal Back behavior.
     */
-    history.back();
-    return true;
+    allowNativeBack=true;
+    return;
   }
 
   lastHomeBackTime=now;
@@ -791,34 +798,46 @@ function handleAppBack(){
   backExitTimer=setTimeout(()=>{
     lastHomeBackTime=0;
   },2000);
-
-  return true;
 }
 
-/*
-  Android/browser back.
-  A history state keeps the app inside the current page
-  instead of immediately navigating away.
-*/
+/* Initialize a single history guard */
 try{
-  history.replaceState({preachMateHome:true},"",location.href);
+  history.replaceState(
+    {preachMateBase:true},
+    "",
+    location.href
+  );
 
-  window.addEventListener("popstate",()=>{
-    const handled=handleAppBack();
-
-    /*
-      Put the app state back so another hardware Back
-      can be detected while staying inside the app.
-    */
-    if(handled){
-      setTimeout(()=>{
-        try{
-          history.pushState({preachMateHome:true},"",location.href);
-        }catch(e){}
-      },0);
-    }
-  });
+  history.pushState(
+    {preachMateGuard:true},
+    "",
+    location.href
+  );
 }catch(e){}
+
+/* Handle Android/browser Back */
+window.addEventListener("popstate",()=>{
+  if(allowNativeBack){
+    allowNativeBack=false;
+    return;
+  }
+
+  handleAppBack();
+
+  /*
+    Restore the guard after the first Back so
+    the app remains on screen.
+  */
+  if(lastHomeBackTime || !editor.classList.contains("hidden")){
+    try{
+      history.pushState(
+        {preachMateGuard:true},
+        "",
+        location.href
+      );
+    }catch(e){}
+  }
+});
 
 /* Android / browser page lifecycle */
 if(vv){
@@ -841,7 +860,7 @@ document.addEventListener("visibilitychange",()=>{
 persist();
 renderCategories();
 renderNotes();
-persist();renderCategories();renderNotes();
+
 })();
 </script>
 </body>
