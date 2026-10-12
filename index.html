@@ -37,6 +37,18 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-card{min-height:135px;background:#fff;border:1px solid var(--border);border-radius:15px;padding:13px;box-shadow:0 3px 12px #0000000b;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
 .note-card-title{font-weight:750;font-size:15px;overflow-wrap:anywhere;padding-right:17px}
 .note-card-preview{font-size:13px;line-height:1.45;color:#4b5563;overflow-wrap:anywhere;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Live Search keyword highlight: preview and title only */
+.search-match{
+  background:#fde047;
+  color:#111827;
+  border-radius:3px;
+  padding:0 2px;
+  font-weight:800;
+  box-shadow:0 0 0 1px #eab30840;
+  -webkit-box-decoration-break:clone;
+  box-decoration-break:clone;
+}
 .note-card-meta{margin-top:auto;padding-top:5px;display:flex;gap:6px;align-items:center;color:var(--muted);font-size:11px}
 .note-fav{position:absolute;top:8px;right:9px;font-size:15px;color:#d97706}
 .empty-state{text-align:center;color:var(--muted);padding:50px 20px;line-height:1.6}
@@ -64,53 +76,36 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .note-body blockquote{border-left:3px solid #9ca3af;margin-left:0;padding-left:12px;color:#4b5563}
 .note-body ul,.note-body ol{padding-left:25px}
 
-/* PREACH MATE: Read Mode amber neon word highlighter */
+/* Read Mode only: amber neon underline, no black background or number */
 .read-word-marker{
-  display:inline-block;
+  display:inline;
   position:relative;
-  padding:1px 7px;
+  padding:1px 3px;
   margin:0 1px;
-  color:#fff176!important;
-  background:#211606!important;
-  border:1px solid #ffb300;
-  border-radius:7px;
-  box-shadow:
-    0 0 4px #ffb300,
-    0 0 9px #ffb300aa,
-    inset 0 0 5px #ffb30030;
-  text-shadow:0 0 5px #ffdf55,0 0 10px #ffb30090;
-  white-space:nowrap;
+  color:inherit!important;
+  background:transparent!important;
+  border:0;
+  border-bottom:2px solid #ffb300;
+  border-radius:0;
+  box-shadow:0 2px 5px #ffb30055;
+  text-shadow:0 0 5px #ffb30070;
   animation:amberGlow 1.8s ease-in-out infinite alternate;
 }
 .read-word-marker::after{
-  content:"1";
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:17px;
-  height:17px;
-  margin-left:7px;
-  border-radius:50%;
-  background:#ffbf00;
-  color:#211606;
-  border:1px solid #ffe082;
-  box-shadow:0 0 5px #ffb300,0 0 10px #ffb30099;
-  font-size:10px;
-  font-weight:900;
-  line-height:1;
-  vertical-align:middle;
-  text-shadow:none;
+  content:none!important;
+  display:none!important;
 }
 @keyframes amberGlow{
   from{
-    box-shadow:0 0 3px #ffb300,0 0 7px #ffb30080,inset 0 0 3px #ffb30020;
-    border-color:#d99000;
+    box-shadow:0 2px 3px #ffb30040;
+    border-bottom-color:#d99000;
   }
   to{
-    box-shadow:0 0 6px #ffcf33,0 0 15px #ffb300cc,0 0 22px #ff8f0060,inset 0 0 7px #ffb30040;
-    border-color:#ffe082;
+    box-shadow:0 2px 9px #ffb30099;
+    border-bottom-color:#ffe082;
   }
 }
+
 .editor-toolbar{position:fixed;left:0;right:0;bottom:0;min-height:49px;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;gap:2px;padding:5px 5px calc(5px + env(safe-area-inset-bottom));z-index:45;box-shadow:0 -3px 12px #0000000a}
 .fmt-btn{min-width:34px;height:38px;border:1px solid transparent;border-radius:8px;background:transparent;color:#1f2937;display:inline-flex;align-items:center;justify-content:center;font-size:16px;padding:5px 7px;flex:1;max-width:55px}
 .fmt-btn:active,.fmt-btn.active{background:#e5e7eb}
@@ -278,13 +273,47 @@ function plainText(html){
   const box=document.createElement("div");box.innerHTML=html||"";
   return (box.innerText||box.textContent||"").replace(/\s+/g," ").trim();
 }
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function esc(s){
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+function escapeRegExp(s){
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+}
+
+/* Highlight search terms safely without changing saved note content. */
+function highlightSearchTerms(text,query){
+  const value=String(text||"");
+  const terms=[...new Set(
+    String(query||"").trim().split(/\s+/).filter(Boolean)
+  )].sort((a,b)=>b.length-a.length);
+
+  if(!terms.length)return esc(value);
+
+  const regex=new RegExp(
+    "("+terms.map(escapeRegExp).join("|")+")",
+    "gi"
+  );
+
+  return value.split(regex).map(part=>{
+    const matched=terms.some(term=>
+      part.toLowerCase()===term.toLowerCase()
+    );
+    return matched
+      ? '<mark class="search-match">'+esc(part)+'</mark>'
+      : esc(part);
+  }).join("");
+}
+
 function showToast(msg){
   $("toast").textContent=msg;$("toast").classList.remove("hidden");
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),1900);
 }
 function cleanTemporaryMarker(root){
-  root.querySelectorAll(".read-word-marker").forEach(s=>s.replaceWith(...s.childNodes));
+  root.querySelectorAll(".read-word-marker").forEach(s=>{
+    s.replaceWith(...s.childNodes);
+  });
 }
 function saveCurrentNote(){
   const n=currentNote();if(!n)return;
@@ -348,7 +377,9 @@ function attachCategoryDrag(button){
       const rect=target.getBoundingClientRect();
       const after=e.clientX>rect.left+rect.width/2;
       target.parentNode.insertBefore(button,after?target.nextSibling:target);
-      document.querySelectorAll(".category-tab.drag-target").forEach(el=>{if(el!==target)el.classList.remove("drag-target")});
+      document.querySelectorAll(".category-tab.drag-target").forEach(el=>{
+        if(el!==target)el.classList.remove("drag-target");
+      });
     }
     e.preventDefault();
   });
@@ -370,29 +401,60 @@ function attachCategoryDrag(button){
   button.addEventListener("pointerup",finish);
   button.addEventListener("pointercancel",finish);
 }
+
 function renderNotes(){
   const grid=$("notesGrid");grid.innerHTML="";
-  const search=$("searchInput").value.trim().toLowerCase();
+  const search=$("searchInput").value.trim();
+  const terms=search.toLowerCase().split(/\s+/).filter(Boolean);
+
   const list=notes.filter(n=>!favoritesOnly||n.favorite)
     .filter(n=>activeCategory==="All Notes"||n.category===activeCategory)
-    .filter(n=>!search||(n.title||"").toLowerCase().includes(search)||
-      plainText(n.content).toLowerCase().includes(search)||(n.category||"").toLowerCase().includes(search))
+    .filter(n=>{
+      if(!terms.length)return true;
+      const searchable=[
+        n.title||"",
+        plainText(n.content),
+        n.category||""
+      ].join(" ").toLowerCase();
+
+      return terms.every(term=>searchable.includes(term));
+    })
     .sort((a,b)=>(b.updated||0)-(a.updated||0));
-  $("notesCount").textContent=(favoritesOnly?"Favorite notes":activeCategory==="All Notes"?"Your notes":activeCategory)+" · "+list.length;
+
+  $("notesCount").textContent=
+    (favoritesOnly?"Favorite notes":activeCategory==="All Notes"?"Your notes":activeCategory)+" · "+list.length;
+
   list.forEach(n=>{
     const card=document.createElement("article");card.className="note-card";
-    const title=document.createElement("div");title.className="note-card-title";title.textContent=n.title||"Untitled note";
-    const preview=document.createElement("div");preview.className="note-card-preview";preview.textContent=plainText(n.content)||"No content yet";
+
+    const title=document.createElement("div");
+    title.className="note-card-title";
+    const titleText=n.title||"Untitled note";
+    title.innerHTML=search
+      ?highlightSearchTerms(titleText,search)
+      :esc(titleText);
+
+    const preview=document.createElement("div");
+    preview.className="note-card-preview";
+    const previewText=plainText(n.content)||"No content yet";
+    preview.innerHTML=search
+      ?highlightSearchTerms(previewText,search)
+      :esc(previewText);
+
     const meta=document.createElement("div");meta.className="note-card-meta";
     const cat=document.createElement("span");cat.textContent=n.category||"Personal";
     const date=document.createElement("span");date.textContent="· "+new Date(n.updated||Date.now()).toLocaleDateString();
     meta.append(cat,date);card.append(title,preview,meta);
-    if(n.favorite){const star=document.createElement("span");star.className="note-fav";star.textContent="★";card.appendChild(star)}
+
+    if(n.favorite){
+      const star=document.createElement("span");star.className="note-fav";star.textContent="★";card.appendChild(star);
+    }
     card.addEventListener("click",()=>openNote(n.id));
     grid.appendChild(card);
   });
   $("emptyState").classList.toggle("hidden",list.length!==0);
 }
+
 function openNote(id){
   currentNoteId=id;const n=currentNote();if(!n)return;
   clearReadMarker();noteTitle.value=n.title||"";noteBody.innerHTML=n.content||"";
@@ -407,14 +469,22 @@ function newNote(){
   notes.unshift(n);persist();openNote(n.id);setMode(true);setTimeout(()=>noteTitle.focus(),100);
 }
 function closeEditor(){
-  saveCurrentNote();clearReadMarker();closePalette();editor.classList.add("hidden");
+  clearReadMarker();saveCurrentNote();closePalette();editor.classList.add("hidden");
   toolbar.classList.add("hidden");menu.classList.add("hidden");home.classList.remove("hidden");
   currentNoteId=null;renderCategories();renderNotes();
 }
 function setMode(edit){
+  /* Always remove the temporary Read Mode marker before changing modes. */
+  clearReadMarker();
   isEditMode=!!edit;
-  if(!isEditMode){clearReadMarker();saveCurrentNote();closePalette();}
-  noteTitle.readOnly=!isEditMode;noteBody.contentEditable=isEditMode?"true":"false";
+
+  if(!isEditMode){
+    saveCurrentNote();
+    closePalette();
+  }
+
+  noteTitle.readOnly=!isEditMode;
+  noteBody.contentEditable=isEditMode?"true":"false";
   $("modeLabel").textContent=isEditMode?"EDIT":"READ";
   $("menuMode").textContent=isEditMode?"Read Mode":"Edit Mode";
   toolbar.classList.toggle("hidden",!isEditMode);
@@ -422,8 +492,9 @@ function setMode(edit){
   menu.classList.add("hidden");
 }
 function clearReadMarker(){
-  const old=noteBody.querySelector(".read-word-marker");
-  if(old)old.replaceWith(...old.childNodes);
+  noteBody.querySelectorAll(".read-word-marker").forEach(old=>{
+    old.replaceWith(...old.childNodes);
+  });
   markerSpan=null;
 }
 function getRangeAtPoint(e){
@@ -437,20 +508,28 @@ function getRangeAtPoint(e){
 function isWordChar(c){return !!c&&/[\p{L}\p{N}_'-]/u.test(c)}
 function markWordAtPoint(e){
   if(isEditMode||e.target.closest("button,input,a,select,textarea"))return;
+
   const r=getRangeAtPoint(e);
   if(!r||r.startContainer.nodeType!==Node.TEXT_NODE)return;
+
   const node=r.startContainer,text=node.textContent||"";
   if(!text.length)return;
+
   let start=Math.min(r.startOffset,text.length-1);
   if(!isWordChar(text[start])&&start>0&&isWordChar(text[start-1]))start--;
   if(!isWordChar(text[start]))return;
+
   let end=start;
   while(start>0&&isWordChar(text[start-1]))start--;
   while(end<text.length&&isWordChar(text[end]))end++;
+
   clearReadMarker();
+
   try{
-    const wr=document.createRange();wr.setStart(node,start);wr.setEnd(node,end);
-    const span=document.createElement("span");span.className="read-word-marker";
+    const wr=document.createRange();
+    wr.setStart(node,start);wr.setEnd(node,end);
+    const span=document.createElement("span");
+    span.className="read-word-marker";
     wr.surroundContents(span);markerSpan=span;
   }catch(err){}
 }
@@ -463,7 +542,10 @@ function saveSelection(){
 }
 function restoreSelection(){
   if(!savedSelection)return;
-  try{noteBody.focus({preventScroll:true});const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection)}catch(e){}
+  try{
+    noteBody.focus({preventScroll:true});
+    const s=window.getSelection();s.removeAllRanges();s.addRange(savedSelection);
+  }catch(e){}
 }
 function applyCommand(command,value=null){
   if(!isEditMode)setMode(true);
@@ -476,6 +558,7 @@ function openPalette(type){
   saveSelection();paletteType=type;
   $("paletteTitle").textContent=type==="highlight"?"Choose highlight color":"Choose font color";
   const holder=$("paletteColors");holder.innerHTML="";
+
   COLORS.forEach(color=>{
     const b=document.createElement("button");b.className="color-swatch";
     b.style.background=color.value;b.title=color.name;b.setAttribute("aria-label",color.name);
