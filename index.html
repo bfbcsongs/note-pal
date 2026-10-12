@@ -834,12 +834,10 @@ try{
     location.href
   );
 
-  /* Keep two guard entries available */
-  addBackGuard();
   addBackGuard();
 }catch(e){}
 
-/* Handle Android/browser Back */
+/* Handle Android/browser Back — ONLY ONE HANDLER */
 window.addEventListener("popstate",()=>{
 
   if(allowNativeBack){
@@ -849,37 +847,11 @@ window.addEventListener("popstate",()=>{
 
   if(backActionInProgress)return;
 
-  /*
-    Handle the Back action first.
-    In-app actions close the current UI.
-    Home actions show the exit toast on first Back.
-  */
   handleAppBack();
 
   /*
-    If this was the first Home Back, restore the guard.
-    If the second Home Back was detected, do not restore.
-  */
-  if(!allowNativeBack){
-    setTimeout(()=>{
-      if(!allowNativeBack){
-        addBackGuard();
-      }
-    },0);
-  }
-});
-  if(backActionInProgress)return;
-
-  if(allowNativeBack){
-    allowNativeBack=false;
-    return;
-  }
-
-  handleAppBack();
-
-  /*
-    Restore the guard after normal in-app Back actions.
-    Do not restore it after the second Home Back.
+    Restore the guard after an in-app action or first
+    Home Back. Do not restore it after the second Home Back.
   */
   if(!allowNativeBack){
     setTimeout(()=>{
