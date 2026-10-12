@@ -238,6 +238,8 @@ input,button,select,textarea{font-size:16px}
 </section>
 
 <div class="editor-toolbar hidden" id="editorToolbar">
+  <button class="fmt-btn" id="btnUndo" title="Undo" aria-label="Undo">↶</button>
+  <button class="fmt-btn" id="btnRedo" title="Redo" aria-label="Redo">↷</button>
   <button class="fmt-btn" id="btnBold" title="Bold"><b>B</b></button>
   <button class="fmt-btn" id="btnItalic" title="Italic"><i>I</i></button>
   <button class="fmt-btn" id="btnUnderline" title="Underline"><u>U</u></button>
@@ -659,6 +661,25 @@ function applyCommand(command,value=null){
   try{document.execCommand(command,false,value)}catch(e){}
   saveCurrentNote();saveSelection();
 }
+  function applyHistoryCommand(command){
+  if(!isEditMode || !currentNote()) return;
+
+  restoreSelection();
+
+  const previousScrollTop = noteBody.scrollTop;
+
+  try{
+    noteBody.focus({preventScroll:true});
+    document.execCommand(command,false,null);
+  }catch(e){}
+
+  saveSelection();
+  saveCurrentNote();
+
+  requestAnimationFrame(()=>{
+    noteBody.scrollTop = previousScrollTop;
+  });
+}
 function openPalette(type){
   if(!isEditMode)setMode(true);
   saveSelection();paletteType=type;
@@ -1035,6 +1056,10 @@ toolbar.querySelectorAll("button").forEach(b=>{
   b.addEventListener("mousedown",e=>{e.preventDefault();saveSelection()});
   b.addEventListener("touchstart",saveSelection,{passive:true});
 });
+$("btnUndo").addEventListener("click",()=>applyHistoryCommand("undo"));
+$("btnRedo").addEventListener("click",()=>applyHistoryCommand("redo"));
+
+$("btnBold").addEventListener("click",()=>applyCommand("bold"));
 $("btnBold").addEventListener("click",()=>applyCommand("bold"));
 $("btnItalic").addEventListener("click",()=>applyCommand("italic"));
 $("btnUnderline").addEventListener("click",()=>applyCommand("underline"));
